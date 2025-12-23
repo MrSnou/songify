@@ -24,17 +24,24 @@ public class SongRetriever {
     }
 
     public List<Song> findAllLimited(Integer limit) {
+        log.info("Retrieving all songs limited : " + limit);
         return songRepository.findAll().stream()
                 .limit(limit)
                 .toList();
     }
 
-    public Optional<Song> findById(Long id) {
-        return songRepository.findById(id);
+    public Song findById(Long id) {
+        log.info("Retrieving song with id: " + id);
+        return songRepository.findById(id)
+                .orElseThrow(() -> new SongNotFoundException("Song with id" +  id + " not found"));
     }
 
     public void existsById(Long id) {
-        findById(id)
-                .orElseThrow(() -> new SongNotFoundException("Song with id" +  id + " not found"));
+        log.info("Checking if song with id exists: " + id);
+        if (!songRepository.existsById(id)) {
+            throw new SongNotFoundException("Song with id " +  id + " not found");
+        }
     }
+
+
 }
