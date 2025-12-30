@@ -16,17 +16,23 @@ public class SongMapper {
     }
 
     public static CreateSongResponseDto mapFromSongToCreateSongResponseDto(Song song) {
-        return new CreateSongResponseDto(song);
+        SongDto songDto = mapFromSongToSongDto(song);
+        return new CreateSongResponseDto(songDto);
+
+    }
+    public static SongDto mapFromSongToSongDto(Song song) {
+        return new SongDto(song.getId(), song.getName(), song.getArtist());
     }
 
-
-
-    public static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(List<Song> database) {
-        return new GetAllSongsResponseDto(database);
+    public static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(List<Song> songs) {
+        List<SongDto> songDtos = songs.stream()
+                .map(SongMapper::mapFromSongToSongDto).toList();
+        return new GetAllSongsResponseDto(songDtos);
     }
 
     public static GetSongResponseDto mapFromSongToSongResponseDto(Song song) {
-        return new GetSongResponseDto(song);
+        SongDto songDto = mapFromSongToSongDto(song);
+        return new GetSongResponseDto(songDto);
     }
 
 
@@ -46,7 +52,8 @@ public class SongMapper {
         return new Song(request.songName(), request.artist());
     }
 
-    public static PartiallyUpdateSongResponseDto mapFromSongToPartiallyUpdateSongResponseDto(Song updatedSong) {
-        return new PartiallyUpdateSongResponseDto(updatedSong);
+    public static PartiallyUpdateSongResponseDto mapFromSongToPartiallyUpdateSongResponseDto(Song song) {
+        SongDto songDto = mapFromSongToSongDto(song);
+        return new PartiallyUpdateSongResponseDto(songDto);
     }
 }

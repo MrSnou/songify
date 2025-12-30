@@ -2,6 +2,7 @@ package com.songify.song.domain.service;
 
 import com.songify.song.domain.model.Song;
 import com.songify.song.domain.repository.SongRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,15 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 @Service
 @Transactional
+@AllArgsConstructor
 public class SongUpdater {
 
     private final SongRepository songRepository;
     private final SongRetriever songRetriever;
-
-    public SongUpdater(SongRepository songRepository, SongRetriever songRetriever) {
-        this.songRepository = songRepository;
-        this.songRetriever = songRetriever;
-    }
 
 
     public void updateById(Long id, Song newSong) {
@@ -44,6 +41,7 @@ public class SongUpdater {
         updateById(id, toSave);
         return toSave;
     }
+
 //    Dirty Checking version
 //    (Update with help of Hibernate, but without using dedicated service which is SongRepository
 //    , it is fast and nice, but wrong with programming convention! Use only in personal projects.)

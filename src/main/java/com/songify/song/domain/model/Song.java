@@ -14,6 +14,16 @@ import lombok.Setter;
 @Table(name = "song")
 public class Song {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String artist;
+
     public Song(String name, String artist) {
         this.name = name;
         this.artist = artist;
@@ -23,13 +33,4 @@ public class Song {
         this.name = name;
         this.artist = artist;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
-    private String artist;
 }
