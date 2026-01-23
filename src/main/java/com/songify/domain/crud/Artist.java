@@ -23,6 +23,10 @@ import java.util.Set;
 @Setter(AccessLevel.PACKAGE)
 class Artist extends BaseEntity {
 
+    Artist(final String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(generator = "artist_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
