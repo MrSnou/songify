@@ -1,0 +1,21 @@
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (1,1);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (1,2);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (1,3);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (2,4);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (2,5);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (3,6);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (3,7);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (3,8);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (4,9);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (4,10);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (5,11);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (5,12);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (6,13);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (6,14);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (7,15);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (7,16);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (8,17);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (8,18);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (9,19);
+INSERT INTO artist_albums (albums_id, artists_id) VALUES (9,20);
+

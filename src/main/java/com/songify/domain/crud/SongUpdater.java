@@ -22,24 +22,24 @@ class SongUpdater {
         songRepository.updateById(id, newSong);
     }
 
-    Song updatePartiallyById(Long id, Song songFromRequest) {
-        Song songFromDatabase = songRetriever.findById(id);
-        Song.SongBuilder songBuilder = Song.builder();
-
-        if (songFromRequest.getName() != null) {
-            songBuilder.name(songFromRequest.getName());
-        } else {
-            songBuilder.name(songFromDatabase.getName());
-        }
-        if (songFromRequest.getArtist() != null) {
-            songBuilder.artist(songFromRequest.getArtist());
-        } else {
-            songBuilder.artist(songFromDatabase.getArtist());
-        }
-        Song toSave = songBuilder.build();
-        updateById(id, toSave);
-        return toSave;
-    }
+//    Song updatePartiallyById(Long id, Song songFromRequest) {
+//        Song songFromDatabase = songRetriever.findById(id);
+//        Song.SongBuilder songBuilder = Song.builder();
+//
+//        if (songFromRequest.getName() != null) {
+//            songBuilder.name(songFromRequest.getName());
+//        } else {
+//            songBuilder.name(songFromDatabase.getName());
+//        }
+//        if (songFromRequest.getArtist() != null) {
+//            songBuilder.artist(songFromRequest.getArtist());
+//        } else {
+//            songBuilder.artist(songFromDatabase.getArtist());
+//        }
+//        Song toSave = songBuilder.build();
+//        updateById(id, toSave);
+//        return toSave;
+//    }
 
 //    Dirty Checking version
 //    (Update with help of Hibernate, but without using dedicated service which is SongRepository

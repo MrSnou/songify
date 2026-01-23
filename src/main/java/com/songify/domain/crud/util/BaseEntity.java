@@ -11,7 +11,7 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
-    public UUID uuid = UUID.randomUUID();
+    public UUID uuid;
 
     @CreationTimestamp
     public Instant createdOn;
