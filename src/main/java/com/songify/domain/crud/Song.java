@@ -8,13 +8,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,13 +19,11 @@ import java.time.Instant;
 
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter(AccessLevel.PACKAGE)
+@Setter(AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 //@Table(name = "song")
-class Song extends BaseEntity {
+public class Song extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "song_id_seq", strategy = GenerationType.SEQUENCE)
@@ -55,5 +49,12 @@ class Song extends BaseEntity {
 
     public Song(String name) {
         this.name = name;
+    }
+
+    public Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage language) {
+        this.name = name;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.language = language;
     }
 }

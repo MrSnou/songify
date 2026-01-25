@@ -1,9 +1,13 @@
 ### Songify: Aplikacja do zarządzania albumami, artystami i piosenkami
 
-1. Można dodać artystę (nazwa artysty)
-2. Można dodać gatunek muzyczny (nazwa gatunku)
-3. Można dodać album (tytuł, czas trwania, data wydania oraz artystę, do którego należy)
-4. można dodawać piosenkę (tytuł, czas trwania, data wydania oraz artystę, do którego należy)
+~~1. Można dodać artystę (nazwa artysty)~~
+
+~~2. Można dodać gatunek muzyczny (nazwa gatunku)~~
+
+~~3. Można dodać album (tytuł, czas trwania, data wydania oraz artystę, do którego należy)~~
+
+~~4. można dodawać piosenkę (tytuł, czas trwania, data wydania, język piosenki)~~
+
 5. Można usunąć artystę (usuwamy wtedy jego piosenki oraz albumy)
 6. można usunąć gatunek muzyczny (tylko gdy nie jest do niego przypisana żadna piosenka)
 7. można usunąć album (tylko gdy nie jest do niego przypisana żadna piosenka)
@@ -56,8 +60,8 @@ Given there is no songs, artists, albums and genres created before
 8. When I go to /song/1 then I can see "Rap" genre
 9. When I put to /song/2/genre/1 then Genre with id 1 ("Rap") is added to Song with id 2 ("Lose Yourself")
 10. When I go to /album then I can see no albums
-11. When I post to /album with Album "EminemAlbum1" then Album "EminemAlbum1" is returned with id 1
-12. When I go to /album/1 then I can see no songs added to album
+11. When I post to /album with Album "EminemAlbum1" and Song with id 1 then Album "EminemAlbum1" is returned with id 1
+12. When I go to /album/1 then I can see song with id 1 added to it
 13. When I put to /album/1/song/1 then Song with id 1 ("Till I collapse") is added to Album with id 1 ("EminemAlbum1")
 14. When I put to /album/1/song/2 then Song with id 2 ("Lose Yourself") is added to Album with id 1 ("EminemAlbum1")
 15. When I go to /album/1/song then I can see 2 songs (id 1, id 2)
