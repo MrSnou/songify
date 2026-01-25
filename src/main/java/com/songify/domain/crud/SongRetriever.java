@@ -32,7 +32,7 @@ class SongRetriever {
         }
     }
 
-    Song findSongDtoById(Long id) {
+    Song findSongById(Long id) {
         return songRepository.findById(id)
                 .orElseThrow(() -> new SongNotFoundException("Song with id " + id + " not found"));
     }
