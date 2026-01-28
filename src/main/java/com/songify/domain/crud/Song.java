@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +20,7 @@ import java.time.Instant;
 
 
 @Entity
-@Getter(AccessLevel.PACKAGE)
+@Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //@Table(name = "song")
@@ -41,7 +42,7 @@ public class Song extends BaseEntity {
 
     private Long duration;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Genre genre;
 
     @Enumerated(EnumType.STRING)

@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
-@Getter(AccessLevel.PACKAGE)
+@Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
-class Genre extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Genre extends BaseEntity {
 
     Genre(final String name) {
         this.name = name;

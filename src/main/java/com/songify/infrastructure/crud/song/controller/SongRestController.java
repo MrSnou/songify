@@ -39,7 +39,7 @@ import static com.songify.infrastructure.crud.song.controller.SongControllerMapp
 
 @RestController
 @Log4j2
-@RequestMapping("/songs")
+@RequestMapping("/api/v1/songs")
 @AllArgsConstructor
 public
 class SongRestController {
@@ -81,8 +81,7 @@ class SongRestController {
         SongDto newSongDto = SongControllerMapper.mapFromUpdateSongRequestDtoToSongDto(request);
         songFacade.updateSongById(id, newSongDto);
         UpdateSongResponseDto body = mapFromSongToUpdateSongResponseDto(newSongDto);
-        return ResponseEntity.ok(body);
-    }
+        return ResponseEntity.ok(body);}
 
     @PatchMapping("/{id}")
     ResponseEntity<PartiallyUpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long id,

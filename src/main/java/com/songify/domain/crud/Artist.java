@@ -1,9 +1,12 @@
 package com.songify.domain.crud;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.songify.domain.crud.util.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,10 +21,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
-@Getter(AccessLevel.PACKAGE)
+@Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
-class Artist extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Artist extends BaseEntity {
 
     Artist(final String name) {
         this.name = name;

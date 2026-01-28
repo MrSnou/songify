@@ -28,7 +28,9 @@
 ~~19. można wyświetlać wszystkich artystów~~
 
 20. można wyświetlać wszystkie albumy
-21. można wyświetlać wszystkie albumy z artystami oraz piosenkami w albumie
+
+~~21. można wyświetlać konkretne albumy z artystami oraz piosenkami w albumie~~
+
 22. można wyświetlać konkretne gatunki muzyczne wraz z piosenkami
 23. można wyświetlać konkretnych artystów wraz z ich albumami
 

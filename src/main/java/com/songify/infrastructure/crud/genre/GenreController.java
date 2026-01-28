@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1/genre")
+@RequestMapping("api/v1/genres")
 class GenreController {
     private final SongifyCrudFacade songifyCrudFacade;
 

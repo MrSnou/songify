@@ -16,7 +16,7 @@ import java.util.Set;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1/artist")
+@RequestMapping("api/v1/artists")
 class ArtistController {
     private final SongifyCrudFacade songifyCrudFacade;
 
