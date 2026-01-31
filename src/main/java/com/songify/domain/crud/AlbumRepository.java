@@ -1,6 +1,7 @@
 package com.songify.domain.crud;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -11,6 +12,9 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
     Album save(final Album album);
 
     Optional<Album> findById(final Long id);
+
+    @Modifying
+    void deleteById(final Long id);
 
     @Query("""
                 select distinct a from Album a

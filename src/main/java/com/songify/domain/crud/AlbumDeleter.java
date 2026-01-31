@@ -14,7 +14,7 @@ class AlbumDeleter {
 
     void deleteById(Album album) {
         if (album.getSongs().isEmpty()) {
-            albumRepository.deleteById(album.getId());
+            albumRepository.deleteById(album.getId().longValue());
         } else {
             throw new AlbumNotEmptyException("Album is not empty, cannot delete");
         }

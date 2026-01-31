@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,12 +32,16 @@ public class SongifyCrudFacade {
 
     private final ArtistAdder artistAdder;
     private final ArtistRetriever artistRetriever;
+    private final ArtistDeleter artistDeleter;
 
     private final GenreAdder genreAdder;
+    private final GenreDeleter genreDeleter;
+    private final GenreRetriever genreRetriever;
 
     private final AlbumAdder albumAdder;
     private final AlbumRetriever albumRetriever;
     private final AlbumDeleter albumDeleter;
+
 
 
     public ArtistDto addArtist(ArtistRequestDto dto) {
@@ -109,9 +114,16 @@ public class SongifyCrudFacade {
     }
 
     public void deleteAlbumById(final Long requestAlbumId) {
-        Album album = albumRetriever.findAlbumById(requestAlbumId);
-        albumDeleter.deleteById(album);
+        albumDeleter.deleteById(albumRetriever.findAlbumById(requestAlbumId));
 
+    }
+
+    public void deleteGenreById(final Long genreId) {
+        genreDeleter.deleteGenreById(genreRetriever.findGenreById(genreId));
+    }
+
+    public void deleteArtistById(final Long artistId) {
+        artistDeleter.deleteArtistById(artistId);
     }
 
 //    public void deleteSongAndGenreById(Long id) {

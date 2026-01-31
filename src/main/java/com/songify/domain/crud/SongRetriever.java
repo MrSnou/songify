@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Log4j2
@@ -57,6 +58,8 @@ class SongRetriever {
     }
 
 
-
-
+    Set<Song> getAllSongsByGenre(final Genre genre) {
+        Set<Song> songs = songRepository.findAllByGenre(genre);
+        return songs;
+    }
 }

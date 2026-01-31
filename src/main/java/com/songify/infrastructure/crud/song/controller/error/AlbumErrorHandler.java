@@ -2,6 +2,7 @@ package com.songify.infrastructure.crud.song.controller.error;
 
 
 import com.songify.domain.crud.Exceptions.AlbumNotEmptyException;
+import com.songify.infrastructure.crud.song.controller.error.dto.ErrorAlbumResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,4 +21,6 @@ public class AlbumErrorHandler {
         ErrorAlbumResponseDto responseDto = new ErrorAlbumResponseDto(HttpStatus.FORBIDDEN, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
     }
+
+
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SongRepository extends Repository<Song, Long> {
 
@@ -30,4 +31,6 @@ public interface SongRepository extends Repository<Song, Long> {
     void updateById(Long id, Song newSong);
 
     boolean existsById(Long id);
+
+    Set<Song> findAllByGenre(Genre genre);
 }
