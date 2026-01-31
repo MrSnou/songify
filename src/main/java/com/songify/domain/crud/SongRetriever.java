@@ -1,5 +1,6 @@
 package com.songify.domain.crud;
 
+import com.songify.domain.crud.Exceptions.SongNotFoundException;
 import com.songify.domain.crud.dto.SongDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

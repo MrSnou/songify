@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wskazówki</title>
+</head>
+<body>
+<form>
+    <label for="username">Nazwa użytkownika:</label>
+    <input type="text" id="username" name="username">
+    <div id="message"></div>
+</form>
+<script>
+    const input = document.getElementById('username');
+    const message = document.getElementById('message');
+
+
+    message.textContent = 'Wprowadź swoją nazwę użytkownika';
+
+    input.addEventListener('focus', function () {
+        message.textContent = 'Wprowadź swoją nazwę użytkownika';
+    });
+
+
+    if (input.value.trim() === '') {
+        message.textContent = 'Nazwa użytkownika nie może być pusta';
+    } else {
+        message.textContent = '';
+    }
+
+
+    input.addEventListener('blur', function () {
+        if (input.value.trim() === '') {
+            message.textContent = '';
+        } else {
+            message.textContent = '';
+        }
+    })
+
+
+</script>
+</body>
+</html>

@@ -14,10 +14,20 @@ class SongDeleter {
 
     private final SongRepository songRepository;
     private final SongRetriever songRetriever;
+    private final GenreDeleter genreDeleter;
 
-    void deleteById(Long id) {
-        songRetriever.existsById(id);
+    void deleteSongById(Long id) {
         log.info("Deleting song with id: " + id);
         songRepository.deleteById(id);
     }
+
+//    void deleteSongAndGenreById(final Long id) {
+//        Song song = songRetriever.findSongById(id);
+//        Long genreId = song.getGenre().getId();
+//
+//        deleteSongById(id);
+//
+//        songUpdater.findAllSongsByGenreId(genreId);
+//        genreDeleter.deleteGenreById(genreId);
+//    }
 }

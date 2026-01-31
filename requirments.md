@@ -10,8 +10,11 @@
 
 5. Można usunąć artystę (usuwamy wtedy jego piosenki oraz albumy)
 6. można usunąć gatunek muzyczny (tylko gdy nie jest do niego przypisana żadna piosenka)
-7. można usunąć album (tylko gdy nie jest do niego przypisana żadna piosenka)
-8. można usunąć piosenkę
+
+~~7. można usunąć album (tylko gdy nie jest do niego przypisana żadna piosenka)~~
+
+~~8. można usunąć piosenkę (wyłącznie)~~ 
+
 9. można edytować piosenki artysty oraz jego nazwę
 10. można edytować nazwę gatunku muzycznego
 11. można edytować album (dodawać piosenki, artystów, zmienić nazwę albumu)
@@ -82,14 +85,24 @@ Given there is no songs, artists, albums and genres created before
 Co jest możliwe w 7dni/30dni/90dni
 
 7 : 
-- harmonogram
-- zorganizowanie rodziny pod nie przeszkadzanie (włącznie z kotem)
+~~- harmonogram
+- zorganizowanie rodziny pod nie przeszkadzanie (włącznie z kotem)~~
 
 30: 
-?zmiana pracy
+~~?zmiana pracy~~
 
 
 90 Dni: 
 - Skontaktowanie się z pauliną, bo pracuje w Allegro
 - Ukończenie kursu.
 26.11.2025 - 16.01.2026 (50 dni) 1/3 >> 30.04.2026 FINISH
+
+
+Koło wartości:
+
+533+140 Stron Java
+
+
+
+
+

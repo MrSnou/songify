@@ -1,5 +1,6 @@
 package com.songify.domain.crud;
 
+import com.songify.domain.crud.Exceptions.AlbumNotFoundException;
 import com.songify.domain.crud.dto.AlbumDtoWithArtistsAndSongs;
 import com.songify.domain.crud.dto.ArtistInfoDto;
 import com.songify.domain.crud.dto.GenreDto;
@@ -17,9 +18,9 @@ class AlbumRetriever {
     private final AlbumRepository albumRepository;
 
 
-    AlbumDtoWithArtistsAndSongs findAlbumBuIdWithArtistsAndSongs(final Long id) {
+    AlbumDtoWithArtistsAndSongs findAlbumByIdWithArtistsAndSongs(final Long id) {
 
-        Album albumByIdFromDb = albumRepository.findById(id)
+        Album albumByIdFromDb = albumRepository.findAlbumByIdWithSongsAndArtists(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
 
         Set<Artist> artists = albumByIdFromDb.getArtists();
@@ -41,5 +42,10 @@ class AlbumRetriever {
                 ArtistDtos,
                 SongDtos
                 );
+    }
+
+    Album findAlbumById(final Long id) {
+        return albumRepository.findById(id)
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + id + " not found in db."));
     }
 }

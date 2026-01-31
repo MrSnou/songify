@@ -10,17 +10,15 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
 
     Album save(final Album album);
 
-// TODO - Fix performence with db
     Optional<Album> findById(final Long id);
 
-// Problem when using query higher than 9 (working only with 1-9 id of the album)
     @Query("""
-            select distinct a from Album a
-            join fetch a.songs songs
-                join fetch songs.genre genre
-            join fetch a.artists artists
-            where a.id = :id
-                        """)
+                select distinct a from Album a
+                left join fetch a.artists ar
+                left join fetch a.songs s
+                left join fetch s.genre g
+                where a.id = :id
+            """)
     Optional<Album> findAlbumByIdWithSongsAndArtists(@Param("id") final Long id);
 
 /**

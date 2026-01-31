@@ -68,12 +68,19 @@ class SongRestController {
         return ResponseEntity.ok(body);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteSong/{id}")
     ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
         songFacade.deleteSongById(id);
         DeleteSongResponseDto body = mapFromSongToDeleteSongResponseDto(id);
         return ResponseEntity.ok(body);
     }
+
+//    @DeleteMapping("/deleteSongWithGenre/{songId}")
+//    ResponseEntity<DeleteSongResponseDto> deleteSongAndGenreByIdUsingPathVariable(@PathVariable Long songId) {
+//        songFacade.deleteSongAndGenreById(songId);
+//        DeleteSongResponseDto body = mapFromSongToDeleteSongResponseDto(songId);
+//        return ResponseEntity.ok(body);
+//    }
 
     @PutMapping("/{id}")
     ResponseEntity<UpdateSongResponseDto> update(@PathVariable Long id,

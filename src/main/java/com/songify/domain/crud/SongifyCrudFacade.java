@@ -36,6 +36,7 @@ public class SongifyCrudFacade {
 
     private final AlbumAdder albumAdder;
     private final AlbumRetriever albumRetriever;
+    private final AlbumDeleter albumDeleter;
 
 
     public ArtistDto addArtist(ArtistRequestDto dto) {
@@ -67,7 +68,7 @@ public class SongifyCrudFacade {
     }
 
     public AlbumDtoWithArtistsAndSongs findAlbumByIdWithArtistsAndSongs(final Long id) {
-        return albumRetriever.findAlbumBuIdWithArtistsAndSongs(id);
+        return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
     }
 
     public void updateSongById(Long id, SongDto newSongDto) {
@@ -103,8 +104,19 @@ public class SongifyCrudFacade {
 
     public void deleteSongById(Long id) {
         songRetriever.existsById(id);
-        songDeleter.deleteById(id);
+        songDeleter.deleteSongById(id);
+
     }
+
+    public void deleteAlbumById(final Long requestAlbumId) {
+        Album album = albumRetriever.findAlbumById(requestAlbumId);
+        albumDeleter.deleteById(album);
+
+    }
+
+//    public void deleteSongAndGenreById(Long id) {
+//        songDeleter.deleteSongAndGenreById(id);
+//    }
 
 
 }
