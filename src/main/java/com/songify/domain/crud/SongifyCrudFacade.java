@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -122,8 +121,8 @@ public class SongifyCrudFacade {
         genreDeleter.deleteGenreById(genreRetriever.findGenreById(genreId));
     }
 
-    public void deleteArtistById(final Long artistId) {
-        artistDeleter.deleteArtistById(artistId);
+    public void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
+        artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
 //    public void deleteSongAndGenreById(Long id) {

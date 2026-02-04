@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
@@ -38,8 +37,8 @@ class ArtistController {
 
     @DeleteMapping("/deleteArtist/{artistId}")
     public ResponseEntity<ArtistResponseDto> deleteArtist(@PathVariable Long artistId) {
-        songifyCrudFacade.deleteArtistById(artistId);
-        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK, "Artist with id" + artistId + " succesfully deleted.");
+        songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistId);
+        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK, "Artist with id " + artistId + " succesfully deleted.");
         return ResponseEntity.ok(responseDto);
     }
 }

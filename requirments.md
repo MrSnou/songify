@@ -8,7 +8,7 @@
 
 ~~4. można dodawać piosenkę (tytuł, czas trwania, data wydania, język piosenki)~~
 
-~~5. Można usunąć artystę (usuwamy wtedy jego piosenki oraz albumy jeśli są na wyłączność jego)~~
+5. Można usunąć artystę (usuwamy wtedy jego piosenki oraz albumy jeśli są na wyłączność jego)
 
 ~~6. można usunąć gatunek muzyczny (tylko gdy nie jest do niego przypisana żadna piosenka)~~
 
