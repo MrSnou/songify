@@ -24,22 +24,25 @@ import java.util.Set;
 public class SongifyCrudFacade {
 
     private final SongAdder songAdder;
-    private final SongRetriever songRetriever;
     private final SongUpdater songUpdater;
     private final SongDeleter songDeleter;
+    private final SongRetriever songRetriever;
 
 
     private final ArtistAdder artistAdder;
-    private final ArtistRetriever artistRetriever;
     private final ArtistDeleter artistDeleter;
+    private final ArtistAssigner artistAssigner;
+    private final ArtistRetriever artistRetriever;
+
+
 
     private final GenreAdder genreAdder;
     private final GenreDeleter genreDeleter;
     private final GenreRetriever genreRetriever;
 
     private final AlbumAdder albumAdder;
-    private final AlbumRetriever albumRetriever;
     private final AlbumDeleter albumDeleter;
+    private final AlbumRetriever albumRetriever;
 
 
 
@@ -123,6 +126,10 @@ public class SongifyCrudFacade {
 
     public void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
         artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
+    }
+
+    public void addArtistToAlbum(Long artistID, Long albumID) {
+        artistAssigner.addArtistToAlbum(artistID, albumID);
     }
 
 //    public void deleteSongAndGenreById(Long id) {

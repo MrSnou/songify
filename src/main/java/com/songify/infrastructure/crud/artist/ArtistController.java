@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,21 +25,29 @@ class ArtistController {
     private final SongifyCrudFacade songifyCrudFacade;
 
     @PostMapping
-    public ResponseEntity<ArtistDto> addArtist(@RequestBody ArtistRequestDto requestDto) {
+    ResponseEntity<ArtistDto> addArtist(@RequestBody ArtistRequestDto requestDto) {
         ArtistDto artistDto = songifyCrudFacade.addArtist(requestDto);
         return ResponseEntity.ok(artistDto);
     }
 
     @GetMapping
-    public ResponseEntity<AllArtistDto> findAllArtists(Pageable pageable) {
+    ResponseEntity<AllArtistDto> findAllArtists(Pageable pageable) {
         Set<ArtistDto> allArtists = songifyCrudFacade.findAllArtists(pageable);
         return ResponseEntity.ok(new AllArtistDto(allArtists));
     }
 
     @DeleteMapping("/deleteArtist/{artistId}")
-    public ResponseEntity<ArtistResponseDto> deleteArtist(@PathVariable Long artistId) {
+    ResponseEntity<ArtistResponseDto> deleteArtist(@PathVariable Long artistId) {
         songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistId);
-        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK, "Artist with id " + artistId + " succesfully deleted.");
+        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK, "Artist with id " + artistId + " successfully deleted.");
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/addArtistToAlbum/{artistId}/{albumId}")
+    ResponseEntity<ArtistResponseDto> addArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
+        songifyCrudFacade.addArtistToAlbum(artistId, albumId);
+        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK, "Artist with id " + artistId
+                + " successfully added to the album with id " +  albumId + " successfully added.");
         return ResponseEntity.ok(responseDto);
     }
 }

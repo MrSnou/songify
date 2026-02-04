@@ -2,6 +2,7 @@ package com.songify.infrastructure.crud.song.controller.error;
 
 
 import com.songify.domain.crud.Exceptions.AlbumNotEmptyException;
+import com.songify.domain.crud.Exceptions.AlbumNotFoundException;
 import com.songify.infrastructure.crud.song.controller.error.dto.ErrorAlbumResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,14 @@ public class AlbumErrorHandler {
         log.warn(ex.getMessage());
         ErrorAlbumResponseDto responseDto = new ErrorAlbumResponseDto(HttpStatus.FORBIDDEN, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AlbumNotFoundException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorAlbumResponseDto> handleAlbumNotFoundException(final AlbumNotFoundException ex) {
+        log.warn(ex.getMessage());
+        ErrorAlbumResponseDto responseDto = new ErrorAlbumResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
+        return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }
 
 

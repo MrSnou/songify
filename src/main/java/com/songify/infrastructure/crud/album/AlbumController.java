@@ -40,7 +40,6 @@ class AlbumController {
         songifyCrudFacade.deleteAlbumById(requestAlbumId);
         DeleteAlbumResponseDto response = new DeleteAlbumResponseDto(HttpStatus.OK, "Deleting genre with id " + requestAlbumId + " successfully deleted.");
         return ResponseEntity.ok(response);
-
     }
 
 }
