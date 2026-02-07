@@ -1,26 +1,23 @@
 package com.songify.infrastructure.apivalidation;
 
-import com.songify.infrastructure.crud.song.controller.SongRestController;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ControllerAdvice(assignableTypes = SongRestController.class)
+@ControllerAdvice
 class ApiValidationErrorHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiValidationErrorResponseDto handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiValidationErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
         List<String> messages = getErrorsFromException(ex);
-        return new ApiValidationErrorResponseDto(messages,  HttpStatus.BAD_REQUEST);
+        ApiValidationErrorResponseDto response = new ApiValidationErrorResponseDto(HttpStatus.BAD_REQUEST, messages);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     private List<String> getErrorsFromException(MethodArgumentNotValidException ex) {

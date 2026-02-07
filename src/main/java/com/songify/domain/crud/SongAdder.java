@@ -15,13 +15,22 @@ class SongAdder {
 
     private final SongRepository songRepository;
 
-    SongDto addSong(final SongRequestDto requestDto) {
+    SongDto addSongFromSongDto(final SongRequestDto requestDto) {
         SongLanguageDto language = requestDto.language();
         SongLanguage songLanguage = SongLanguage.valueOf(language.name());
 
         Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage);
         Song saved = songRepository.save(save);
         return new SongDto(saved.getId(), saved.getName());
+    }
+
+    Song addSong(final SongRequestDto requestDto) {
+        SongLanguageDto language = requestDto.language();
+        SongLanguage songLanguage = SongLanguage.valueOf(language.name());
+
+        Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage);
+        Song saved = songRepository.save(save);
+        return songRepository.save(save);
     }
 
 

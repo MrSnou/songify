@@ -30,6 +30,7 @@ public class SongifyCrudFacade {
 
 
     private final ArtistAdder artistAdder;
+    private final ArtistUpdater artistUpdater;
     private final ArtistDeleter artistDeleter;
     private final ArtistAssigner artistAssigner;
     private final ArtistRetriever artistRetriever;
@@ -55,11 +56,11 @@ public class SongifyCrudFacade {
     }
 
     public AlbumDto addAlbumWithSong(AlbumRequestDto dto) {
-        return albumAdder.addAlbum(dto.songId(), dto.title(), dto.releaseDate());
+        return albumAdder.addAlbumWithSong(dto.songId(), dto.title(), dto.releaseDate());
     }
 
     public SongDto addSong(final SongRequestDto requestDto) {
-        return songAdder.addSong(requestDto);
+        return songAdder.addSongFromSongDto(requestDto);
     }
 
     public Set<ArtistDto> findAllArtists(final Pageable pageable) {
@@ -130,6 +131,19 @@ public class SongifyCrudFacade {
 
     public void addArtistToAlbum(Long artistID, Long albumID) {
         artistAssigner.addArtistToAlbum(artistID, albumID);
+    }
+
+    public ArtistDto updateArtistNameById(Long artistId, String newName) {
+        return artistUpdater.updateArtistNameById(artistId, newName);
+    }
+
+    public ArtistDto findArtistById(final Long artistId) {
+        Artist artist = artistRetriever.findArtistById(artistId);
+        return new ArtistDto(artistId, artist.getName());
+    }
+
+    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto requestDto) {
+        return artistAdder.addArtistWithDefaultAlbumAndSong(requestDto);
     }
 
 //    public void deleteSongAndGenreById(Long id) {

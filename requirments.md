@@ -8,7 +8,9 @@
 
 ~~4. można dodawać piosenkę (tytuł, czas trwania, data wydania, język piosenki)~~
 
-5. Można usunąć artystę (usuwamy wtedy jego piosenki oraz albumy jeśli są na wyłączność jego)
+~~5. Można usunąć artystę (usuwamy wtedy jego piosenki oraz albumy jeśli są na wyłączność jego)~~
+
+~~6. Można dodać artystę wraz z albumem oraz piosenką~~
 
 ~~6. można usunąć gatunek muzyczny (tylko gdy nie jest do niego przypisana żadna piosenka)~~
 
@@ -16,14 +18,17 @@
 
 ~~8. można usunąć piosenkę (wyłącznie)~~ 
 
-9. można edytować piosenki artysty oraz jego nazwę
+~~9. można edytować nazwę artysty~~
+
 10. można edytować nazwę gatunku muzycznego
 11. można edytować album (dodawać piosenki, artystów, zmienić nazwę albumu)
 12. można edytować piosenkę (czas trwania, artystę, nazwę piosenki)
 13. można przypisywać piosenki do albumów (album może mieć więcej artystó, artysta może mieć kilka albumów)
 
+??. można przypisać piosenki do artystów (poprzez album)
+
 ~~14. można przypisać artystów do albumów (album może mieć więcej artystó, artysta może mieć kilka albumów)~~
-14. 
+
 15. można przypisać tylko jeden gatunek muzyczny do piosenki
 16. Gdy nie ma przypisanego gatunku muzycznego do piosenki, to wyświetlamy "default"
 
