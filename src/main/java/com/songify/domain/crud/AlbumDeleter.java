@@ -1,6 +1,6 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.Exceptions.AlbumNotEmptyException;
+import com.songify.domain.crud.exceptions.AlbumNotEmptyException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

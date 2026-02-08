@@ -1,6 +1,6 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.Exceptions.AlbumNotFoundException;
+import com.songify.domain.crud.exceptions.AlbumNotFoundException;
 import com.songify.domain.crud.dto.AlbumDtoWithArtistsAndSongs;
 import com.songify.domain.crud.dto.ArtistInfoDto;
 import com.songify.domain.crud.dto.GenreDto;

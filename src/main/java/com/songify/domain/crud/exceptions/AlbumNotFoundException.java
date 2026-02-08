@@ -1,4 +1,4 @@
-package com.songify.domain.crud.Exceptions;
+package com.songify.domain.crud.exceptions;
 
 public class AlbumNotFoundException extends RuntimeException {
 

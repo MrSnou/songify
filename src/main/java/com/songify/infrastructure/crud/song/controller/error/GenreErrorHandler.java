@@ -1,8 +1,8 @@
 package com.songify.infrastructure.crud.song.controller.error;
 
 
-import com.songify.domain.crud.Exceptions.GenreIsUsedBySongsException;
-import com.songify.domain.crud.Exceptions.GenreNotFoundException;
+import com.songify.domain.crud.exceptions.GenreIsUsedBySongsException;
+import com.songify.domain.crud.exceptions.GenreNotFoundException;
 import com.songify.infrastructure.crud.song.controller.error.dto.ErrorGenreResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;

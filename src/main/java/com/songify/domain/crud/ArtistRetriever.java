@@ -1,6 +1,6 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.Exceptions.ArtistNotFoundException;
+import com.songify.domain.crud.exceptions.ArtistNotFoundException;
 import com.songify.domain.crud.dto.ArtistDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,7 +27,6 @@ class ArtistRetriever {
     }
 
     Artist findArtistById(final Long artistId) {
-        log.warn("Artist not found in db");
         return artistRepository.findArtistById(artistId)
                 .orElseThrow(() -> new ArtistNotFoundException("Artist with id " + artistId + " not found."));
     }

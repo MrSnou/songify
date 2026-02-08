@@ -26,7 +26,7 @@ import java.util.Set;
 class ArtistController {
     private final SongifyCrudFacade songifyCrudFacade;
 
-    @PostMapping
+    @PostMapping("/addArtist")
     ResponseEntity<ArtistDto> addArtist(@RequestBody ArtistRequestDto requestDto) {
         ArtistDto artistDto = songifyCrudFacade.addArtist(requestDto);
         return ResponseEntity.ok(artistDto);
