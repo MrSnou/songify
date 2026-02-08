@@ -10,8 +10,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,13 @@ import java.time.Instant;
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@Table(name = "song")
+@Table(
+        indexes =
+                {@Index(
+                                name = "idx_song_name",
+                                columnList = "name"
+                )}
+)
 public class Song extends BaseEntity {
 
     @Id
