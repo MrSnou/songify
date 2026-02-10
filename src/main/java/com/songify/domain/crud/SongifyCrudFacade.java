@@ -9,6 +9,8 @@ import com.songify.domain.crud.dto.GenreDto;
 import com.songify.domain.crud.dto.GenreRequestDto;
 import com.songify.domain.crud.dto.SongDto;
 import com.songify.domain.crud.dto.SongRequestDto;
+import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
+import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,7 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-@Transactional
+//@Transactional
 public class SongifyCrudFacade {
 
     private final SongAdder songAdder;
@@ -28,23 +30,21 @@ public class SongifyCrudFacade {
     private final SongDeleter songDeleter;
     private final SongRetriever songRetriever;
 
-
     private final ArtistAdder artistAdder;
     private final ArtistUpdater artistUpdater;
     private final ArtistDeleter artistDeleter;
     private final ArtistAssigner artistAssigner;
     private final ArtistRetriever artistRetriever;
 
-
-
     private final GenreAdder genreAdder;
     private final GenreDeleter genreDeleter;
+    private final GenreUpdater genreUpdater;
     private final GenreRetriever genreRetriever;
 
     private final AlbumAdder albumAdder;
+    private final AlbumUpdater albumUpdater;
     private final AlbumDeleter albumDeleter;
     private final AlbumRetriever albumRetriever;
-
 
 
     public ArtistDto addArtist(ArtistRequestDto dto) {
@@ -146,9 +146,15 @@ public class SongifyCrudFacade {
         return artistAdder.addArtistWithDefaultAlbumAndSong(requestDto);
     }
 
-//    public void deleteSongAndGenreById(Long id) {
-//        songDeleter.deleteSongAndGenreById(id);
-//    }
 
+    public GenreDto updateGenreNameById(final Long genreId, String newName) {
+        return genreUpdater.updateGenreNameById(genreId, newName);
 
+    }
+
+    public UpdateAlbumWithSongsAndArtistsResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsDto requestDto) {
+        albumUpdater.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
+        UpdateAlbumWithSongsAndArtistsResponseDto responseDto = albumRetriever.getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId);
+        return responseDto;
+    }
 }

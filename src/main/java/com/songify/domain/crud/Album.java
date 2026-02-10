@@ -22,7 +22,7 @@ import java.util.Set;
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Album extends BaseEntity {
+class Album extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "album_id_seq", strategy = GenerationType.SEQUENCE)
@@ -55,5 +55,13 @@ public class Album extends BaseEntity {
 
     void addArtist(final Artist artist) {
         artists.add(artist);
+    }
+
+    void addSong(final Song song) {
+        songs.add(song);
+    }
+
+    void updateName(final String newName) {
+        this.title = newName;
     }
 }

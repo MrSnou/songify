@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Genre extends BaseEntity {
+class Genre extends BaseEntity {
 
     Genre(final String name) {
         this.name = name;
@@ -32,6 +32,7 @@ public class Genre extends BaseEntity {
 
     private String name;
 
-
-
+    void changeGenreName(final String newName) {
+        this.name = newName;
+    }
 }

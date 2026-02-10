@@ -1,8 +1,12 @@
 package com.songify.infrastructure.crud.artist;
 
 import com.songify.domain.crud.SongifyCrudFacade;
+import com.songify.domain.crud.dto.AllArtistDto;
 import com.songify.domain.crud.dto.ArtistDto;
 import com.songify.domain.crud.dto.ArtistRequestDto;
+import com.songify.domain.crud.dto.ArtistResponseDto;
+import com.songify.domain.crud.dto.ArtistUpdateRequestDto;
+import com.songify.domain.crud.dto.ArtistUpdateResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;

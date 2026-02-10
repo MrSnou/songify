@@ -1,7 +1,6 @@
-package com.songify.infrastructure.crud.song.controller.error;
+package com.songify.infrastructure.crud.artist.error;
 
 import com.songify.domain.crud.exceptions.ArtistNotFoundException;
-import com.songify.infrastructure.crud.song.controller.error.dto.ArtistErrorResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

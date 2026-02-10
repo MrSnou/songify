@@ -33,7 +33,7 @@ import java.time.Instant;
                                 columnList = "name"
                 )}
 )
-public class Song extends BaseEntity {
+class Song extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "song_id_seq", strategy = GenerationType.SEQUENCE)

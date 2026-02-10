@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface SongRepository extends Repository<Song, Long> {
+interface SongRepository extends Repository<Song, Long> {
 
     Song save(Song song);
 

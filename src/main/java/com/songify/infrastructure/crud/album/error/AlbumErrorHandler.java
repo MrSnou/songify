@@ -1,9 +1,8 @@
-package com.songify.infrastructure.crud.song.controller.error;
+package com.songify.infrastructure.crud.album.error;
 
 
 import com.songify.domain.crud.exceptions.AlbumNotEmptyException;
 import com.songify.domain.crud.exceptions.AlbumNotFoundException;
-import com.songify.infrastructure.crud.song.controller.error.dto.ErrorAlbumResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

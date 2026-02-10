@@ -22,7 +22,7 @@ import java.util.Set;
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Artist extends BaseEntity {
+class Artist extends BaseEntity {
 
     Artist(final String name) {
         this.name = name;
