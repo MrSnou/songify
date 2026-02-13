@@ -72,7 +72,7 @@ class AlbumRetriever {
 
             songs = album.getSongs().
                     stream().
-                    map(song -> new SongDto(song.getId(), song.getName()))
+                    map(song -> new SongDto(song.getId(), song.getName(), song.getDuration()))
                     .collect(Collectors.toSet());
 
         } catch (NullPointerException e) {

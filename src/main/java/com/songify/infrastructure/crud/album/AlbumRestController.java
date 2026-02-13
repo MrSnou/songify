@@ -10,7 +10,6 @@ import com.songify.domain.crud.dto.DeleteAlbumResponseDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
 import lombok.AllArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,13 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/albums")
-class AlbumController {
+class AlbumRestController {
 
     private final SongifyCrudFacade songifyCrudFacade;
 

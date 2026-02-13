@@ -1,5 +1,7 @@
 package com.songify.domain.crud;
 
+import com.songify.domain.crud.dto.SongDto;
+import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,10 +18,27 @@ class SongUpdater {
     private final SongRetriever songRetriever;
 
 
-    void updateById(Long id, Song newSong) {
-        songRetriever.existsById(id);
-        log.info("Updating song with id: " + id);
-        songRepository.updateById(id, newSong);
+    SongDto updateById(Long id, UpdateSongRequestDto songFromRequest) {
+        Song oldSong = songRetriever.findSongById(id);
+
+        String name = null;
+        Long duration = null;
+        if (songFromRequest.songName() != null) {
+            name = songFromRequest.songName();
+        } else {
+            name = oldSong.getName();
+        }
+
+        if  (songFromRequest.duration() != oldSong.getDuration()) {
+            duration = songFromRequest.duration();
+        } else {
+            duration = oldSong.getDuration();
+        }
+
+        Song updatedSong = new Song(name, oldSong.getReleaseDate(), duration, oldSong.getLanguage());
+        songRepository.updateById(id, updatedSong);
+
+        return new SongDto(oldSong.getId(), oldSong.getName(), oldSong.getDuration());
     }
 
 //    Song updatePartiallyById(Long id, Song songFromRequest) {

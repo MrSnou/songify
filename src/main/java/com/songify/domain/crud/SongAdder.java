@@ -21,7 +21,7 @@ class SongAdder {
 
         Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage);
         Song saved = songRepository.save(save);
-        return new SongDto(saved.getId(), saved.getName());
+        return new SongDto(saved.getId(), saved.getName(), saved.getDuration());
     }
 
     Song addSong(final SongRequestDto requestDto) {

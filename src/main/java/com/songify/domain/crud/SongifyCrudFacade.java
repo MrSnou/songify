@@ -11,11 +11,11 @@ import com.songify.domain.crud.dto.SongDto;
 import com.songify.domain.crud.dto.SongRequestDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -79,35 +79,8 @@ public class SongifyCrudFacade {
         return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
     }
 
-    public void updateSongById(Long id, SongDto newSongDto) {
-        songRetriever.existsById(id);
-        // some domain validator
-        Song songValidatedAndReadyToUpdate = new Song(newSongDto.name());
-        // some domain validator ended checking
-        songUpdater.updateById(id, songValidatedAndReadyToUpdate);
-    }
-
-    public SongDto updatesSongPartiallyById(Long id, SongDto songFromRequest) {
-        songRetriever.existsById(id);
-        Song songFromDatabase = songRetriever.findSongById(id);
-        Song toSave = new Song();
-        if (songFromRequest.name() != null) {
-            toSave.setName(songFromRequest.name());
-        } else {
-            toSave.setName(songFromDatabase.getName());
-        }
-//        todo
-//        if (songFromRequest.getArtist() != null) {
-//            builder.artist(songFromRequest.getArtist());
-//        } else {
-//            builder.artist(songFromDatabase.getArtist());
-//        }
-        songUpdater.updateById(id, toSave);
-        return SongDto.builder()
-                .id(toSave.getId())
-                .name(toSave.getName())
-                .build();
-
+    public SongDto updatesSongPartiallyById(Long id, UpdateSongRequestDto songFromRequest) {
+        return songUpdater.updateById(id, songFromRequest);
     }
 
     public void deleteSongById(Long id) {

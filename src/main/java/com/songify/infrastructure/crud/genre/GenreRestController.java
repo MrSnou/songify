@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/genres")
-class GenreController {
+class GenreRestController {
     private final SongifyCrudFacade songifyCrudFacade;
 
     @PostMapping("/addGenre")

@@ -28,12 +28,6 @@ class SongRetriever {
                 .toList();
     }
 
-    Song findById(Long id) {
-        log.info("Retrieving song with id: " + id);
-        return songRepository.findById(id)
-                .orElseThrow(() -> new SongNotFoundException("Song with id" + id + " not found"));
-    }
-
     void existsById(Long id) {
         log.info("Checking if song with id exists: " + id);
         if (!songRepository.existsById(id)) {
@@ -52,6 +46,7 @@ class SongRetriever {
                     SongDto.builder()
                             .id(song.getId())
                             .name(song.getName())
+                            .duration(song.getDuration())
                             .build()
                 )
                 .orElseThrow(() -> new SongNotFoundException("Song with id " + id + " not found"));
