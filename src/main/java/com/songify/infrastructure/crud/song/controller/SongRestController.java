@@ -1,13 +1,16 @@
 package com.songify.infrastructure.crud.song.controller;
 
 import com.songify.domain.crud.SongifyCrudFacade;
+import com.songify.domain.crud.dto.AlbumResponseDto;
 import com.songify.domain.crud.dto.SongDto;
 import com.songify.domain.crud.dto.SongRequestDto;
+import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.CreateSongResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.DeleteSongResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.GetAllSongsResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.GetSongResponseDto;
+import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -71,7 +74,7 @@ class SongRestController {
         return ResponseEntity.ok(body);
     }
 
-    @PatchMapping("/{songId}")
+    @PatchMapping("/updateSongNameAndDuration/{songId}")
     ResponseEntity<UpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long songId,
                                                               @RequestBody UpdateSongRequestDto request) {
         SongDto oldSongDto = songifyCrudFacade.updatesSongPartiallyById(songId, request);
@@ -82,5 +85,12 @@ class SongRestController {
                 , new SongDto(oldSongDto.id(), request.songName(), request.duration())
         );
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/updateSongAlbum/{songId}")
+    ResponseEntity<UpdateSongAlbumResponseDto> updateSongAlbum(@PathVariable Long songId, @RequestBody UpdateSongAlbumRequestDto request) {
+        UpdateSongAlbumResponseDto responseDto = songifyCrudFacade.updateSongAlbum(songId, request);
+        return ResponseEntity.ok(responseDto);
+
     }
 }

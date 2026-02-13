@@ -1,7 +1,9 @@
 package com.songify.domain.crud;
 
 import com.songify.domain.crud.dto.SongDto;
+import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
+import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,6 +18,7 @@ class SongUpdater {
 
     private final SongRepository songRepository;
     private final SongRetriever songRetriever;
+    private final AlbumUpdater albumUpdater;
 
 
     SongDto updateById(Long id, UpdateSongRequestDto songFromRequest) {
@@ -39,6 +42,10 @@ class SongUpdater {
         songRepository.updateById(id, updatedSong);
 
         return new SongDto(oldSong.getId(), oldSong.getName(), oldSong.getDuration());
+    }
+
+    UpdateSongAlbumResponseDto updateSongAlbumById(final Long songId, final UpdateSongAlbumRequestDto request) {
+        return albumUpdater.addSongToAlbum(songId, request.albumId());
     }
 
 //    Song updatePartiallyById(Long id, Song songFromRequest) {

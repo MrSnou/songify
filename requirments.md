@@ -26,7 +26,7 @@
 
 ~~12. można edytować piosenkę (czas trwania, nazwę piosenki)~~
 
-13. można przypisywać piosenki do albumów (album może mieć więcej artystó, artysta może mieć kilka albumów)
+~~13. można przypisywać piosenki do albumów (album może mieć więcej artystów, artysta może mieć kilka albumów)~~
 
 14. można przypisać piosenki do artystów (poprzez album)
 

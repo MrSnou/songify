@@ -11,7 +11,9 @@ import com.songify.domain.crud.dto.SongDto;
 import com.songify.domain.crud.dto.SongRequestDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
+import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -128,6 +130,11 @@ public class SongifyCrudFacade {
     public UpdateAlbumWithSongsAndArtistsResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsDto requestDto) {
         albumUpdater.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
         UpdateAlbumWithSongsAndArtistsResponseDto responseDto = albumRetriever.getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId);
+        return responseDto;
+    }
+
+    public UpdateSongAlbumResponseDto updateSongAlbum(final Long songId, final UpdateSongAlbumRequestDto request) {
+        UpdateSongAlbumResponseDto responseDto = songUpdater.updateSongAlbumById(songId, request);
         return responseDto;
     }
 }
