@@ -27,7 +27,7 @@ class SongRetriever {
                 .map(song -> SongDto.builder()
                         .id(song.getId())
                         .name(song.getName())
-                        .name(song.getName())
+                        .duration(song.getDuration())
                         .build())
                 .toList();
     }

@@ -7,7 +7,6 @@ import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongReq
 import com.songify.infrastructure.crud.song.controller.dto.response.CreateSongResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.DeleteSongResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.GetAllSongsResponseDto;
-import com.songify.infrastructure.crud.song.controller.dto.response.GetSongResponseDto;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -43,9 +42,6 @@ class SongControllerMapper {
         return new DeleteSongResponseDto("You deleted song with id: " + id, HttpStatus.OK);
     }
 
-    static GetSongResponseDto mapFromSongToGetSongResponseDto(SongDto songDto) {
-        return new GetSongResponseDto(songDto);
-    }
 
     static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(List<SongDto> songs) {
         return new GetAllSongsResponseDto(songs);

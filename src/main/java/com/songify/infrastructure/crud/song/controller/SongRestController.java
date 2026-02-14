@@ -4,7 +4,6 @@ import com.songify.domain.crud.SongifyCrudFacade;
 import com.songify.domain.crud.dto.AlbumResponseDto;
 import com.songify.domain.crud.dto.GenreDto;
 import com.songify.domain.crud.dto.SongDto;
-import com.songify.domain.crud.dto.SongInfoDto;
 import com.songify.domain.crud.dto.SongRequestDto;
 import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +35,6 @@ import java.util.List;
 import static com.songify.infrastructure.crud.song.controller.SongControllerMapper.mapFromSongToCreateSongResponseDto;
 import static com.songify.infrastructure.crud.song.controller.SongControllerMapper.mapFromSongToDeleteSongResponseDto;
 import static com.songify.infrastructure.crud.song.controller.SongControllerMapper.mapFromSongToGetAllSongsResponseDto;
-import static com.songify.infrastructure.crud.song.controller.SongControllerMapper.mapFromSongToGetSongResponseDto;
 
 
 @RestController
@@ -57,11 +54,13 @@ class SongRestController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<GetSongResponseDto> getSongById(@PathVariable Long id, @RequestHeader(required = false) String requestId) {
-        log.info(requestId);
+    ResponseEntity<GetSongResponseDto> getSongById(@PathVariable Long id) {
         SongDto song = songifyCrudFacade.findSongDtoById(id);
-        GetSongResponseDto response = mapFromSongToGetSongResponseDto(song);
-        return ResponseEntity.ok(response);
+        SongGenreDto genre = songifyCrudFacade.findSongGenreDtoById(id);
+        GenreDto genreDto = new GenreDto(genre.genre().id(),  genre.genre().name());
+
+        GetSongResponseDto responseDto = new GetSongResponseDto(song, genreDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping

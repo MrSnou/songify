@@ -34,7 +34,7 @@
 
 ~~16. można przypisać tylko jeden gatunek muzyczny do piosenki~~
 
-17. Gdy nie ma przypisanego gatunku muzycznego do piosenki, to wyświetlamy "default"
+~~17. Gdy nie ma przypisanego gatunku muzycznego do piosenki, to wyświetlamy "default"~~
 
 ~~18. można wyświetlać wszystkie piosenki~~
 
