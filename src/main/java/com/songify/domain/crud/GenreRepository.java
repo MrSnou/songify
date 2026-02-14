@@ -1,15 +1,21 @@
 package com.songify.domain.crud;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 interface GenreRepository extends CrudRepository<Genre, Long> {
+
     Genre save(Genre genre);
+
+    @Query("SELECT g FROM Genre g")
+    List<Genre> findAll(Pageable pageable);
 
     @Query("SELECT g FROM Genre g WHERE g.id = :genreId")
     Optional<Genre> findById(Long genreId);

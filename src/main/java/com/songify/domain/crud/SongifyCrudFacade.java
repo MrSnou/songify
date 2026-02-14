@@ -150,4 +150,8 @@ public class SongifyCrudFacade {
     public GenreDto findGenreDtoById(final Long genreId) {
         return genreRetriever.findGenreDtoById(genreId);
     }
+
+    public List<GenreDto> findAll(Pageable pageable) {
+        return genreRetriever.findAllGenreDto(pageable);
+    }
 }

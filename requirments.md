@@ -38,7 +38,7 @@
 
 ~~18. można wyświetlać wszystkie piosenki~~
 
-19. można wyświetlać wszystkie gatunki
+~~19. można wyświetlać wszystkie gatunki~~
 
 ~~20. można wyświetlać wszystkich artystów~~
 
