@@ -67,4 +67,6 @@ class Song extends BaseEntity {
         this.duration = duration;
         this.language = language;
     }
+
+
 }

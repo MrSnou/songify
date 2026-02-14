@@ -13,6 +13,7 @@ import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
+import com.songify.infrastructure.crud.song.controller.dto.response.SongGenreDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -77,6 +78,10 @@ public class SongifyCrudFacade {
         return songRetriever.findSongDtoById(id);
     }
 
+    public SongGenreDto findSongGenreDtoById(Long id) {
+        return songRetriever.findSongGenreDtoById(id);
+    }
+
     public AlbumDtoWithArtistsAndSongs findAlbumByIdWithArtistsAndSongs(final Long id) {
         return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
     }
@@ -136,5 +141,13 @@ public class SongifyCrudFacade {
     public UpdateSongAlbumResponseDto updateSongAlbum(final Long songId, final UpdateSongAlbumRequestDto request) {
         UpdateSongAlbumResponseDto responseDto = songUpdater.updateSongAlbumById(songId, request);
         return responseDto;
+    }
+
+    public void updateSongGenreById(final Long songId, final Long genreId) {
+        songUpdater.updateSongGenreById(songId, genreId);
+    }
+
+    public GenreDto findGenreDtoById(final Long genreId) {
+        return genreRetriever.findGenreDtoById(genreId);
     }
 }

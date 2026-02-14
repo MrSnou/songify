@@ -4,6 +4,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,4 +36,9 @@ interface SongRepository extends Repository<Song, Long> {
     boolean existsById(Long id);
 
     Set<Song> findAllByGenre(Genre genre);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Song s SET s.genre = :genre WHERE s.id = :id")
+    void updateSongGenreById(@Param("id") Long id, @Param("genre") Genre genre);
 }

@@ -2,14 +2,18 @@ package com.songify.infrastructure.crud.song.controller;
 
 import com.songify.domain.crud.SongifyCrudFacade;
 import com.songify.domain.crud.dto.AlbumResponseDto;
+import com.songify.domain.crud.dto.GenreDto;
 import com.songify.domain.crud.dto.SongDto;
+import com.songify.domain.crud.dto.SongInfoDto;
 import com.songify.domain.crud.dto.SongRequestDto;
+import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.CreateSongResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.DeleteSongResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.GetAllSongsResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.GetSongResponseDto;
+import com.songify.infrastructure.crud.song.controller.dto.response.SongGenreDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongResponseDto;
 import jakarta.validation.Valid;
@@ -91,6 +95,22 @@ class SongRestController {
     ResponseEntity<UpdateSongAlbumResponseDto> updateSongAlbum(@PathVariable Long songId, @RequestBody UpdateSongAlbumRequestDto request) {
         UpdateSongAlbumResponseDto responseDto = songifyCrudFacade.updateSongAlbum(songId, request);
         return ResponseEntity.ok(responseDto);
+    }
 
+    @PatchMapping("/updateSongGenre/{songId}")
+    ResponseEntity<UpdateSongResponseDto> updateSongGenre(@PathVariable Long songId, @RequestBody UpdateGenreDto requestDto) {
+        SongGenreDto oldSongGenre = songifyCrudFacade.findSongGenreDtoById(songId);
+        GenreDto newSongGenre = songifyCrudFacade.findGenreDtoById(requestDto.genreId());
+        SongDto updatedSong = songifyCrudFacade.findSongDtoById(songId);
+
+        songifyCrudFacade.updateSongGenreById(songId, requestDto.genreId());
+
+        UpdateSongResponseDto responseDto = new UpdateSongResponseDto(
+                "Successfully updated song genre from: " + oldSongGenre.genre().name() +
+                        " to " + newSongGenre.name() + ".",
+                updatedSong
+                );
+
+        return ResponseEntity.ok(responseDto);
     }
 }

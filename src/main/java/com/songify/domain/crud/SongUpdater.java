@@ -19,6 +19,7 @@ class SongUpdater {
     private final SongRepository songRepository;
     private final SongRetriever songRetriever;
     private final AlbumUpdater albumUpdater;
+    private final GenreRetriever genreRetriever;
 
 
     SongDto updateById(Long id, UpdateSongRequestDto songFromRequest) {
@@ -46,6 +47,21 @@ class SongUpdater {
 
     UpdateSongAlbumResponseDto updateSongAlbumById(final Long songId, final UpdateSongAlbumRequestDto request) {
         return albumUpdater.addSongToAlbum(songId, request.albumId());
+    }
+
+    void updateSongGenreById(final Long songId, final Long genreId) {
+        songRetriever.existsById(songId);
+
+        Genre newGenre = genreRetriever.findGenreById(genreId);
+
+        songRepository.updateSongGenreById(songId, newGenre);
+    }
+
+    void setGenreById(final Long songId, final Long genreId) {
+        Song song = songRetriever.findSongById(songId);
+        Genre genre = genreRetriever.findGenreById(genreId);
+        song.setGenre(genre);
+        songRepository.save(song);
     }
 
 //    Song updatePartiallyById(Long id, Song songFromRequest) {

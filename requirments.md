@@ -28,11 +28,12 @@
 
 ~~13. można przypisywać piosenki do albumów (album może mieć więcej artystów, artysta może mieć kilka albumów)~~
 
-14. można przypisać piosenki do artystów (poprzez album)
+~~14. można przypisać piosenki do artystów (poprzez album)~~
 
 ~~15. można przypisać artystów do albumów (album może mieć więcej artystó, artysta może mieć kilka albumów)~~
 
-16. można przypisać tylko jeden gatunek muzyczny do piosenki
+~~16. można przypisać tylko jeden gatunek muzyczny do piosenki~~
+
 17. Gdy nie ma przypisanego gatunku muzycznego do piosenki, to wyświetlamy "default"
 
 ~~18. można wyświetlać wszystkie piosenki~~
