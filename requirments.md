@@ -46,8 +46,10 @@
 
 ~~22. można wyświetlać konkretne albumy z artystami oraz piosenkami w albumie~~
 
-23. można wyświetlać konkretne gatunki muzyczne wraz z piosenkami
+~~23. można wyświetlać konkretne gatunki muzyczne wraz z piosenkami~~
+
 24. można wyświetlać konkretnych artystów wraz z ich albumami
+
 ~~25. TODO SQLException Handlers~~
 
 

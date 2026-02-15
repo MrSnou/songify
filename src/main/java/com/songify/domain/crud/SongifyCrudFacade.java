@@ -11,6 +11,7 @@ import com.songify.domain.crud.dto.SongDto;
 import com.songify.domain.crud.dto.SongRequestDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.controller.dto.response.SongGenreDto;
@@ -157,5 +158,15 @@ public class SongifyCrudFacade {
 
     public List<AlbumDto> findAllAlbumDto(Pageable pageable) {
         return albumRetriever.findAllAlbumsDto(pageable);
+    }
+
+    public GenreWithSongsResponseDto findGenreDtoWithSongsDto(final Long genreId) {
+        GenreDto genreDto = genreRetriever.findGenreDtoById(genreId);
+        List<SongDto> songsDto = songRetriever.findSongsDtoByGenreId(genreRetriever.findGenreById(genreId));
+
+        return new GenreWithSongsResponseDto(
+                "Successfully retrieved all songs with genre: " + genreRetriever.findGenreDtoById(genreId).name(),
+                genreDto,  songsDto
+                );
     }
 }

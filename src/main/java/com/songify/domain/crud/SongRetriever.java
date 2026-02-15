@@ -11,13 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
 @Log4j2
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class SongRetriever {
+
     private final SongRepository songRepository;
     private final GenreRetriever genreRetriever;
 
@@ -75,5 +75,12 @@ class SongRetriever {
 
         return new SongGenreDto(fetchedSong.getId(),  genreDto);
 
+    }
+
+    List<SongDto> findSongsDtoByGenreId(final Genre genre) {
+        return songRepository.findAllByGenre(genre)
+                .stream()
+                .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration()))
+                .toList();
     }
 }

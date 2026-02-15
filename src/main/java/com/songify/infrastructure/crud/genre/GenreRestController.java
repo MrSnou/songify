@@ -5,6 +5,7 @@ import com.songify.domain.crud.dto.GenreDto;
 import com.songify.domain.crud.dto.GenreRequestDto;
 import com.songify.infrastructure.crud.genre.dto.response.AllGenresResponseDto;
 import com.songify.infrastructure.crud.genre.dto.response.GenreResponseDto;
+import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,6 +33,12 @@ class GenreRestController {
         List<GenreDto> all = songifyCrudFacade.findAllGenreDto(pageable);
         AllGenresResponseDto responseDto = new AllGenresResponseDto("Successfully retrieved all genres", all);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/getGenreWithCorrespondedSongs/{genreId}")
+    public ResponseEntity<GenreWithSongsResponseDto> getGenreWithSongs(@PathVariable Long genreId) {
+        GenreWithSongsResponseDto responseDto = songifyCrudFacade.findGenreDtoWithSongsDto(genreId);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/addGenre")
