@@ -42,7 +42,7 @@
 
 ~~20. można wyświetlać wszystkich artystów~~
 
-21. można wyświetlać wszystkie albumy
+~~21. można wyświetlać wszystkie albumy~~
 
 ~~22. można wyświetlać konkretne albumy z artystami oraz piosenkami w albumie~~
 

@@ -1,5 +1,6 @@
 package com.songify.domain.crud;
 
+import com.songify.domain.crud.dto.AlbumDto;
 import com.songify.domain.crud.dto.AlbumDtoWithArtistsAndSongs;
 import com.songify.domain.crud.dto.ArtistDto;
 import com.songify.domain.crud.dto.ArtistInfoDto;
@@ -9,8 +10,10 @@ import com.songify.domain.crud.dto.SongInfoDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
 import com.songify.domain.crud.exceptions.AlbumNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,11 @@ import static java.lang.Thread.sleep;
 class AlbumRetriever {
 
     private final AlbumRepository albumRepository;
+
+
+    List<Album> findAllAlbums(Pageable pageable) {
+        return albumRepository.findAll(pageable).getContent();
+    }
 
 
     AlbumDtoWithArtistsAndSongs findAlbumByIdWithArtistsAndSongs(final Long id) {
@@ -86,5 +94,13 @@ class AlbumRetriever {
                 album.getTitle(), artists, songs);
 
         return responseDto;
+    }
+
+    List<AlbumDto> findAllAlbumsDto(Pageable pageable) {
+        List<Album> all = findAllAlbums(pageable);
+        List<AlbumDto> allAlbumsDto = all.stream()
+                .map(album -> new AlbumDto(album.getId(), album.getTitle()))
+                .collect(Collectors.toList());
+        return allAlbumsDto;
     }
 }

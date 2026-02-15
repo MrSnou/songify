@@ -151,7 +151,11 @@ public class SongifyCrudFacade {
         return genreRetriever.findGenreDtoById(genreId);
     }
 
-    public List<GenreDto> findAll(Pageable pageable) {
+    public List<GenreDto> findAllGenreDto(Pageable pageable) {
         return genreRetriever.findAllGenreDto(pageable);
+    }
+
+    public List<AlbumDto> findAllAlbumDto(Pageable pageable) {
+        return albumRetriever.findAllAlbumsDto(pageable);
     }
 }

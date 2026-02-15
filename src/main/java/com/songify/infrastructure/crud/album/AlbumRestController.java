@@ -9,7 +9,10 @@ import com.songify.domain.crud.dto.AlbumResponseDto;
 import com.songify.domain.crud.dto.DeleteAlbumResponseDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
 import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +24,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/albums")
 class AlbumRestController {
 
     private final SongifyCrudFacade songifyCrudFacade;
+
+    @GetMapping("/getAlbums")
+    ResponseEntity<AllAlbumsResponseDto> getAllAlbums(@PageableDefault(sort = "id") Pageable pageable) {
+        List<AlbumDto> allAlbums = songifyCrudFacade.findAllAlbumDto(pageable);
+        return ResponseEntity.ok(new AllAlbumsResponseDto(allAlbums));
+    }
 
     @PostMapping
     ResponseEntity<AlbumDto> postAlbum(@RequestBody AlbumRequestDto requestDto) {
