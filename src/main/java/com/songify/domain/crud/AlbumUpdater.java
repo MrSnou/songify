@@ -1,17 +1,16 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.ArtistDto;
-import com.songify.domain.crud.dto.SongDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
-import com.songify.domain.crud.exceptions.AlbumNotEmptyException;
-import com.songify.domain.crud.exceptions.AlbumNotFoundException;
-import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
+import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
+import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.album.error.AlbumNotEmptyException;
+import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
+import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -25,7 +24,7 @@ class AlbumUpdater {
     private final SongRetriever songRetriever;
 
 
-    void updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsDto requestDto) {
+    void updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
 
         Album oldAlbum = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AlbumNotEmptyException("Album with id " + albumId + " does not exist"));

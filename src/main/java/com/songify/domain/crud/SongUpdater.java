@@ -1,9 +1,9 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.SongDto;
-import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
-import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
-import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
+import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
+import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

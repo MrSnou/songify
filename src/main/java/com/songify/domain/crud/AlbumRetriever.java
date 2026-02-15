@@ -1,14 +1,14 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.AlbumDto;
-import com.songify.domain.crud.dto.AlbumDtoWithArtistsAndSongs;
-import com.songify.domain.crud.dto.ArtistDto;
-import com.songify.domain.crud.dto.ArtistInfoDto;
-import com.songify.domain.crud.dto.GenreDto;
-import com.songify.domain.crud.dto.SongDto;
-import com.songify.domain.crud.dto.SongInfoDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
-import com.songify.domain.crud.exceptions.AlbumNotFoundException;
+import com.songify.infrastructure.crud.album.AlbumDto;
+import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
+import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.infrastructure.crud.song.util.SongInfoDto;
+import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ class AlbumRetriever {
     }
 
 
-    AlbumDtoWithArtistsAndSongs findAlbumByIdWithArtistsAndSongs(final Long id) {
+    AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long id) {
 
         Album albumByIdFromDb = albumRepository.findAlbumByIdWithSongsAndArtists(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
@@ -39,8 +39,8 @@ class AlbumRetriever {
         Set<Artist> artists = albumByIdFromDb.getArtists();
         Set<Song> songs = albumByIdFromDb.getSongs();
 
-        Set<ArtistInfoDto> ArtistDtos = artists.stream()
-                .map(artist -> new ArtistInfoDto(artist.getId(), artist.getName()))
+        Set<ArtistDto> ArtistDtos = artists.stream()
+                .map(artist -> new ArtistDto(artist.getId(), artist.getName()))
                 .collect(Collectors.toSet());
 
         Set<SongInfoDto> SongDtos = songs.stream()
@@ -48,7 +48,7 @@ class AlbumRetriever {
                         song.getReleaseDate(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                 .collect(Collectors.toSet());
 
-        return new AlbumDtoWithArtistsAndSongs(
+        return new AlbumDtoWithArtistsAndSongsResponseDto(
                 albumByIdFromDb.getId(),
                 albumByIdFromDb.getTitle(),
                 albumByIdFromDb.getReleaseDate(),

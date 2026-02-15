@@ -1,9 +1,9 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.GenreDto;
-import com.songify.domain.crud.exceptions.SongNotFoundException;
-import com.songify.domain.crud.dto.SongDto;
-import com.songify.infrastructure.crud.song.controller.dto.response.SongGenreDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.song.error.SongNotFoundException;
+import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

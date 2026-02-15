@@ -48,10 +48,11 @@
 
 ~~23. można wyświetlać konkretne gatunki muzyczne wraz z piosenkami~~
 
-24. można wyświetlać konkretnych artystów wraz z ich albumami
+~~24. można wyświetlać konkretnych artystów wraz z ich albumami~~
 
 ~~25. TODO SQLException Handlers~~
 
+TODO - Fix number of query requests by writing custom queries
 
 CQRS -  Command | Query | Request Separation
 

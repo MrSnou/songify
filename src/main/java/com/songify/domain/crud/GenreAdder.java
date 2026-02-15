@@ -1,6 +1,6 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.GenreDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

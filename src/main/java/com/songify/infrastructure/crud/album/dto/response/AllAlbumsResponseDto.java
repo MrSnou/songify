@@ -1,6 +1,6 @@
 package com.songify.infrastructure.crud.album.dto.response;
 
-import com.songify.domain.crud.dto.AlbumDto;
+import com.songify.infrastructure.crud.album.AlbumDto;
 
 import java.util.List;
 

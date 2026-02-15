@@ -1,10 +1,9 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.ArtistDto;
-import com.songify.domain.crud.dto.ArtistRequestDto;
-import com.songify.domain.crud.dto.SongDto;
-import com.songify.domain.crud.dto.SongLanguageDto;
-import com.songify.domain.crud.dto.SongRequestDto;
+import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
+import com.songify.infrastructure.crud.song.util.SongLanguageDto;
+import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

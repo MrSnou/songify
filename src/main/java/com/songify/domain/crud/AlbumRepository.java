@@ -25,6 +25,10 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
                 where a.id = :id
             """)
     Optional<Album> findAlbumByIdWithSongsAndArtists(@Param("id") final Long id);
+
+
+
+
 /**
  * Tried to use Interface with projection, but it didn't work, returned to old fashion DTO way.
  * Later to experiment with, but still managed to fetch it in one go. :)

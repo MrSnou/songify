@@ -1,21 +1,22 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.AlbumDto;
-import com.songify.domain.crud.dto.AlbumDtoWithArtistsAndSongs;
-import com.songify.domain.crud.dto.AlbumRequestDto;
-import com.songify.domain.crud.dto.ArtistDto;
-import com.songify.domain.crud.dto.ArtistRequestDto;
-import com.songify.domain.crud.dto.GenreDto;
-import com.songify.domain.crud.dto.GenreRequestDto;
-import com.songify.domain.crud.dto.SongDto;
-import com.songify.domain.crud.dto.SongRequestDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.album.AlbumDto;
+import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.infrastructure.crud.album.dto.request.AlbumRequestDto;
+import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
+import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
+import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
+import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
 import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
-import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongAlbumRequestDto;
-import com.songify.infrastructure.crud.song.controller.dto.request.UpdateSongRequestDto;
-import com.songify.infrastructure.crud.song.controller.dto.response.SongGenreDto;
-import com.songify.infrastructure.crud.song.controller.dto.response.UpdateSongAlbumResponseDto;
+import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
+import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
+import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
+import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +51,6 @@ public class SongifyCrudFacade {
     private final AlbumDeleter albumDeleter;
     private final AlbumRetriever albumRetriever;
 
-
     public ArtistDto addArtist(ArtistRequestDto dto) {
         return artistAdder.addArtist(dto.name());
     }
@@ -83,7 +83,7 @@ public class SongifyCrudFacade {
         return songRetriever.findSongGenreDtoById(id);
     }
 
-    public AlbumDtoWithArtistsAndSongs findAlbumByIdWithArtistsAndSongs(final Long id) {
+    public AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long id) {
         return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
     }
 
@@ -133,7 +133,7 @@ public class SongifyCrudFacade {
 
     }
 
-    public UpdateAlbumWithSongsAndArtistsResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsDto requestDto) {
+    public UpdateAlbumWithSongsAndArtistsResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
         albumUpdater.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
         UpdateAlbumWithSongsAndArtistsResponseDto responseDto = albumRetriever.getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId);
         return responseDto;
@@ -168,5 +168,10 @@ public class SongifyCrudFacade {
                 "Successfully retrieved all songs with genre: " + genreRetriever.findGenreDtoById(genreId).name(),
                 genreDto,  songsDto
                 );
+    }
+
+    public ArtistWithAlbumsResponseDto findArtistDtoWithAlbumsDto(final Long artistId) {
+        ArtistWithAlbumsResponseDto responseDto = artistRetriever.findArtistWithAlbumsById(artistId);
+        return responseDto;
     }
 }

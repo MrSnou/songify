@@ -1,7 +1,7 @@
 package com.songify.infrastructure.crud.genre.dto.response;
 
-import com.songify.domain.crud.dto.GenreDto;
-import com.songify.domain.crud.dto.SongDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
 
 import java.util.List;
 

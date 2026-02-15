@@ -1,12 +1,11 @@
 package com.songify.infrastructure.crud.artist;
 
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.domain.crud.dto.AllArtistDto;
-import com.songify.domain.crud.dto.ArtistDto;
-import com.songify.domain.crud.dto.ArtistRequestDto;
-import com.songify.domain.crud.dto.ArtistResponseDto;
-import com.songify.domain.crud.dto.ArtistUpdateRequestDto;
-import com.songify.domain.crud.dto.ArtistUpdateResponseDto;
+import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
+import com.songify.infrastructure.crud.artist.dto.response.ArtistResponseDto;
+import com.songify.infrastructure.crud.artist.dto.request.ArtistUpdateRequestDto;
+import com.songify.infrastructure.crud.artist.dto.response.ArtistUpdateResponseDto;
+import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -73,5 +72,11 @@ class ArtistRestController {
         ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.CREATED,
                 "Successfully created new artist ["+ artistDto.name() +"] and assigned default Album and Song to it.");
         return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/findArtistWithAlbums/{artistId}")
+    ResponseEntity<ArtistWithAlbumsResponseDto> findArtistWithAlbums(@PathVariable Long artistId) {
+        ArtistWithAlbumsResponseDto artistDtoWithAlbumsDto = songifyCrudFacade.findArtistDtoWithAlbumsDto(artistId);
+        return ResponseEntity.ok(artistDtoWithAlbumsDto);
     }
 }

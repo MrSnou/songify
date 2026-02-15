@@ -1,8 +1,7 @@
 package com.songify.infrastructure.crud.genre;
 
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.domain.crud.dto.GenreDto;
-import com.songify.domain.crud.dto.GenreRequestDto;
+import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
 import com.songify.infrastructure.crud.genre.dto.response.AllGenresResponseDto;
 import com.songify.infrastructure.crud.genre.dto.response.GenreResponseDto;
 import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;

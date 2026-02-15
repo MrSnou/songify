@@ -1,6 +1,6 @@
 package com.songify.infrastructure.crud.genre.dto.response;
 
-import com.songify.domain.crud.dto.GenreDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
 
 import java.util.List;
 

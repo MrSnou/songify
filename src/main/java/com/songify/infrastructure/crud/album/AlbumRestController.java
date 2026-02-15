@@ -1,14 +1,13 @@
 package com.songify.infrastructure.crud.album;
 
 
-import com.songify.domain.crud.dto.AlbumDtoWithArtistsAndSongs;
+import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.domain.crud.dto.AlbumDto;
-import com.songify.domain.crud.dto.AlbumRequestDto;
-import com.songify.domain.crud.dto.AlbumResponseDto;
-import com.songify.domain.crud.dto.DeleteAlbumResponseDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsDto;
-import com.songify.domain.crud.dto.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.album.dto.request.AlbumRequestDto;
+import com.songify.infrastructure.crud.album.dto.response.AlbumResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.DeleteAlbumResponseDto;
+import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
+import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
 import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +45,8 @@ class AlbumRestController {
     }
 
     @GetMapping("/getAlbumById/{requestAlbumId}")
-    ResponseEntity<AlbumDtoWithArtistsAndSongs> getAlbumWithArtistsAndSongsById(@PathVariable Long requestAlbumId) {
-        AlbumDtoWithArtistsAndSongs responseDto = songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(requestAlbumId);
+    ResponseEntity<AlbumDtoWithArtistsAndSongsResponseDto> getAlbumWithArtistsAndSongsById(@PathVariable Long requestAlbumId) {
+        AlbumDtoWithArtistsAndSongsResponseDto responseDto = songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(requestAlbumId);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -59,9 +58,8 @@ class AlbumRestController {
     }
 
     @PatchMapping("/updateAlbum/{albumId}")
-    ResponseEntity<AlbumResponseDto>
-    updateAlbumWithSongsAndArtists(@PathVariable Long albumId,
-                                   @RequestBody UpdateAlbumWithSongsAndArtistsDto requestDto) {
+    ResponseEntity<AlbumResponseDto> updateAlbumWithSongsAndArtists
+            (@PathVariable Long albumId, @RequestBody UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
         UpdateAlbumWithSongsAndArtistsResponseDto savedAlbum = songifyCrudFacade.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
         AlbumResponseDto responseDto = new AlbumResponseDto(HttpStatus.OK, "Successfully updated album", savedAlbum);
         return ResponseEntity.ok(responseDto);

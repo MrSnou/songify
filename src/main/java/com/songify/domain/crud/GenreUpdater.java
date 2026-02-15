@@ -1,7 +1,7 @@
 package com.songify.domain.crud;
 
-import com.songify.domain.crud.dto.GenreDto;
-import com.songify.domain.crud.exceptions.GenreNotFoundException;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.genre.error.GenreNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
