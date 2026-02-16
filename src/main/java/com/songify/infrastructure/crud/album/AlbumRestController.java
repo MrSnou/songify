@@ -3,7 +3,7 @@ package com.songify.infrastructure.crud.album;
 
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.infrastructure.crud.album.dto.request.AlbumRequestDto;
+import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumResponseDto;
 import com.songify.infrastructure.crud.album.dto.response.DeleteAlbumResponseDto;
 import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
@@ -39,7 +39,7 @@ class AlbumRestController {
     }
 
     @PostMapping
-    ResponseEntity<AlbumDto> postAlbum(@RequestBody AlbumRequestDto requestDto) {
+    ResponseEntity<AlbumDto> postAlbum(@RequestBody AlbumWithSongRequestDto requestDto) {
         AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(requestDto);
         return ResponseEntity.ok(albumDto);
     }

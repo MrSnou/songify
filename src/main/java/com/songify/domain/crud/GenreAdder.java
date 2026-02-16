@@ -10,7 +10,7 @@ class GenreAdder {
 
     private final GenreRepository genreRepository;
 
-    GenreDto addArtist(final String name) {
+    GenreDto addGenre(final String name) {
         Genre genre = new Genre(name);
         Genre save = genreRepository.save(genre);
         return new GenreDto(save.getId(), save.getName());

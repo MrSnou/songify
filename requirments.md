@@ -62,6 +62,10 @@ Happy Path :
     {
         albumName   = "EminemAlbum1",
         albumId     = 1
+        artist {
+            artistId = 1,
+            artistName = 1
+        }
         [   
             genreId     = 1
             genreName   = "Rap"
@@ -73,8 +77,8 @@ Happy Path :
                 songId       = 2
                 songName     = "Lose Yourself"
             }
-        ]
-    }
+          ]
+      }
 
 Given there is no songs, artists, albums and genres created before
 

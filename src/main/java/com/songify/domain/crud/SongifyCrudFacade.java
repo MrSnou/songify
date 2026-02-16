@@ -2,7 +2,7 @@ package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
-import com.songify.infrastructure.crud.album.dto.request.AlbumRequestDto;
+import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
@@ -56,10 +56,10 @@ public class SongifyCrudFacade {
     }
 
     public GenreDto addGenre(GenreRequestDto dto) {
-        return genreAdder.addArtist(dto.name());
+        return genreAdder.addGenre(dto.name());
     }
 
-    public AlbumDto addAlbumWithSong(AlbumRequestDto dto) {
+    public AlbumDto addAlbumWithSong(AlbumWithSongRequestDto dto) {
         return albumAdder.addAlbumWithSong(dto.songId(), dto.title(), dto.releaseDate());
     }
 
