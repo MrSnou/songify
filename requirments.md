@@ -102,27 +102,5 @@ Given there is no songs, artists, albums and genres created before
 
 
 
-Co jest możliwe w 7dni/30dni/90dni
-
-7 : 
-~~- harmonogram
-- zorganizowanie rodziny pod nie przeszkadzanie (włącznie z kotem)~~
-
-30: 
-~~?zmiana pracy~~
-
-
-90 Dni: 
-- Skontaktowanie się z pauliną, bo pracuje w Allegro
-- Ukończenie kursu.
-26.11.2025 - 16.01.2026 (50 dni) 1/3 >> 30.04.2026 FINISH
-
-
-Koło wartości:
-
-533+140 Stron Java
-
-
-
 
 
