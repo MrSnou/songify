@@ -174,4 +174,8 @@ public class SongifyCrudFacade {
         ArtistWithAlbumsResponseDto responseDto = artistRetriever.findArtistWithAlbumsById(artistId);
         return responseDto;
     }
+
+    public Set<AlbumDtoWithArtistsAndSongsResponseDto> findAlbumsByArtistId(final Long artistId) {
+        return albumRetriever.findAlbumsDtoByArtistId(artistId);
+    }
 }

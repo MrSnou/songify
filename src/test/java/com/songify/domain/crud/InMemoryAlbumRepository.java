@@ -6,24 +6,49 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-class ImMemoryAlbumRepository implements AlbumRepository {
+class InMemoryAlbumRepository implements AlbumRepository {
+
+    Map<Long, Album> db =  new HashMap<>();
+    AtomicInteger index = new AtomicInteger(0);
+
     @Override
     public Album save(final Album album) {
-        return null;
+        long index = this.index.getAndIncrement();
+        db.put(index, album);
+        album.setId(Long.valueOf(index));
+        return album;
     }
 
     @Override
     public Optional<Album> findById(final Long id) {
-        return Optional.empty();
+        return Optional.ofNullable(db.get(id));
     }
 
     @Override
     public boolean existsById(final Long aLong) {
         return false;
+    }
+
+    @Override
+    public Optional<Album> findAlbumByIdWithSongsAndArtists(final Long id) {
+        return Optional.ofNullable(db.get(id));
+    }
+
+    @Override
+    public Set<Album> findByArtistsId(final Long artistId) {
+        return db.values().stream()
+                .filter(album -> album.getArtists().stream()
+                .anyMatch(artist -> artist.getId().equals(artistId)))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -49,11 +74,6 @@ class ImMemoryAlbumRepository implements AlbumRepository {
     @Override
     public void deleteAll() {
 
-    }
-
-    @Override
-    public Optional<Album> findAlbumByIdWithSongsAndArtists(final Long id) {
-        return Optional.empty();
     }
 
     @Override

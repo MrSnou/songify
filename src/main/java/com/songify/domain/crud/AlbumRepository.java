@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 interface AlbumRepository extends JpaRepository<Album, Long> {
 
@@ -25,6 +25,9 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
                 where a.id = :id
             """)
     Optional<Album> findAlbumByIdWithSongsAndArtists(@Param("id") final Long id);
+
+    Set<Album> findByArtistsId(Long artistId);
+
 
 
 

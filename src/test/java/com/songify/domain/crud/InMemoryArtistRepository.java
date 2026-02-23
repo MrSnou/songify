@@ -29,11 +29,12 @@ class InMemoryArtistRepository implements ArtistRepository {
 
     @Override
     public Optional<Artist> findArtistById(final Long id) {
-        return Optional.empty();
+        return Optional.ofNullable(artistsDb.get(id));
     }
 
     @Override
     public void deleteArtistById(final Long artistId) {
+        artistsDb.remove(artistId);
 
     }
 

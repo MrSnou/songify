@@ -2,7 +2,6 @@ package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
-import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -102,5 +101,26 @@ class AlbumRetriever {
                 .map(album -> new AlbumDto(album.getId(), album.getTitle()))
                 .collect(Collectors.toList());
         return allAlbumsDto;
+    }
+
+    Set<Album> findAlbumsByArtistId(final Long artistId) {
+        return albumRepository.findByArtistsId(artistId);
+    }
+
+    Set<AlbumDtoWithArtistsAndSongsResponseDto> findAlbumsDtoByArtistId(final Long artistId) {
+        return albumRepository.findByArtistsId(artistId).stream().map(
+                album -> new AlbumDtoWithArtistsAndSongsResponseDto(
+                        album.getId(),
+                        album.getTitle(),
+                        album.getReleaseDate(),
+                        album.getArtists().stream().map(
+                                artist -> new ArtistDto(artist.getId(), artist.getName()))
+                                .collect(Collectors.toSet()),
+                        album.getSongs().stream().map(
+                                song -> new SongInfoDto(song.getId(), song.getName(),
+                                        song.getDuration(), song.getReleaseDate(),
+                                        new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
+                                .collect(Collectors.toSet())
+                )).collect(Collectors.toSet());
     }
 }

@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
@@ -41,6 +43,11 @@ class Artist extends BaseEntity {
     private String name;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "artist_albums",
+            joinColumns = @JoinColumn(name = "artists_id"),
+            inverseJoinColumns = @JoinColumn(name = "albums_id")
+    )
     private Set<Album> albums = new HashSet<>();
 
     void removeAlbum(final Album album) {
