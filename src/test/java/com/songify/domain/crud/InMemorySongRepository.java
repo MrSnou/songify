@@ -33,7 +33,7 @@ class InMemorySongRepository implements SongRepository {
 
     @Override
     public void deleteById(final Long id) {
-
+        db.remove(id);
     }
 
     @Override

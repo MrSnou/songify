@@ -3,10 +3,12 @@ package com.songify.domain.crud;
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
 import com.songify.infrastructure.crud.artist.error.ArtistNotFoundException;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
+import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.util.SongLanguageDto;
 import org.junit.jupiter.api.DisplayName;
@@ -99,8 +101,8 @@ class SongifyCrudFacadeTest {
     }
 
     @Test
-    @DisplayName("Should delete artist by id when he have one album Then db size should be empty")
-    public void Should_delete_artist_by_id_when_he_have_one_album_Then_db_size_should_be_empty() {
+    @DisplayName("Should delete artist by id when he have one album with song Then db size should be empty")
+    public void Should_delete_artist_by_id_when_he_have_one_album_with_song_Then_db_size_should_be_empty() {
         // Given
         ArtistRequestDto requestDto = ArtistRequestDto.builder()
                 .name("Amigo")
@@ -121,10 +123,18 @@ class SongifyCrudFacadeTest {
         // Adding album to artist and then checking if it's saved.
         songifyCrudFacade.addArtistToAlbum(artistDto.id(), albumDto.id());
         assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
+        assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()).id()).isEqualTo(0L);
+        assertThat(songifyCrudFacade.findAlbumsByArtistId(albumDto.id()).size()).isEqualTo(1);
         // When
         songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistDto.id());
         // Then
         assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(0);
+        // Check if albums and songs are correctly deleted from db after deleting artist.
+        Throwable songThrowable = catchThrowable(() -> songifyCrudFacade.findSongDtoById(0L));
+        Throwable albumThrowable = catchThrowable(() -> songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(0L));
+        assertThat(songifyCrudFacade.findAlbumsByArtistId(albumDto.id()).size()).isEqualTo(0);
+        assertThat(songThrowable).isExactlyInstanceOf(SongNotFoundException.class);
+        assertThat(albumThrowable).isExactlyInstanceOf(AlbumNotFoundException.class);
     }
 
 

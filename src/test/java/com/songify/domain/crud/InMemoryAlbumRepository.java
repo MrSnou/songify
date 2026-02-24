@@ -53,6 +53,7 @@ class InMemoryAlbumRepository implements AlbumRepository {
 
     @Override
     public void deleteById(final Long id) {
+        db.remove(id);
 
     }
 
