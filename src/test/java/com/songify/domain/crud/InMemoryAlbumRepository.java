@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -139,7 +140,7 @@ class InMemoryAlbumRepository implements AlbumRepository {
 
     @Override
     public <S extends Album> Page<S> findAll(final Example<S> example, final Pageable pageable) {
-        return null;
+        return (Page<S>) db.values().stream().toList();
     }
 
     @Override
@@ -185,5 +186,10 @@ class InMemoryAlbumRepository implements AlbumRepository {
     @Override
     public Page<Album> findAll(final Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public Set<Album> findAllAlbums(final Pageable pageable) {
+        return new HashSet<>(db.values());
     }
 }

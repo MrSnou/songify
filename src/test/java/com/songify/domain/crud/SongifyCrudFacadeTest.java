@@ -40,7 +40,7 @@ class SongifyCrudFacadeTest {
 
     @BeforeEach
     void setUp() {
-        /** In main program there is always "Default" genre in db with id 1L **/
+        /// In main program there is always "Default" genre in db with id 1L
         GenreRequestDto defaultGenre = GenreRequestDto.builder()
                 .name("Default")
                 .build();
@@ -131,7 +131,7 @@ class SongifyCrudFacadeTest {
                     .language(SongLanguageDto.OTHER)
                     .build();
             songifyCrudFacade.addSong(songDto);
-            /** Check is song was correctly added **/
+            /// Check is song was correctly added
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             AlbumWithSongRequestDto requestDto = new AlbumWithSongRequestDto("TestAlbum", Instant.now(), 0L);
             // When
@@ -173,7 +173,7 @@ class SongifyCrudFacadeTest {
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
             // Then
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).extracting(songDto -> songDto.name())
+            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).extracting(SongDto::name)
                     .isEqualTo(addedSong.name())
                     .isNotNull();
             assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()))
@@ -206,7 +206,7 @@ class SongifyCrudFacadeTest {
         @DisplayName("Should return list of artists When method was called")
         void should_return_list_of_artists_When_method_was_called() {
             // Given
-            /** Adding 2 test Artists to db, so it's not empty **/
+            /// Adding 2 test Artists to db, so it's not empty
             ArtistRequestDto testArtist1 = ArtistRequestDto.builder()
                     .name("TestArtist_1")
                     .build();
@@ -259,7 +259,7 @@ class SongifyCrudFacadeTest {
                     .build();
             songifyCrudFacade.addSong(testSong_1);
             songifyCrudFacade.addSong(testSong_2);
-            /** Checking if songs was correctly added to db **/
+            /// Checking if songs was correctly added to db
             // When
             Set<SongDto> allSongs = new HashSet<>(songifyCrudFacade.findAllSongs(Pageable.unpaged()));
             // Then
@@ -294,7 +294,7 @@ class SongifyCrudFacadeTest {
                     .language(SongLanguageDto.OTHER)
                     .build();
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
-            /** Checking if song was correctly added to db **/
+            /// Checking if song was correctly added to db
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             // When
             SongDto songDtoById = songifyCrudFacade.findSongDtoById(addedSong.id());
@@ -331,7 +331,7 @@ class SongifyCrudFacadeTest {
                     .language(SongLanguageDto.OTHER)
                     .build();
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
-            /** Checking if song was correctly added to db **/
+            /// Checking if song was correctly added to db
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).isEqualTo(addedSong);
             // When
@@ -359,18 +359,53 @@ class SongifyCrudFacadeTest {
             GenreDto genreDto = songifyCrudFacade.addGenre(genreRequest);
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
             songifyCrudFacade.updateSongGenreById(addedSong.id(), genreDto.id());
-            /** Checking if song and genre was correctly added to db **/
+            /// Checking if song and genre was correctly added to db
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findGenreDtoById(genreDto.id())).extracting(GenreDto::id, GenreDto::name)
                     .containsExactly(2L, "TestGenre_1");
             // When
-            /** "(addedSong.id() + 1)" because this is testing db (HashSet) with Atomic Integer don't have update function like postgreSQL
-             * and have to remove old and add new what affects ID, in main DB this is not a problem because custom update JPQL query **/
+            /// "(addedSong.id() + 1)" because this is testing db (HashSet) with Atomic Integer don't have update function like postgreSQL
+            /// and have to remove old and add new what affects ID, in main DB this is not a problem because custom update JPQL query
             SongGenreDto songGenreDtoById = songifyCrudFacade.findSongGenreDtoById(addedSong.id() + 1);
             // Then
             assertThat(songGenreDtoById).isNotNull().isExactlyInstanceOf(SongGenreDto.class);
             assertThat(songGenreDtoById).extracting(SongGenreDto::songId, SongGenreDto::genre)
             .containsExactly(1L, genreDto);
+        }
+    }
+
+    @Nested
+    @DisplayName("FindAlbumByIdWithArtistsAndSongs - Tests")
+    class FindAlbumByIdWithArtistsAndSongsTests {
+
+        @Test
+        @DisplayName("Should return AlbumNotFoundException When method was called with incorrect albumId")
+        void should_return_AlbumNotFoundException_When_method_was_called_with_incorrect_albumId() {
+            // Given
+            // When
+            Throwable albumException = catchThrowable(() -> songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(Long.MAX_VALUE));
+            // Then
+            assertThat(albumException).isInstanceOf(AlbumNotFoundException.class);
+            assertThat(albumException.getMessage()).isEqualTo("Album with id: " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should return Album When method was called")
+        void should_return_Album_When_method_was_called() {
+            // Given
+            SongRequestDto songDto = new SongRequestDto("TestSong", 123L, Instant.now(), SongLanguageDto.ENGLISH);
+            SongDto addedSong = songifyCrudFacade.addSong(songDto);
+            /// New album with song test song
+            AlbumWithSongRequestDto albumWithSongRequestDto = new AlbumWithSongRequestDto("TestAlbum", Instant.now(), addedSong.id());
+            AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumWithSongRequestDto);
+            /// Check if everything is added correctly
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(1);
+
+            // When
+            songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedSong.id());
+            // Then
+
         }
     }
 
@@ -410,14 +445,13 @@ class SongifyCrudFacadeTest {
             Set<AlbumDtoWithArtistsAndSongsResponseDto> albumsByArtistId = songifyCrudFacade.findAlbumsByArtistId(artistDto.id());
             assertThat(albumsByArtistId.size()).isEqualTo(0);
 
-            Instant date = Instant.now();
-            /** New song because we need it for album **/
-            SongRequestDto songDto = new SongRequestDto("TestSong", 123L, date, SongLanguageDto.ENGLISH);
+            /// New song because we need it for album
+            SongRequestDto songDto = new SongRequestDto("TestSong", 123L, Instant.now(), SongLanguageDto.ENGLISH);
             SongDto addedSong = songifyCrudFacade.addSong(songDto);
-            /** New album with song test song **/
-            AlbumWithSongRequestDto albumWithSongRequestDto = new AlbumWithSongRequestDto("TestAlbum", date, addedSong.id());
+            /// New album with song test song
+            AlbumWithSongRequestDto albumWithSongRequestDto = new AlbumWithSongRequestDto("TestAlbum", Instant.now(), addedSong.id());
             AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumWithSongRequestDto);
-            /** Adding album to artist and then checking is it's saved **/
+            /// Adding album to artist and then checking is it's saved
             songifyCrudFacade.addArtistToAlbum(artistDto.id(), albumDto.id());
             assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()).id()).isEqualTo(0L);
@@ -426,7 +460,7 @@ class SongifyCrudFacadeTest {
             songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistDto.id());
             // Then
             assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(0);
-            /** Check if albums and songs are correctly deleted from db after deleting artist **/
+            /// Check if albums and songs are correctly deleted from db after deleting artist **/
             Throwable songThrowable = catchThrowable(() -> songifyCrudFacade.findSongDtoById(0L));
             Throwable albumThrowable = catchThrowable(() -> songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(0L));
             assertThat(songifyCrudFacade.findAlbumsByArtistId(albumDto.id()).size()).isEqualTo(0);
@@ -439,7 +473,7 @@ class SongifyCrudFacadeTest {
         public void should_throw_exception_artist_not_found_when_id_was_zero() {
             // Given
             assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged())).isNotNull();
-            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).equals(0));
+            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(0);
             // When
             Throwable throwable = catchThrowable(() ->
                     songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(0L));

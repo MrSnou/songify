@@ -1,5 +1,6 @@
 package com.songify.domain.crud;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,8 +29,10 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
 
     Set<Album> findByArtistsId(Long artistId);
 
-
-
+    @Query("""
+            SELECT a FROM Album a
+            """)
+    Set<Album> findAllAlbums(Pageable pageable);
 
 
 /**

@@ -25,8 +25,8 @@ class AlbumRetriever {
     private final AlbumRepository albumRepository;
 
 
-    List<Album> findAllAlbums(Pageable pageable) {
-        return albumRepository.findAll(pageable).getContent();
+    Set<Album> findAllAlbums(Pageable pageable) {
+        return albumRepository.findAllAlbums(pageable);
     }
 
 
@@ -96,7 +96,7 @@ class AlbumRetriever {
     }
 
     List<AlbumDto> findAllAlbumsDto(Pageable pageable) {
-        List<Album> all = findAllAlbums(pageable);
+        List<Album> all = findAllAlbums(pageable).stream().toList();
         List<AlbumDto> allAlbumsDto = all.stream()
                 .map(album -> new AlbumDto(album.getId(), album.getTitle()))
                 .collect(Collectors.toList());
