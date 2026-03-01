@@ -22,7 +22,6 @@ class SongRetriever {
     private final GenreRetriever genreRetriever;
 
     List<SongDto> findAll(Pageable pageable) {
-        log.info("Retrievind all songs : ");
         return songRepository.findAll(pageable).stream()
                 .map(song -> SongDto.builder()
                         .id(song.getId())
@@ -33,7 +32,6 @@ class SongRetriever {
     }
 
     void existsById(Long id) {
-        log.info("Checking if song with id exists: " + id);
         if (!songRepository.existsById(id)) {
             throw new SongNotFoundException("Song with id " + id + " not found");
         }
@@ -73,7 +71,7 @@ class SongRetriever {
 
         GenreDto genreDto = new GenreDto(fetchedSong.getGenre().getId(),  fetchedSong.getGenre().getName());
 
-        return new SongGenreDto(fetchedSong.getId(),  genreDto);
+        return new SongGenreDto(fetchedSong.getId(), genreDto);
 
     }
 

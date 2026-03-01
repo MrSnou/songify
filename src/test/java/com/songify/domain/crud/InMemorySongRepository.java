@@ -3,6 +3,7 @@ package com.songify.domain.crud;
 import org.springframework.data.domain.Pageable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +24,7 @@ class InMemorySongRepository implements SongRepository {
 
     @Override
     public List<Song> findAll(final Pageable pageable) {
-        return List.of();
+        return db.values().stream().toList();
     }
 
     @Override
@@ -43,16 +44,27 @@ class InMemorySongRepository implements SongRepository {
 
     @Override
     public boolean existsById(final Long id) {
-        return false;
+        Optional<Song> byId = findById(id);
+        return byId.isPresent();
     }
 
     @Override
     public Set<Song> findAllByGenre(final Genre genre) {
-        return Set.of();
+
+        Set<Song> songsWithGenre = new HashSet<>();
+        for (Song song : db.values()) {
+            if (song.getGenre().getId().equals(genre.getId())) {
+                songsWithGenre.add(song);
+            }
+        }
+        return songsWithGenre;
     }
 
     @Override
     public void updateSongGenreById(final Long id, final Genre genre) {
-
+        Song oldSong = db.remove(id);
+        Song newSong = new Song(oldSong.getName(), oldSong.getReleaseDate(), oldSong.getDuration(), oldSong.getLanguage());
+        newSong.setGenre(genre);
+        save(newSong);
     }
 }

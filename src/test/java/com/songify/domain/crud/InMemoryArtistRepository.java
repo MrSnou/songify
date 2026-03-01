@@ -40,6 +40,7 @@ class InMemoryArtistRepository implements ArtistRepository {
 
     @Override
     public boolean existsById(final Long id) {
-        return false;
+        Optional<Artist> artistById = findArtistById(id);
+        return artistById.isPresent();
     }
 }

@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class InMemoryGenreRepository implements GenreRepository {
 
     Map<Long, Genre> db =  new HashMap<>();
-    AtomicInteger index = new AtomicInteger(0);
+    AtomicInteger index = new AtomicInteger(1);
 
     @Override
     public Genre save(final Genre genre) {

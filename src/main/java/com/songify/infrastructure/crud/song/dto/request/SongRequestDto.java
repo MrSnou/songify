@@ -2,9 +2,11 @@ package com.songify.infrastructure.crud.song.dto.request;
 
 
 import com.songify.infrastructure.crud.song.util.SongLanguageDto;
+import lombok.Builder;
 
 import java.time.Instant;
 
+@Builder
 public record SongRequestDto(
         String name,
         Long duration,
