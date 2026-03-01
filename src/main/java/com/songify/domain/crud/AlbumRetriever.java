@@ -26,7 +26,7 @@ class AlbumRetriever {
 
 
     Set<Album> findAllAlbums(Pageable pageable) {
-        return albumRepository.findAllAlbums(pageable);
+        return albumRepository.findAll(pageable).stream().collect(Collectors.toSet());
     }
 
 
@@ -58,12 +58,12 @@ class AlbumRetriever {
 
     Album findAlbumById(final Long id) {
         return albumRepository.findById(id)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + id + " not found in db."));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + id + " not found"));
     }
 
     UpdateAlbumWithSongsAndArtistsResponseDto getUpdateAlbumByIdWithSongsAndArtistsResponse(final Long id) {
         Album album = albumRepository.findById(id)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found in db."));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
 
         Set<ArtistDto> artists = null;
         Set<SongDto> songs = null;
@@ -122,5 +122,10 @@ class AlbumRetriever {
                                         new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                                 .collect(Collectors.toSet())
                 )).collect(Collectors.toSet());
+    }
+
+    List<Album> findAlbumBySongId(final Long songId) {
+        List<Album> albumsBySongId = albumRepository.findBySongsId(songId);
+        return albumsBySongId;
     }
 }

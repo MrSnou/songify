@@ -1,10 +1,13 @@
 package com.songify.domain.crud;
 
+import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -13,11 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 class SongDeleter {
 
     private final SongRepository songRepository;
-    private final SongRetriever songRetriever;
-    private final GenreDeleter genreDeleter;
+    private final AlbumUpdater albumUpdater;
+    private final AlbumRetriever albumRetriever;
 
     void deleteSongById(Long id) {
-        songRepository.deleteById(id);
+        Song song = songRepository.findById(id)
+                .orElseThrow(() -> new SongNotFoundException("Song with id " + id + " not found"));
+
+        albumUpdater.deleteSongFromAlbums(song);
+
+        songRepository.deleteById(song.getId());
     }
 
 //    void deleteSongAndGenreById(final Long id) {

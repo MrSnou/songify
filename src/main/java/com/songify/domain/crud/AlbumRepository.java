@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,10 +30,7 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
 
     Set<Album> findByArtistsId(Long artistId);
 
-    @Query("""
-            SELECT a FROM Album a
-            """)
-    Set<Album> findAllAlbums(Pageable pageable);
+    List<Album> findBySongsId(Long songId);
 
 
 /**

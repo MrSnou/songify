@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -59,5 +60,14 @@ class AlbumUpdater {
                         .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration()))
                         .collect(Collectors.toSet())
         ));
+    }
+
+    void deleteSongFromAlbums(Song song) {
+
+        List<Album> albums = albumRepository.findBySongsId(song.getId());
+
+        for (Album album : albums) {
+            album.removeSong(song);
+        }
     }
 }

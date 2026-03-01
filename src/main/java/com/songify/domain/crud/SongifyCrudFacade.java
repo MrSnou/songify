@@ -92,9 +92,7 @@ public class SongifyCrudFacade {
     }
 
     public void deleteSongById(Long id) {
-        songRetriever.existsById(id);
         songDeleter.deleteSongById(id);
-
     }
 
     public void deleteAlbumById(final Long requestAlbumId) {

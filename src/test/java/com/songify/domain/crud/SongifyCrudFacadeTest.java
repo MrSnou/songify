@@ -2,7 +2,9 @@ package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
+import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.infrastructure.crud.album.error.AlbumNotEmptyException;
 import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
@@ -10,6 +12,7 @@ import com.songify.infrastructure.crud.artist.error.ArtistNotFoundException;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
+import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
 import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -21,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -224,7 +228,6 @@ class SongifyCrudFacadeTest {
         }
     }
 
-
     @Nested
     @DisplayName("FindAllSongs - Tests")
     class FindAllSongsTests {
@@ -396,20 +399,152 @@ class SongifyCrudFacadeTest {
             SongRequestDto songDto = new SongRequestDto("TestSong", 123L, Instant.now(), SongLanguageDto.ENGLISH);
             SongDto addedSong = songifyCrudFacade.addSong(songDto);
             /// New album with song test song
-            AlbumWithSongRequestDto albumWithSongRequestDto = new AlbumWithSongRequestDto("TestAlbum", Instant.now(), addedSong.id());
+            AlbumWithSongRequestDto albumWithSongRequestDto = new AlbumWithSongRequestDto("TestAlbum_1", Instant.now(), addedSong.id());
             AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumWithSongRequestDto);
             /// Check if everything is added correctly
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(1);
-
             // When
-            songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedSong.id());
+            AlbumDtoWithArtistsAndSongsResponseDto albumByIdWithArtistsAndSongs =
+                    songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedSong.id());
             // Then
-
+            assertThat(albumByIdWithArtistsAndSongs).isNotNull().isExactlyInstanceOf(AlbumDtoWithArtistsAndSongsResponseDto.class);
+            assertThat(albumByIdWithArtistsAndSongs).extracting(AlbumDtoWithArtistsAndSongsResponseDto::id, AlbumDtoWithArtistsAndSongsResponseDto::name)
+                    .containsExactly(0L, "TestAlbum_1");
+            assertThat(albumByIdWithArtistsAndSongs.songs().size()).isEqualTo(1);
+            assertThat(albumByIdWithArtistsAndSongs.artists().size()).isEqualTo(0);
         }
     }
 
+    @Nested
+    @DisplayName("UpdatesSongPartiallyById - Tests")
+    class UpdatesSongPartiallyByIdTests {
 
+        @Test
+        @DisplayName("Should throw SongNotFoundException When songId is not in db")
+        void should_throwSongNotFoundException_When_songIdIsNotInDb() {
+            // Given
+            // When
+            Throwable songException = catchThrowable(() -> songifyCrudFacade.updatesSongPartiallyById(Long.MAX_VALUE
+                    , new UpdateSongRequestDto("example", 123L)));
+            // Then
+            assertThat(songException).isInstanceOf(SongNotFoundException.class);
+            assertThat(songException.getMessage()).isEqualTo("Song with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should return songDto When correct songId and UpdateSongRequestDto was sent")
+        void should_return_songDto_When_songId_And_UpdateSongRequestDto_Was_Sent() {
+            // Given
+            SongDto addedSong = songifyCrudFacade.addSong(new SongRequestDto("TestSong_1", 123L, Instant.now(), SongLanguageDto.OTHER));
+            UpdateSongRequestDto updateSongRequestDto = new UpdateSongRequestDto("UpdatedTestSong_1", 321L);
+            /// Check if the song was correctly added
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).extracting(SongDto::id, SongDto::name)
+                    .containsExactly(0L, "TestSong_1");
+            // When
+            /// "(addedSong.id() + 1)" because this is testing db (HashSet) with Atomic Integer don't have update function like postgreSQL
+            /// and have to remove old and add new what affects ID, in main DB this is not a problem because custom update JPQL query
+            songifyCrudFacade.updatesSongPartiallyById(addedSong.id(), updateSongRequestDto);
+            SongDto updatedSong = songifyCrudFacade.findSongDtoById(addedSong.id() + 1);
+            // Then
+            assertThat(updatedSong).isNotNull().isExactlyInstanceOf(SongDto.class);
+            assertThat(updatedSong).extracting(SongDto::id, SongDto::name)
+                    .containsExactly(1L, "UpdatedTestSong_1");
+        }
+    }
+
+    @Nested
+    @DisplayName("DeleteSongById - Tests")
+    class DeleteSongByIdTests {
+
+        @Test
+        @DisplayName("Should throw SongNotFoundException When incorrect songId was sent")
+        void should_throw_SongNotFoundException_When_songId_Is_Not_In_Db() {
+            // Given
+            // When
+            Throwable songExeption = catchThrowable(() -> songifyCrudFacade.deleteSongById(Long.MAX_VALUE));
+            // Then
+            assertThat(songExeption).isInstanceOf(SongNotFoundException.class);
+            assertThat(songExeption.getMessage()).isEqualTo("Song with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should delete song from db When method with correct songId was called")
+        void should_delete_song_from_db_When_correct_songId_Was_Sent() {
+            // Given
+            SongRequestDto testSong_1 = new SongRequestDto("TestSong_1", 123L, Instant.now(), SongLanguageDto.ENGLISH);
+            SongDto addedSong = songifyCrudFacade.addSong(testSong_1);
+            /// Check if song was correctly added
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).extracting(SongDto::id, SongDto::name, SongDto::duration)
+                    .containsExactly(addedSong.id(), addedSong.name(), addedSong.duration());
+            // When
+            songifyCrudFacade.deleteSongById(addedSong.id());
+            // Then
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(0);
+        }
+    }
+
+    @Nested
+    @DisplayName("DeleteAlbumById - Tests")
+    class DeleteAlbumByIdTests {
+
+        @Test
+        @DisplayName("Should throw AlbumNotFoundException When method was called with incorrect albumId")
+        void should_throw_AlbumNotFoundException_When_albumId_Is_Not_In_Db() {
+            // Given
+            // When
+            Throwable albumException = catchThrowable(() -> songifyCrudFacade.deleteAlbumById(Long.MAX_VALUE));
+            // Then
+            assertThat(albumException).isInstanceOf(AlbumNotFoundException.class);
+            assertThat(albumException.getMessage()).isEqualTo("Album with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should throw AlbumNotEmptyException When method was called at album with song/s")
+        void should_throw_AlbumNotEmptyException_When_album_with_song_was_called_in_method () {
+            // Given
+            SongRequestDto songDto = new SongRequestDto("TestSong", 123L, Instant.now(), SongLanguageDto.ENGLISH);
+            SongDto addedSong = songifyCrudFacade.addSong(songDto);
+            /// New album with song test song
+            AlbumWithSongRequestDto albumWithSongRequestDto = new AlbumWithSongRequestDto("TestAlbum_1", Instant.now(), addedSong.id());
+            AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumWithSongRequestDto);
+            /// Check if everything is added correctly
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(1);
+            // When
+            Throwable albumException = catchThrowable(() -> songifyCrudFacade.deleteAlbumById(albumDto.id()));
+            // Then
+            assertThat(albumException).isInstanceOf(AlbumNotEmptyException.class);
+            assertThat(albumException.getMessage()).isEqualTo("Album is not empty, cannot delete");
+
+        }
+
+        @Test
+        @DisplayName("Should delete empty Album When method was called with correct albumId")
+        void should_delete_empty_Album_When_correct_albumId_Was_Sent() {
+            // Given
+            SongRequestDto songDto = new SongRequestDto("TestSong", 123L, Instant.now(), SongLanguageDto.ENGLISH);
+            SongDto addedSong = songifyCrudFacade.addSong(songDto);
+            /// New album with song test song
+            AlbumWithSongRequestDto albumWithSongRequestDto = AlbumWithSongRequestDto.builder()
+                    .title("TestAlbum_1")
+                    .releaseDate(Instant.now())
+                    .songId(addedSong.id())
+                    .build();
+            AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumWithSongRequestDto);
+            /// Check if everything is added correctly
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(1);
+            /// Deleting Song from album
+            songifyCrudFacade.deleteSongById(addedSong.id());
+            // When
+            songifyCrudFacade.deleteAlbumById(albumDto.id());
+            // Then
+            assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(0);
+        }
+    }
 
     @Nested
     @DisplayName("DeleteArtistByIdWithAlbumsAndSongs - Tests")

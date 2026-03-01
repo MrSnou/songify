@@ -2,10 +2,12 @@ package com.songify.domain.crud;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +38,8 @@ class InMemoryAlbumRepository implements AlbumRepository {
 
     @Override
     public boolean existsById(final Long aLong) {
-        return false;
+        Optional<Album> albumById = findById(aLong);
+        return albumById.isPresent();
     }
 
     @Override
@@ -55,7 +58,6 @@ class InMemoryAlbumRepository implements AlbumRepository {
     @Override
     public void deleteById(final Long id) {
         db.remove(id);
-
     }
 
     @Override
@@ -185,11 +187,32 @@ class InMemoryAlbumRepository implements AlbumRepository {
 
     @Override
     public Page<Album> findAll(final Pageable pageable) {
-        return null;
+        List<Album> allAlbums = new ArrayList<>(db.values());
+
+
+        int start = 0;
+        int end = Math.min(start + 100, allAlbums.size());
+
+        List<Album> content;
+
+        if (start > allAlbums.size()) {
+            content = List.of();
+        } else {
+            content = allAlbums.subList(start, end);
+        }
+
+        return new PageImpl<>(content, Pageable.unpaged(), allAlbums.size());
     }
 
     @Override
-    public Set<Album> findAllAlbums(final Pageable pageable) {
-        return new HashSet<>(db.values());
+    public List<Album> findBySongsId(final Long songId) {
+        List<Album> albumsWithSong = new ArrayList<Album>();
+        List<Album> albums = db.values().stream().toList();
+        for (Album album : albums) {
+            if (album.getSongs().stream().anyMatch(song -> song.getId().equals(songId))) {
+                albumsWithSong.add(album);
+            }
+        }
+        return albumsWithSong;
     }
 }

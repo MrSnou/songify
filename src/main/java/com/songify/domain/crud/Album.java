@@ -61,6 +61,10 @@ class Album extends BaseEntity {
         songs.add(song);
     }
 
+    void removeSong(final Song song) {
+        songs.remove(song);
+    }
+
     void updateName(final String newName) {
         this.title = newName;
     }
