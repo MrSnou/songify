@@ -2,7 +2,6 @@ package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
-import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
 import com.songify.infrastructure.crud.album.error.AlbumNotEmptyException;
 import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
@@ -11,6 +10,9 @@ import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
 import com.songify.infrastructure.crud.artist.error.ArtistNotFoundException;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
+import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
+import com.songify.infrastructure.crud.genre.error.GenreIsUsedBySongsException;
+import com.songify.infrastructure.crud.genre.error.GenreNotFoundException;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
@@ -24,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -102,13 +103,13 @@ class SongifyCrudFacadeTest {
     class AddGenreTests {
 
         @Test
-        @DisplayName("Should add genre 'TestGenre' with id: 0 When genre was sent")
-        public void should_add_genre_with_id_0_when_genre_was_sent() {
+        @DisplayName("Should add genre 'TestGenre' with id: 1 When genre was sent")
+        public void should_add_genre_with_id_1_when_genre_was_sent() {
             // Given
             GenreRequestDto requestDto = GenreRequestDto.builder()
                     .name("TestGenre")
                     .build();
-            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(0);
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
             // When
             GenreDto genreDto = songifyCrudFacade.addGenre(requestDto);
             // Then
@@ -192,7 +193,7 @@ class SongifyCrudFacadeTest {
     }
 
     @Nested
-    @DisplayName("findAllArtists - Tests")
+    @DisplayName("FindAllArtists - Tests")
     class FindAllArtistsTests {
 
         @Test
@@ -373,7 +374,7 @@ class SongifyCrudFacadeTest {
             // Then
             assertThat(songGenreDtoById).isNotNull().isExactlyInstanceOf(SongGenreDto.class);
             assertThat(songGenreDtoById).extracting(SongGenreDto::songId, SongGenreDto::genre)
-            .containsExactly(1L, genreDto);
+                    .containsExactly(1L, genreDto);
         }
     }
 
@@ -503,7 +504,7 @@ class SongifyCrudFacadeTest {
 
         @Test
         @DisplayName("Should throw AlbumNotEmptyException When method was called at album with song/s")
-        void should_throw_AlbumNotEmptyException_When_album_with_song_was_called_in_method () {
+        void should_throw_AlbumNotEmptyException_When_album_with_song_was_called_in_method() {
             // Given
             SongRequestDto songDto = new SongRequestDto("TestSong", 123L, Instant.now(), SongLanguageDto.ENGLISH);
             SongDto addedSong = songifyCrudFacade.addSong(songDto);
@@ -543,6 +544,71 @@ class SongifyCrudFacadeTest {
             songifyCrudFacade.deleteAlbumById(albumDto.id());
             // Then
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(0);
+        }
+    }
+
+    @Nested
+    @DisplayName("DeleteGenreById - Tests")
+    class DeleteGenreByIdTests {
+
+        @Test
+        @DisplayName("Should return GenreNotFoundException When genre id was not found")
+        void should_return_GenreNotFoundException_When_genreId_Was_NotFound() {
+            // Given
+            // When
+            Throwable genreException = catchThrowable(() -> songifyCrudFacade.deleteGenreById(Long.MAX_VALUE));
+            // Then
+            assertThat(genreException).isInstanceOf(GenreNotFoundException.class);
+            assertThat(genreException.getMessage()).isEqualTo("Genre with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should throw GenreIsUsedBySongsException When genre with songs was given in method argument")
+        void should_throw_GenreIsUsedBySongsException_When_genre_with_songs_was_given_in_method_argument() {
+            // Given
+            GenreRequestDto genreRequest = GenreRequestDto.builder()
+                    .name("TestGenre")
+                    .build();
+            SongRequestDto songRequest = SongRequestDto.builder()
+                    .name("TestSong")
+                    .duration(123L)
+                    .releaseDate(Instant.now())
+                    .language(SongLanguageDto.OTHER)
+                    .build();
+            songifyCrudFacade.addGenre(genreRequest);
+            songifyCrudFacade.addSong(songRequest);
+            songifyCrudFacade.updateSongGenreById(0L, 2L);
+            /// Checking if everything was correctly added
+            /// GenreDtos because 1 is Default
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
+            GenreWithSongsResponseDto genreDtoWithSongsDto = songifyCrudFacade.findGenreDtoWithSongsDto(2L);
+            assertThat(genreDtoWithSongsDto.songs().size()).isEqualTo(1);
+            assertThat(genreDtoWithSongsDto.songs().iterator().next().name()).isEqualTo("TestSong");
+            // When
+            Throwable genreException = catchThrowable(() -> songifyCrudFacade.deleteGenreById(2L));
+            // Then
+            assertThat(genreException).isInstanceOf(GenreIsUsedBySongsException.class);
+            assertThat(genreException.getMessage()).isEqualTo("Cannot delete genre, because it is used by songs.");
+
+        }
+
+        @Test
+        @DisplayName("Should delete genre from db")
+        void should_delete_genre_from_db() {
+            // Given
+            GenreRequestDto genreRequest = GenreRequestDto.builder()
+                    .name("TestGenre")
+                    .build();
+            songifyCrudFacade.addGenre(genreRequest);
+            /// Check if genre was correctly added (2 in assertion, because we have "Default" Genre at id 1)
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
+            assertThat(songifyCrudFacade.findGenreDtoById(2L)).extracting(GenreDto::id, GenreDto::name)
+                    .containsExactly(2L, genreRequest.name());
+            // When
+            songifyCrudFacade.deleteGenreById(2L);
+            // Then
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
         }
     }
 
@@ -616,5 +682,205 @@ class SongifyCrudFacadeTest {
             assertThat(throwable).isExactlyInstanceOf(ArtistNotFoundException.class);
             assertThat(throwable.getMessage()).isEqualTo("Artist with id 0 not found.");
         }
+    }
+
+    @Nested
+    @DisplayName("AddArtistToAlbum - Tests")
+    class AddArtistToAlbumTests {
+
+        @Test
+        @DisplayName("Should return ArtistNotFoundExcepion When Artist was not found")
+        void should_return_artist_not_found_when_was_not_found() {
+            // Given
+            // When
+            Throwable artistException = catchThrowable(() -> songifyCrudFacade.addArtistToAlbum(Long.MAX_VALUE, Long.MAX_VALUE));
+            // Then
+            assertThat(artistException).isExactlyInstanceOf(ArtistNotFoundException.class);
+            assertThat(artistException.getMessage()).isEqualTo("Artist with id " + Long.MAX_VALUE + " not found.");
+        }
+
+        @Test
+        @DisplayName("Should return AlbumNotFoundException When Album was not found")
+        void should_return_album_not_found_when_was_not_found() {
+            // Given
+            ArtistRequestDto artistRequest = ArtistRequestDto.builder()
+                    .name("TestArtist")
+                    .build();
+            ArtistDto addedArtist = songifyCrudFacade.addArtist(artistRequest);
+            /// Checking if everything was correctly added
+            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
+            // When
+            Throwable albumException = catchThrowable(() -> songifyCrudFacade.addArtistToAlbum(addedArtist.id(), Long.MAX_VALUE));
+            // Then
+            assertThat(albumException).isExactlyInstanceOf(AlbumNotFoundException.class);
+            assertThat(albumException.getMessage()).isEqualTo("Album with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should add artist to album")
+        void should_add_artist_to_album() {
+            // Given
+            ArtistRequestDto artistRequest = ArtistRequestDto.builder()
+                    .name("TestArtist")
+                    .build();
+            ArtistDto addedArtist = songifyCrudFacade.addArtist(artistRequest);
+            SongRequestDto songRequest = SongRequestDto.builder()
+                    .name("TestSong")
+                    .duration(123L)
+                    .releaseDate(Instant.now())
+                    .language(SongLanguageDto.OTHER)
+                    .build();
+            SongDto addedSong = songifyCrudFacade.addSong(songRequest);
+            AlbumWithSongRequestDto albumRequest = AlbumWithSongRequestDto.builder()
+                    .title("TestAlbum")
+                    .releaseDate(Instant.now())
+                    .songId(addedSong.id())
+                    .build();
+            AlbumDto addedAlbum = songifyCrudFacade.addAlbumWithSong(albumRequest);
+            /// Checking if everything was correctly added
+            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).size()).isEqualTo(1);
+            // When
+            /// Void method, have to check by other methods
+            songifyCrudFacade.addArtistToAlbum(addedArtist.id(), addedAlbum.id());
+            // Then
+            assertThat(songifyCrudFacade.findAlbumsByArtistId(addedArtist.id()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAlbumsByArtistId(
+                    addedAlbum.id()).iterator().next().artists().size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findAlbumsByArtistId(
+                    addedAlbum.id()).iterator().next().name()).isEqualTo("TestAlbum");
+        }
+
+
+    }
+
+    @Nested
+    @DisplayName("UpdateArtistNameById - Tests")
+    class updateArtistNameByIdTests {
+
+        @Test
+        @DisplayName("Should return ArtistNotFoundException")
+        void should_return_artist_not_found_When_was_not_found() {
+            // Given
+            // When
+            Throwable artistException = catchThrowable(
+                    () -> songifyCrudFacade.updateArtistNameById(Long.MAX_VALUE, "TestArtist"));
+            // Then
+            assertThat(artistException).isExactlyInstanceOf(ArtistNotFoundException.class);
+            assertThat(artistException.getMessage()).isEqualTo("Artist with id " + Long.MAX_VALUE + " not found.");
+        }
+
+        @Test
+        @DisplayName("Should update Artist name")
+        void should_update_artist_name() {
+            // Given
+            ArtistRequestDto artistRequest = ArtistRequestDto.builder()
+                    .name("TestArtist")
+                    .build();
+            ArtistDto addedArtist = songifyCrudFacade.addArtist(artistRequest);
+            /// Check if everything is added correctly
+            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findArtistById(addedArtist.id()).name()).isEqualTo("TestArtist");
+            // When
+            songifyCrudFacade.updateArtistNameById(addedArtist.id(), "UpdatedTestArtist");
+            // Then
+            assertThat(songifyCrudFacade.findArtistById(addedArtist.id()).name()).isEqualTo("UpdatedTestArtist");
+
+        }
+    }
+
+    @Nested
+    @DisplayName("FindArtistById - Tests")
+    class findArtistByIdTests {
+
+        @Test
+        @DisplayName("Should return ArtistNotFoundException")
+        void should_return_artist_not_found_When_was_not_found() {
+            // Given
+            // When
+            Throwable artistException = catchThrowable(
+                    () -> songifyCrudFacade.updateArtistNameById(Long.MAX_VALUE, "TestArtist"));
+            // Then
+            assertThat(artistException).isExactlyInstanceOf(ArtistNotFoundException.class);
+            assertThat(artistException.getMessage()).isEqualTo("Artist with id " + Long.MAX_VALUE + " not found.");
+        }
+
+        @Test
+        @DisplayName("Should return Artist")
+        void should_return_artist() {
+            // Given
+            ArtistRequestDto artistRequest = ArtistRequestDto.builder()
+                    .name("TestArtist")
+                    .build();
+            ArtistDto addedArtist = songifyCrudFacade.addArtist(artistRequest);
+            // When
+            ArtistDto returnedArtist = songifyCrudFacade.findArtistById(addedArtist.id());
+            // Then
+            assertThat(returnedArtist).isEqualTo(addedArtist);
+        }
+    }
+
+    @Nested
+    @DisplayName("AddArtistWithDefaultAlbumAndSong - Tests")
+    class addArtistWithDefaultAlbumAndSongTests {
+
+        @Test
+        @DisplayName("Should add artist with default song and album")
+        void should_add_artist_with_default_song_and_album() {
+            // Given
+            ArtistRequestDto artistRequest = ArtistRequestDto.builder()
+                    .name("TestArtist")
+                    .build();
+            // When
+            ArtistDto artistDto = songifyCrudFacade.addArtistWithDefaultAlbumAndSong(artistRequest);
+            // Then
+            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findArtistById(artistDto.id())).extracting(ArtistDto::id, ArtistDto::name)
+                    .containsExactly(0L, "TestArtist");
+            assertThat(songifyCrudFacade.findAlbumsByArtistId(
+                            artistDto.id()).iterator().next().songs()
+                    .iterator().next().name()).containsSequence("default-song_");
+            assertThat(songifyCrudFacade.findAlbumsByArtistId(artistDto.id()).iterator().next().name()).containsSequence("default-album_");
+        }
+    }
+
+    @Nested
+    @DisplayName("UpdateGenreNameById - Tests")
+    class updateGenreNameByIdTests {
+
+        @Test
+        @DisplayName("Should return GenreNotFoundException")
+        void  should_return_GenreNotFoundException_When_Genre_was_not_found() {
+            // Given
+            // When
+            Throwable genreNotFoundException = catchThrowable(
+                    () -> songifyCrudFacade.updateGenreNameById(Long.MAX_VALUE, "UpdatedGenreName"));
+            // Then
+            assertThat(genreNotFoundException).isExactlyInstanceOf(GenreNotFoundException.class);
+            assertThat(genreNotFoundException.getMessage()).isEqualTo("Genre with id " + Long.MAX_VALUE + " not found.");
+        }
+
+        @Test
+        @DisplayName("Should update name of default genre with id 1L")
+        void should_update_name_of_default_genre_with_id_1() {
+            // Given
+            /// Checking if default is correctly added
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findGenreDtoById(1L).name()).isEqualTo("Default");
+            // When
+            songifyCrudFacade.updateGenreNameById(1L, "Updated_Default");
+            // Then
+            /// 2L because HashMap with AtomicInteger don't have update method like postgres,
+            /// and save is incrementing index in map.
+            assertThat(songifyCrudFacade.findGenreDtoById(2L).name()).isEqualTo("Updated_Default");
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
+        }
+    }
+
+    @Nested
+    @DisplayName("UpdateAlbumByIdWithSongsAndArtists - Tests")
+    class updateAlbumByIdWithSongsAndArtistsTests {
+
     }
 }

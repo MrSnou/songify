@@ -31,7 +31,7 @@ class ArtistAdder {
     }
     private Artist saveArtistWithDefaultAlbumAndSong(final String name) {
         Album album = albumAdder.addAlbum(
-                "default_album_" + UUID.randomUUID(),
+                "default-album_" + UUID.randomUUID(),
                 LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC));
         Song song = songAdder.addSong(new SongRequestDto(
                 "default-song_" + UUID.randomUUID(),

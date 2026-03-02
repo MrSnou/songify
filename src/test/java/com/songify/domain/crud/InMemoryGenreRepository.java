@@ -1,14 +1,12 @@
 package com.songify.domain.crud;
 
-import com.songify.infrastructure.crud.genre.GenreDto;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class InMemoryGenreRepository implements GenreRepository {
@@ -30,8 +28,8 @@ class InMemoryGenreRepository implements GenreRepository {
     }
 
     @Override
-    public Iterable<Genre> findAll() {
-        return new HashSet<Genre>(db.values());
+    public List<Genre> findAll() {
+        return new ArrayList<>(db.values());
     }
 
     @Override
@@ -81,14 +79,14 @@ class InMemoryGenreRepository implements GenreRepository {
 
     @Override
     public List<Genre> findAll(final Pageable pageable) {
-        return List.of();
+        return new  ArrayList<>(db.values());
     }
 
 
 
     @Override
     public void deleteById(final Long id) {
-
+        db.remove(id);
     }
 
     @Override
@@ -98,6 +96,9 @@ class InMemoryGenreRepository implements GenreRepository {
 
     @Override
     public void updateGenreById(final Long genreId, final String newName) {
-
+        Genre oldGenre = db.remove(genreId);
+        Genre updatedGenre = oldGenre;
+        updatedGenre.setName(newName);
+        save(updatedGenre);
     }
 }
