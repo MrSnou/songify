@@ -23,16 +23,17 @@ class AlbumUpdater {
     private final AlbumRepository albumRepository;
     private final ArtistRetriever artistRetriever;
     private final SongRetriever songRetriever;
+    private final ArtistAssigner artistAssigner;
 
 
     void updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
 
         Album oldAlbum = albumRepository.findById(albumId)
-                .orElseThrow(() -> new AlbumNotEmptyException("Album with id " + albumId + " does not exist"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumId + " not found"));
 
         requestDto.artistIds().forEach(artistId -> {
             Artist artist = artistRetriever.findArtistById(artistId);
-            artist.getAlbums().add(oldAlbum);
+            artistAssigner.addArtistToAlbum(artist.getId(), albumId);
         });
 
         requestDto.songIds().forEach(songId -> {

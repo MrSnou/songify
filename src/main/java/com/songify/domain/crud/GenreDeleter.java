@@ -17,7 +17,6 @@ class GenreDeleter {
     private final SongRetriever songRetriever;
 
     void deleteGenreById(final Genre genre) {
-        log.info("Deleting genre with id {}", genre.getId());
         Set<Song> allSongsByGenre = songRetriever.getAllSongsByGenre(genre);
         if (allSongsByGenre.isEmpty()) {
             genreRepository.deleteById(genre.getId());
