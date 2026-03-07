@@ -23,6 +23,7 @@ import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponse
 import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.util.SongLanguageDto;
+import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -56,6 +57,54 @@ class SongifyCrudFacadeTest {
                 .name("Default")
                 .build();
         songifyCrudFacade.addGenre(defaultGenre);
+    }
+
+    static class TestEntityFactory {
+
+        static SongRequestDto createSongDto() {
+            return createSongDto("TestSong");
+        }
+
+        static SongRequestDto createSongDto(String songName) {
+            return SongRequestDto.builder()
+                    .name(songName)
+                    .duration(123L)
+                    .releaseDate(Instant.now())
+                    .language(SongLanguageDto.OTHER)
+                    .build();
+        }
+
+        static ArtistRequestDto createArtistDto() {
+            return createArtistDto("TestArtist");
+        }
+
+        static ArtistRequestDto createArtistDto(String artistName) {
+            return ArtistRequestDto.builder()
+                    .name(artistName)
+                    .build();
+        }
+
+        static GenreRequestDto createGenreDto() {
+            return createGenreDto("TestGenre");
+        }
+
+        static GenreRequestDto createGenreDto(String genreName) {
+            return GenreRequestDto.builder()
+                    .name(genreName)
+                    .build();
+        }
+
+        static AlbumWithSongRequestDto createAlbumWithSongDto(SongDto songDto) {
+            return createAlbumWithSongDto("TestAlbum", songDto);
+        }
+
+        static AlbumWithSongRequestDto createAlbumWithSongDto(String albumName, SongDto songDto) {
+            return AlbumWithSongRequestDto.builder()
+                    .title(albumName)
+                    .songId(songDto.id())
+                    .releaseDate(Instant.now())
+                    .build();
+        }
     }
 
     @Nested
@@ -1113,7 +1162,7 @@ class SongifyCrudFacadeTest {
 
     @Nested
     @DisplayName("UpdateSongGenreById - Tests")
-    class updateSongGenreById {
+    class updateSongGenreByIdTests {
 
         @Test
         @DisplayName("Should throw SongNotFoundException")
@@ -1183,7 +1232,129 @@ class SongifyCrudFacadeTest {
 
     @Nested
     @DisplayName("FindGenreDtoById - Tests")
-    class findGenreDtoById {
+    class findGenreDtoByIdTests {
+
+        @Test
+        @DisplayName("Should throw GenreNotFoundException")
+        void should_throw_GenreNotFoundException() {
+            // Given
+            // When
+            Throwable genreException = catchThrowable(() -> songifyCrudFacade.findGenreDtoById(Long.MAX_VALUE));
+            // Then
+            assertThat(genreException).isInstanceOf(GenreNotFoundException.class)
+                    .hasMessage("Genre with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should find genreDto When correct Genre Id was given")
+        void should_find_genreDto_When_correct_GenreId() {
+            // Given
+            GenreRequestDto genreRequest = GenreRequestDto.builder()
+                    .name("TestGenre")
+                    .build();
+            GenreDto addedGenre = songifyCrudFacade.addGenre(genreRequest);
+            /// Check if everything is added correctly
+            /// "...isEqualTo = 2" because we have "Default" Genre at ID = 1
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
+            // When
+            GenreDto fetchedGenreDto = songifyCrudFacade.findGenreDtoById(addedGenre.id());
+            // Then
+            assertThat(fetchedGenreDto).extracting(GenreDto::id, GenreDto::name).
+                    containsExactly(addedGenre.id(), addedGenre.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("FindAllGenreDto - Tests")
+    class findAllGenreDtoTests {
+        @Test
+        @DisplayName("Should return list of all Genres with only default Genre with id 1")
+        void should_return_empty_list_of_genre() {
+            // Given
+            // When
+            List<GenreDto> listOfAllGenres = songifyCrudFacade.findAllGenreDto(Pageable.unpaged());
+            // Then
+            assertThat(listOfAllGenres.size()).isEqualTo(1);
+            assertThat(listOfAllGenres.iterator().next()).extracting(GenreDto::id, GenreDto::name)
+                    .containsExactly(1L, "Default");
+        }
+    }
+
+    @Nested
+    @DisplayName("FindAllAlbumDto - Tests")
+    class findAllAlbumDtoTests {
+
+        @Test
+        @DisplayName("Should return empty List")
+        void should_return_empty_list_of_albums() {
+            // Given
+            // When
+            List<AlbumDto> allAlbumDtoList = songifyCrudFacade.findAllAlbumDto(Pageable.unpaged());
+            // Then
+            assertThat(allAlbumDtoList).isInstanceOf(List.class);
+            assertThat(allAlbumDtoList.size()).isEqualTo(0);
+        }
+    }
+
+    @Nested
+    @DisplayName("FindGenreDtoWithSongsDto - Tests")
+    class findGenreDtoWithSongsDtoTests {
+
+        @Test
+        @DisplayName("Should return GenreNotFoundException")
+        void should_throw_GenreNotFoundException() {
+            // Given
+            // When
+            Throwable genreException = catchThrowable(() -> songifyCrudFacade.findGenreDtoWithSongsDto(Long.MAX_VALUE));
+            // Then
+            assertThat(genreException).isInstanceOf(GenreNotFoundException.class)
+                    .hasMessage("Genre with id " + Long.MAX_VALUE + " not found");
+        }
+
+        @Test
+        @DisplayName("Should return genreDto with List<SongDto>")
+        void should_return_genreDto_with_list_of_songs() {
+            // Given
+            SongRequestDto songRequest = SongRequestDto.builder()
+                    .name("TestSong")
+                    .duration(123L)
+                    .releaseDate(Instant.now())
+                    .language(SongLanguageDto.OTHER)
+                    .build();
+            GenreRequestDto genreRequest =  GenreRequestDto.builder()
+                    .name("TestGenre")
+                    .build();
+            GenreDto addedGenre = songifyCrudFacade.addGenre(genreRequest);
+            SongDto addedSong = songifyCrudFacade.addSong(songRequest);
+            songifyCrudFacade.updateSongGenreById(addedSong.id(), addedGenre.id());
+            /// Check if everything is added correctly
+            /// Genres equals = 2, because of default genre in db on id 1L
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
+            // When
+            GenreWithSongsResponseDto fetchedGenreDtoWithSongsDtoList =
+                    songifyCrudFacade.findGenreDtoWithSongsDto(addedGenre.id());
+            // Then
+            assertThat(fetchedGenreDtoWithSongsDtoList.genreDto()).extracting(GenreDto::id, GenreDto::name)
+                    .containsExactly(addedGenre.id(), addedGenre.name());
+            assertThat(fetchedGenreDtoWithSongsDtoList.songs().size()).isEqualTo(1);
+            /// ... addedSong.id() + 1, because of usage "updateSongGenreById" in //Given section, test database
+            /// don't have update method (HashMap + AtomicInteger) and every update is simple remove and add as
+            /// new object with updated variables.
+            assertThat(fetchedGenreDtoWithSongsDtoList.songs().iterator().next()).extracting(SongDto::id, SongDto::name)
+                    .containsExactly(addedSong.id() + 1, addedSong.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("FindArtistDtoWithAlbumsDto - Tests")
+    class findArtistDtoWithAlbumsDtoTests {
+
+    }
+
+    @Nested
+    @DisplayName("FindAlbumsByArtistId - Tests")
+    class  findAlbumsByArtistIdTests {
 
     }
 }
