@@ -83,8 +83,8 @@ public class SongifyCrudFacade {
         return songRetriever.findSongGenreDtoById(id);
     }
 
-    public AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long id) {
-        return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
+    public AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long albumId) {
+        return albumRetriever.findAlbumByIdWithArtistsAndSongs(albumId);
     }
 
     public SongDto updatesSongPartiallyById(Long id, UpdateSongRequestDto songFromRequest) {

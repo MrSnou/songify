@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 class InMemoryAlbumRepository implements AlbumRepository {
 
-    Map<Long, Album> db =  new HashMap<>();
+    Map<Long, Album> db = new HashMap<>();
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
@@ -51,7 +50,7 @@ class InMemoryAlbumRepository implements AlbumRepository {
     public Set<Album> findByArtistsId(final Long artistId) {
         return db.values().stream()
                 .filter(album -> album.getArtists().stream()
-                .anyMatch(artist -> artist.getId().equals(artistId)))
+                        .anyMatch(artist -> artist.getId().equals(artistId)))
                 .collect(Collectors.toSet());
     }
 
