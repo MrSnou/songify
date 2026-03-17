@@ -82,23 +82,33 @@ Happy Path :
 
 Given there is no songs, artists, albums and genres created before
 
-1. When I go to /song then I can see no songs
-2. When I post to /song with Song "Till I collapse" is returned with id 1
-3. When I post to /song with Song "Lose Yourself" then Song "Lose Yourself" is returned with id 2
-4. When I go to /genre then I can see no genres
-5. When I post to /genre with Genre "Rap" then Genre "Rap" is returned with id 1
-6. When I go to /song/1 then I can see default genre
-7. When I put to /song/1/genre/1 then Genre with id 1 ("Rap") is added to Song with id 1 ("Till I collapse")
-8. When I go to /song/1 then I can see "Rap" genre
-9. When I put to /song/2/genre/1 then Genre with id 1 ("Rap") is added to Song with id 2 ("Lose Yourself")
-10. When I go to /album then I can see no albums
-11. When I post to /album with Album "EminemAlbum1" and Song with id 1 then Album "EminemAlbum1" is returned with id 1
-12. When I go to /album/1 then I can see song with id 1 added to it
-13. When I put to /album/1/song/1 then Song with id 1 ("Till I collapse") is added to Album with id 1 ("EminemAlbum1")
-14. When I put to /album/1/song/2 then Song with id 2 ("Lose Yourself") is added to Album with id 1 ("EminemAlbum1")
-15. When I go to /album/1/song then I can see 2 songs (id 1, id 2)
-16. When I post to /artist with Artist "Eminem" then Artist "Eminem" is returned with id 1
-17. When I put to /album/1/artist/2 then Artist with id 1 ("Eminem") is added to Album with id 1
+Happy Path V2 (after refactor)
+
+1. When I go to LH:8082/api/v1/songs/(Http_GetMethod), I can see no songs
+2. When I post to LH:8082/api/v1/songs/(Http_PostMethod with body) with song "Till I collapse", 
+   then I can see that posted song is returned with id 1.
+3. When I post to LH:8082/api/v1/songs/(Http_PostMethod with body) with song "Lose Yourself",
+   then I can see that posted song is returned with id 2.
+4. When I go to LH:8082/api/v1/genres/(Http_GetMethod), I can see only "Default" Genre with id 1.
+5. When I post to LH:8082/api/v1/genres/(Http_PostMethod with body) with Genre "Rap",
+   then I can see added Genre with id 2.
+6. When I go to LH:8082/api/v1/genre/1, I can see Default genre with id 1.
+7. When I update to (Http_PostMethod with PathVariable songId and UpdateGenreDto body) 
+   LH:8082/api/v1/updateSongGenre/1 and UpdateGenreBody(genreId - 2), then I can see that Genre was added to song with id 1.
+8. When I go to LH:8082/api/v1/songs/1, I can see song with "Rap" Genre.
+9. When I go to LH:8082/api/v1/albums/, I can see no albums.
+10. When I post to LH:8082/api/v1/albums/(Http_PostMethod with body) with album "Eminem_Album_1" and song id 1,
+    then album "Eminem_Album_1" is returned with id 1.
+11. When I go to LH:8082/api/v1/albums/1, I can see no albums because there is no artists in the system.
+12. When I post to LH:8082/api/v1/artists/(Http_PostMethod with body) with Artist "Eminem",
+    then artist "Eminem" is returned with id 1.
+13. When I put to LH:8082/api/v1/artists/addArtistToAlbum/{artistId - 1}/{albumId - 1}, 
+    then I can see that Artist with id 1 was added to Album with id 1.
+14. When I go to LH:8082/api/v1/albums/1, I can see album with single song with id 1, and artist with id 1.
+15. When I put to LH:8082/api/v1/albums/(Http_PostMethod with body) with album id 1 and song id 2 ("Lose Yourself"), 
+    then Song with id 2 us added to Album with id 1 ("Eminem_Album_1").
+16. When I go to Lh:8082/api/v1/albums/1, then I can see album with 2 songs (songId 1, songId 2) and one artist (artistId 1).
+  
 
 
 

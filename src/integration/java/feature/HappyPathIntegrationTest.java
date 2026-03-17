@@ -1,0 +1,84 @@
+package feature;
+
+
+import com.songify.SongifyApplication;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+@SpringBootTest(classes = SongifyApplication.class)
+@Testcontainers
+@AutoConfigureMockMvc
+@ActiveProfiles("integration")
+class HappyPathIntegrationTest {
+
+    @Container
+    static PostgreSQLContainer<?> postgreSQLContainer =
+            new PostgreSQLContainer<>("postgres:16-alpine")
+                    .withUsername("test")
+                    .withPassword("test");
+
+    @Autowired
+    public MockMvc mockMvc;
+
+    @DynamicPropertySource
+    public static void dynamicPropertySource(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+        System.out.println("PostgreSQL URL: " + postgreSQLContainer.getJdbcUrl());
+    }
+
+    @Nested
+    @DisplayName("HappyPath Integration Test")
+    class happyPathIntegrationTest {
+
+        @Test
+        @DisplayName("First Positive HappyPath Test")
+        void firstPositiveHappyPathTest() throws Exception {
+            // 1. When I go to LH:8082/api/v1/songs/(Http_GetMethod), I can see no songs
+            mockMvc.perform(get("/api/v1/songs")
+                    .contentType(MediaType.APPLICATION_JSON)
+            );
+            // 2. When I post to LH:8082/api/v1/songs/(Http_PostMethod with body) with song "Till I collapse",
+            //    then I can see that posted song is returned with id 1.
+
+        }
+
+    }
+}
+
+
+
+// 3. When I post to LH:8082/api/v1/songs/(Http_PostMethod with body) with song "Lose Yourself",
+//      then I can see that posted song is returned with id 2.
+// 4. When I go to LH:8082/api/v1/genres/(Http_GetMethod), I can see only "Default" Genre with id 1.
+// 5. When I post to LH:8082/api/v1/genres/(Http_PostMethod with body) with Genre "Rap",
+//      then I can see added Genre with id 2.
+// 6. When I go to LH:8082/api/v1/genre/1, I can see Default genre with id 1.
+// 7. When I update to (Http_PostMethod with PathVariable songId and UpdateGenreDto body)
+//      LH:8082/api/v1/updateSongGenre/1 and UpdateGenreBody(genreId - 2), then I can see that Genre was added to song with id 1.
+// 8. When I go to LH:8082/api/v1/songs/1, I can see song with "Rap" Genre.
+// 9. When I go to LH:8082/api/v1/albums/, I can see no albums.
+// 10. When I post to LH:8082/api/v1/albums/(Http_PostMethod with body) with album "Eminem_Album_1" and song id 1,
+//      then album "Eminem_Album_1" is returned with id 1.
+// 11. When I go to LH:8082/api/v1/albums/1, I can see no albums because there is no artists in the system.
+// 12. When I post to LH:8082/api/v1/artists/(Http_PostMethod with body) with Artist "Eminem",
+//      then artist "Eminem" is returned with id 1.
+// 13. When I put to LH:8082/api/v1/artists/addArtistToAlbum/{artistId - 1}/{albumId - 1},
+//      then I can see that Artist with id 1 was added to Album with id 1.
+// 14. When I go to LH:8082/api/v1/albums/1, I can see album with single song with id 1, and artist with id 1.
+// 15. When I put to LH:8082/api/v1/albums/(Http_PostMethod with body) with album id 1 and song id 2 ("Lose Yourself"),
+//      then Song with id 2 us added to Album with id 1 ("Eminem_Album_1").
+// 16. When I go to Lh:8082/api/v1/albums/1, then I can see album with 2 songs (songId 1, songId 2) and one artist (artistId 1).

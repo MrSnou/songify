@@ -219,7 +219,8 @@ class SongifyCrudFacadeTest {
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
             // Then
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).extracting(SongDto::id, SongDto::name, SongDto::duration)
+            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()))
+                    .extracting(SongDto::id, SongDto::name, SongDto::duration)
                     .containsExactly(0L, songRequest.name(), songRequest.duration());
         }
     }
@@ -521,8 +522,7 @@ class SongifyCrudFacadeTest {
         @DisplayName("Should delete empty Album When method was called with correct albumId")
         void should_delete_empty_Album_When_correct_albumId_Was_Sent() {
             // Given
-            SongRequestDto songDto = TestEntityFactory.aSong();
-            SongDto addedSong = songifyCrudFacade.addSong(songDto);
+            SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
             /// New album with song test song
             AlbumWithSongRequestDto albumWithSongRequestDto = TestEntityFactory.anAlbumWithSong(addedSong);
             AlbumDto addedAlbumWithSong = songifyCrudFacade.addAlbumWithSong(albumWithSongRequestDto);
@@ -644,6 +644,7 @@ class SongifyCrudFacadeTest {
             songifyCrudFacade.addArtistToAlbum(addedArtist.id(), albumDto.id());
             assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()).id()).isEqualTo(0L);
+            assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAlbumsByArtistId(albumDto.id()).size()).isEqualTo(1);
             // When
             songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(addedArtist.id());
