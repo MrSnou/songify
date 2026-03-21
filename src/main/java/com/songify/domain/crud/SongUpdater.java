@@ -1,5 +1,7 @@
 package com.songify.domain.crud;
 
+import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
+import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
@@ -22,8 +24,8 @@ class SongUpdater {
     private final GenreRetriever genreRetriever;
 
 
-    SongDto updateById(Long id, UpdateSongRequestDto songFromRequest) {
-        Song oldSong = songRetriever.findSongById(id);
+    UpdateSongResponseDto updateById(Long songId, UpdateSongRequestDto songFromRequest) {
+        Song oldSong = songRetriever.findSongById(songId);
 
         String name = null;
         Long duration = null;
@@ -39,22 +41,37 @@ class SongUpdater {
             duration = oldSong.getDuration();
         }
 
-        Song updatedSong = new Song(name, oldSong.getReleaseDate(), duration, oldSong.getLanguage());
-        songRepository.updateById(id, updatedSong);
+        Song updatedSong = new Song(name, oldSong.getReleaseDate(), duration, oldSong.getLanguage(), oldSong.getGenre());
+        songRepository.updateById(songId, updatedSong);
 
-        return new SongDto(oldSong.getId(), oldSong.getName(), oldSong.getDuration());
+        UpdateSongResponseDto response = new UpdateSongResponseDto(
+                "Successfully updated song with id: " + songId +
+                        " song name from " + oldSong.getName() + " to " + songFromRequest.songName() +
+                        " and duration from " + oldSong.getDuration() + " to " + songFromRequest.duration() + "."
+                , new SongDto(oldSong.getId(), songFromRequest.songName(), songFromRequest.duration())
+        );
+
+        return response;
     }
 
     UpdateSongAlbumResponseDto updateSongAlbumById(final Long songId, final UpdateSongAlbumRequestDto request) {
         return albumUpdater.addSongToAlbum(songId, request.albumId());
     }
 
-    void updateSongGenreById(final Long songId, final Long genreId) {
+    UpdateSongResponseDto updateSongGenreById(final Long songId, final UpdateGenreDto requestDto) {
         songRetriever.existsById(songId);
 
-        Genre newGenre = genreRetriever.findGenreById(genreId);
+        Genre newGenre = genreRetriever.findGenreById(requestDto.genreId());
 
         songRepository.updateSongGenreById(songId, newGenre);
+        SongDto updatedSongDto = songRetriever.findSongDtoById(songId);
+
+        UpdateSongResponseDto response = UpdateSongResponseDto.builder()
+                .message("Successfully updated song genre with id: " + songId + " to " +  newGenre.getName() + ".")
+                .updatedSong(updatedSongDto)
+                .build();
+
+        return response;
     }
 
     void setGenreById(final Long songId, final Long genreId) {

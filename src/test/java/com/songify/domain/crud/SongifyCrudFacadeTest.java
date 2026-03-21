@@ -13,6 +13,7 @@ import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsRespo
 import com.songify.infrastructure.crud.artist.error.ArtistNotFoundException;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
+import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
 import com.songify.infrastructure.crud.genre.error.GenreIsUsedBySongsException;
 import com.songify.infrastructure.crud.genre.error.GenreNotFoundException;
@@ -20,6 +21,7 @@ import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
+import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -335,6 +337,7 @@ class SongifyCrudFacadeTest {
         void should_return_Default_genre_When_song_without_genre_was_requested_at_method_call() {
             // Given
             SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
+            GenreDto defaultGenre = songifyCrudFacade.findGenreDtoById(1L);
             /// Checking if song was correctly added to db
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             // When
@@ -342,7 +345,7 @@ class SongifyCrudFacadeTest {
             // Then
             assertThat(songGenreDtoById).isNotNull().isExactlyInstanceOf(SongGenreDto.class);
             assertThat(songGenreDtoById.genre()).extracting(GenreDto::id, GenreDto::name)
-                    .containsExactly(null, "Default");
+                    .containsExactly(defaultGenre.id(), defaultGenre.name());
 
         }
 
@@ -354,19 +357,17 @@ class SongifyCrudFacadeTest {
             GenreRequestDto genreRequest = TestEntityFactory.aGenre("TestGenre");
             GenreDto addedGenre = songifyCrudFacade.addGenre(genreRequest);
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
-            songifyCrudFacade.updateSongGenreById(addedSong.id(), addedGenre.id());
+            songifyCrudFacade.updateSongGenreById(addedSong.id(), new UpdateGenreDto(addedGenre.id()));
             /// Checking if song and genre was correctly added to db
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findGenreDtoById(addedGenre.id())).extracting(GenreDto::id, GenreDto::name)
                     .containsExactly(addedGenre.id(), genreRequest.name());
             // When
-            /// "(addedSong.id() + 1)" because this is testing db (HashSet) with Atomic Integer don't have update function like postgreSQL
-            /// and have to remove old and add new what affects ID, in main DB this is not a problem because custom update JPQL query
-            SongGenreDto songGenreDtoById = songifyCrudFacade.findSongGenreDtoById(addedSong.id() + 1);
+            SongGenreDto songGenreDtoById = songifyCrudFacade.findSongGenreDtoById(addedSong.id());
             // Then
             assertThat(songGenreDtoById).isNotNull().isExactlyInstanceOf(SongGenreDto.class);
             assertThat(songGenreDtoById).extracting(SongGenreDto::songId, SongGenreDto::genre)
-                    .containsExactly(addedSong.id() + 1, addedGenre);
+                    .containsExactly(addedSong.id(), addedGenre);
         }
     }
 
@@ -443,14 +444,12 @@ class SongifyCrudFacadeTest {
             assertThat(songifyCrudFacade.findSongDtoById(addedSong.id())).extracting(SongDto::id, SongDto::name, SongDto::duration)
                     .containsExactly(addedSong.id(), addedSong.name(), 123L);
             // When
-            /// "(addedSong.id() + 1)" because this is testing db (HashSet) with Atomic Integer don't have update function like postgreSQL
-            /// and have to remove old and add new what affects ID, in main DB this is not a problem because custom update JPQL query
             songifyCrudFacade.updatesSongPartiallyById(addedSong.id(), updateSongRequestDto);
-            SongDto updatedSong = songifyCrudFacade.findSongDtoById(addedSong.id() + 1);
+            SongDto updatedSong = songifyCrudFacade.findSongDtoById(addedSong.id());
             // Then
             assertThat(updatedSong).isNotNull().isExactlyInstanceOf(SongDto.class);
             assertThat(updatedSong).extracting(SongDto::id, SongDto::name, SongDto::duration)
-                    .containsExactly(1L, "UpdatedTestSong", 321L);
+                    .containsExactly(0L, "UpdatedTestSong", 321L);
         }
     }
 
@@ -562,7 +561,7 @@ class SongifyCrudFacadeTest {
             SongRequestDto songRequest = TestEntityFactory.aSong();
             GenreDto addedGenre = songifyCrudFacade.addGenre(genreRequest);
             SongDto addedSong = songifyCrudFacade.addSong(songRequest);
-            songifyCrudFacade.updateSongGenreById(addedSong.id(), addedGenre.id());
+            songifyCrudFacade.updateSongGenreById(addedSong.id(), new UpdateGenreDto(addedGenre.id()));
             /// Checking if everything was correctly added
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
@@ -776,29 +775,6 @@ class SongifyCrudFacadeTest {
     }
 
     @Nested
-    @DisplayName("AddArtistWithDefaultAlbumAndSong - Tests")
-    class addArtistWithDefaultAlbumAndSongTests {
-
-        @Test
-        @DisplayName("Should add artist with default song and album")
-        void should_add_artist_with_default_song_and_album() {
-            // Given
-            ArtistRequestDto artistRequest = TestEntityFactory.anArtist();
-            // When
-            ArtistDto artistDto = songifyCrudFacade.addArtistWithDefaultAlbumAndSong(artistRequest);
-            // Then
-            assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findArtistById(artistDto.id())).extracting(ArtistDto::id, ArtistDto::name)
-                    .containsExactly(0L, "TestArtist");
-            assertThat(songifyCrudFacade.findAlbumsByArtistId(
-                    artistDto.id()).iterator().next().songs().iterator().next().name())
-                    .containsSequence("default-song_");
-            assertThat(songifyCrudFacade.findAlbumsByArtistId(artistDto.id()).iterator().next().name())
-                    .containsSequence("default-album_");
-        }
-    }
-
-    @Nested
     @DisplayName("UpdateGenreNameById - Tests")
     class updateGenreNameByIdTests {
 
@@ -824,9 +800,7 @@ class SongifyCrudFacadeTest {
             // When
             songifyCrudFacade.updateGenreNameById(1L, "Updated_Default");
             // Then
-            /// 2L because HashMap with AtomicInteger don't have update method like postgres,
-            /// and save is incrementing index in map.
-            assertThat(songifyCrudFacade.findGenreDtoById(2L).name()).isEqualTo("Updated_Default");
+            assertThat(songifyCrudFacade.findGenreDtoById(1L).name()).isEqualTo("Updated_Default");
             assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
         }
     }
@@ -1014,7 +988,7 @@ class SongifyCrudFacadeTest {
             // Given
             // When
             Throwable songException = catchThrowable(() ->
-                    songifyCrudFacade.updateSongGenreById(Long.MAX_VALUE, 0L));
+                    songifyCrudFacade.updateSongGenreById(Long.MAX_VALUE, new UpdateGenreDto(0L)));
             // Then
             assertThat(songException).isInstanceOf(SongNotFoundException.class)
                     .hasMessage("Song with id " + Long.MAX_VALUE + " not found");
@@ -1029,7 +1003,7 @@ class SongifyCrudFacadeTest {
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             // When
             Throwable genreException = catchThrowable(() ->
-                    songifyCrudFacade.updateSongGenreById(addedSong.id(), 0L));
+                    songifyCrudFacade.updateSongGenreById(addedSong.id(), new UpdateGenreDto(0L)));
             // Then
             assertThat(genreException).isInstanceOf(GenreNotFoundException.class)
                     .hasMessage("Genre with id " + addedSong.id() + " not found");
@@ -1040,6 +1014,7 @@ class SongifyCrudFacadeTest {
         void should_set_new_genre() {
             SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
             GenreDto addedGenre = songifyCrudFacade.addGenre(TestEntityFactory.aGenre());
+            UpdateGenreDto updateDto = new UpdateGenreDto(addedGenre.id());
             /// Check if everything is added correctly
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
@@ -1048,14 +1023,12 @@ class SongifyCrudFacadeTest {
                     .isNotEqualTo(addedGenre.name())
                     .isEqualTo("Default");
             // When
-            songifyCrudFacade.updateSongGenreById(addedSong.id(), addedGenre.id());
+            songifyCrudFacade.updateSongGenreById(addedSong.id(), updateDto);
             // Then
 
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
-            /// "addedSong.id() + 1" because test database working on HashMap with AtomicInteger and it's unable to use
-            /// Update function like in postgreSQL database.
-            SongGenreDto updatedSongGenreDto = songifyCrudFacade.findSongGenreDtoById(addedSong.id() + 1);
+            SongGenreDto updatedSongGenreDto = songifyCrudFacade.findSongGenreDtoById(addedSong.id());
             assertThat(updatedSongGenreDto.genre().name())
                     .isEqualTo(addedGenre.name());
         }
@@ -1144,9 +1117,9 @@ class SongifyCrudFacadeTest {
         @DisplayName("Should return genreDto with List<SongDto>")
         void should_return_genreDto_with_list_of_songs() {
             // Given
-            GenreDto addedGenre = songifyCrudFacade.addGenre(TestEntityFactory.aGenre());
             SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
-            songifyCrudFacade.updateSongGenreById(addedSong.id(), addedGenre.id());
+            GenreDto addedGenre = songifyCrudFacade.addGenre(TestEntityFactory.aGenre());
+            songifyCrudFacade.updateSongGenreById(addedSong.id(), new UpdateGenreDto(addedGenre.id()));
             /// Check if everything is added correctly
             /// Genres equals = 2, because of default genre in db on id 1L
             assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
@@ -1158,11 +1131,8 @@ class SongifyCrudFacadeTest {
             assertThat(fetchedGenreDtoWithSongsDtoList.genreDto()).extracting(GenreDto::id, GenreDto::name)
                     .containsExactly(addedGenre.id(), addedGenre.name());
             assertThat(fetchedGenreDtoWithSongsDtoList.songs().size()).isEqualTo(1);
-            /// ... addedSong.id() + 1, because of usage "updateSongGenreById" in //Given section, test database
-            /// don't have update method (HashMap + AtomicInteger) and every update is simple remove and add as
-            /// new object with updated variables.
             assertThat(fetchedGenreDtoWithSongsDtoList.songs().iterator().next()).extracting(SongDto::id, SongDto::name)
-                    .containsExactly(addedSong.id() + 1, addedSong.name());
+                    .containsExactly(addedSong.id(), addedSong.name());
         }
     }
 
@@ -1247,6 +1217,37 @@ class SongifyCrudFacadeTest {
                     .containsExactly(addedSong.id(), addedSong.name());
             assertThat(fetchedArtistWithAlbums.iterator().next().artists().iterator().next()).extracting(ArtistDto::id, ArtistDto::name)
                     .containsExactly(addedArtist.id(), addedArtist.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("FindSongDtoWithGenreDtoById - Tests")
+    class findSongDtoWithGenreDtoById {
+
+        @Test
+        @DisplayName("Should return SongNotFoundException")
+        void should_return_songNotFoundException() {
+            // Given
+            // When
+            Throwable songException = catchThrowable(() -> songifyCrudFacade.findSongDtoWithGenreDtoById(Long.MAX_VALUE));
+            // Then
+            assertThat(songException).isInstanceOf(SongNotFoundException.class)
+                    .hasMessage("Song with id: " + Long.MAX_VALUE + " not found.");
+        }
+
+        @Test
+        @DisplayName("Should return SongDto with Default GenreDto")
+        void should_return_songDto_with_default_genre() {
+            // Given
+            SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
+            GenreDto defaultGenre = songifyCrudFacade.findGenreDtoById(1L);
+            // When
+            SongWithGenreResponseDto responseDto = songifyCrudFacade.findSongDtoWithGenreDtoById(addedSong.id());
+            // Then
+            assertThat(responseDto.song()).extracting(SongDto::id, SongDto::name, SongDto::duration)
+                    .containsExactly(addedSong.id(), addedSong.name(), addedSong.duration());
+            assertThat(responseDto.genre()).extracting(GenreDto::id, GenreDto::name)
+                    .containsExactly(defaultGenre.id(), defaultGenre.name());
         }
     }
 }

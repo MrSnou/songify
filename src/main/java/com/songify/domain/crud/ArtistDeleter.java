@@ -2,6 +2,7 @@ package com.songify.domain.crud;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,10 +45,8 @@ class ArtistDeleter {
                 album.getArtists().remove(artist);
                 artist.getAlbums().remove(album);
             }
-
         }
         artistRepository.deleteArtistById(artist.getId());
-
     }
 
 // TODO - Fix hermetic error (Domain Driven Design) / Refactor code to entities to not broke Service-Doman connection

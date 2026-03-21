@@ -14,6 +14,8 @@ class InMemoryGenreRepository implements GenreRepository {
     Map<Long, Genre> db =  new HashMap<>();
     AtomicInteger index = new AtomicInteger(1);
 
+
+
     @Override
     public Genre save(final Genre genre) {
         long index = this.index.getAndIncrement();
@@ -97,8 +99,7 @@ class InMemoryGenreRepository implements GenreRepository {
     @Override
     public void updateGenreById(final Long genreId, final String newName) {
         Genre oldGenre = db.remove(genreId);
-        Genre updatedGenre = oldGenre;
-        updatedGenre.setName(newName);
-        save(updatedGenre);
+        oldGenre.setName(newName);
+        db.put(oldGenre.getId(), oldGenre);
     }
 }

@@ -15,7 +15,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -62,13 +61,11 @@ class Song extends BaseEntity {
         this.name = name;
     }
 
-    public Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage language) {
+    public Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage language, final Genre genre) {
         this.name = name;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.language = language;
-        this.genre = new Genre("Default");
+        this.genre = genre;
     }
-
-
 }

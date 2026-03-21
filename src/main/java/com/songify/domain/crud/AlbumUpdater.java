@@ -1,12 +1,11 @@
 package com.songify.domain.crud;
 
-import com.songify.infrastructure.crud.artist.ArtistDto;
-import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
 import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
-import com.songify.infrastructure.crud.album.error.AlbumNotEmptyException;
 import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
+import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,17 +30,24 @@ class AlbumUpdater {
         Album oldAlbum = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumId + " not found"));
 
-        requestDto.artistIds().forEach(artistId -> {
-            Artist artist = artistRetriever.findArtistById(artistId);
-            artistAssigner.addArtistToAlbum(artist.getId(), albumId);
-        });
+        if (requestDto.artistIds() != null && !requestDto.artistIds().isEmpty()) {
+            requestDto.artistIds().forEach(artistId -> {
+                Artist artist = artistRetriever.findArtistById(artistId);
+                artistAssigner.addArtistToAlbum(artist.getId(), albumId);
+            });
+        }
 
-        requestDto.songIds().forEach(songId -> {
-            Song song = songRetriever.findSongById(songId);
-            oldAlbum.addSong(song);
-        });
+        if (requestDto.songIds() != null && !requestDto.songIds().isEmpty()) {
+            requestDto.songIds().forEach(songId -> {
+                Song song = songRetriever.findSongById(songId);
+                oldAlbum.addSong(song);
+            });
+        }
 
-        oldAlbum.updateName(requestDto.newName());
+        if (requestDto.newName() != null && !requestDto.newName().equals(oldAlbum.getTitle())) {
+            oldAlbum.updateName(requestDto.newName());
+        }
+
 
         albumRepository.save(oldAlbum);
     }
@@ -52,8 +58,8 @@ class AlbumUpdater {
         fetchedAlbum.addSongToAlbum(songRetriever.findSongById(songId));
         Album savedAlbum = albumRepository.save(fetchedAlbum);
 
-        return new UpdateSongAlbumResponseDto("Successfully added song with id: " + songId + " to album with id: " + albumId +"."
-                ,new UpdateAlbumWithSongsAndArtistsResponseDto(savedAlbum.getTitle(),
+        return new UpdateSongAlbumResponseDto("Successfully added song with id: " + songId + " to album with id: " + albumId + "."
+                , new UpdateAlbumWithSongsAndArtistsResponseDto(savedAlbum.getTitle(),
                 savedAlbum.getArtists().stream()
                         .map(artist -> new ArtistDto(artist.getId(), artist.getName()))
                         .collect(Collectors.toSet()),

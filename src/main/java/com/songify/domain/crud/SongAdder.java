@@ -14,23 +14,25 @@ import org.springframework.transaction.annotation.Transactional;
 class SongAdder {
 
     private final SongRepository songRepository;
-
-    SongDto addSongFromSongDto(final SongRequestDto requestDto) {
-        SongLanguageDto language = requestDto.language();
-        SongLanguage songLanguage = SongLanguage.valueOf(language.name());
-
-        Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage);
-        Song saved = songRepository.save(save);
-        return new SongDto(saved.getId(), saved.getName(), saved.getDuration());
-    }
+    private final GenreRetriever genreRetriever;
 
     Song addSong(final SongRequestDto requestDto) {
         SongLanguageDto language = requestDto.language();
         SongLanguage songLanguage = SongLanguage.valueOf(language.name());
+        Genre defaultGenre = genreRetriever.findGenreById(1L);
 
-        Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage);
-        Song saved = songRepository.save(save);
+        Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage, defaultGenre);
         return songRepository.save(save);
+    }
+
+    SongDto addSongFromSongDto(final SongRequestDto requestDto) {
+        SongLanguageDto language = requestDto.language();
+        SongLanguage songLanguage = SongLanguage.valueOf(language.name());
+        Genre defaultGenre = genreRetriever.findGenreById(1L);
+
+        Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage, defaultGenre);
+        Song saved = songRepository.save(save);
+        return new SongDto(saved.getId(), saved.getName(), saved.getDuration());
     }
 
 

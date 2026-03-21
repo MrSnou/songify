@@ -1,14 +1,14 @@
 package com.songify.infrastructure.crud.album;
 
 
-import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
 import com.songify.domain.crud.SongifyCrudFacade;
 import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
-import com.songify.infrastructure.crud.album.dto.response.AlbumResponseDto;
-import com.songify.infrastructure.crud.album.dto.response.DeleteAlbumResponseDto;
 import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
-import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.AlbumResponseDto;
 import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.DeleteAlbumResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,42 +27,42 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1/albums")
+@RequestMapping("/albums")
 class AlbumRestController {
 
     private final SongifyCrudFacade songifyCrudFacade;
 
-    @GetMapping("/getAlbums")
+    @GetMapping()
     ResponseEntity<AllAlbumsResponseDto> getAllAlbums(@PageableDefault(sort = "id") Pageable pageable) {
         List<AlbumDto> allAlbums = songifyCrudFacade.findAllAlbumDto(pageable);
         return ResponseEntity.ok(new AllAlbumsResponseDto(allAlbums));
     }
 
-    @PostMapping
-    ResponseEntity<AlbumDto> postAlbum(@RequestBody AlbumWithSongRequestDto requestDto) {
-        AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(requestDto);
-        return ResponseEntity.ok(albumDto);
-    }
-
-    @GetMapping("/getAlbumById/{requestAlbumId}")
+    @GetMapping("/{requestAlbumId}")
     ResponseEntity<AlbumDtoWithArtistsAndSongsResponseDto> getAlbumWithArtistsAndSongsById(@PathVariable Long requestAlbumId) {
         AlbumDtoWithArtistsAndSongsResponseDto responseDto = songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(requestAlbumId);
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/deleteAlbumById/{requestAlbumId}")
+    @PostMapping
+    ResponseEntity<AlbumDto> postAlbum(@RequestBody AlbumWithSongRequestDto requestDto) {
+        AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(albumDto);
+    }
+
+    @DeleteMapping("/{requestAlbumId}")
     ResponseEntity<DeleteAlbumResponseDto> deleteAlbumById(@PathVariable Long requestAlbumId) {
         songifyCrudFacade.deleteAlbumById(requestAlbumId);
-        DeleteAlbumResponseDto response = new DeleteAlbumResponseDto(HttpStatus.OK, "Deleting genre with id " + requestAlbumId + " successfully deleted.");
+        DeleteAlbumResponseDto response = new DeleteAlbumResponseDto(HttpStatus.OK,
+                "Album with id " + requestAlbumId + " successfully deleted.");
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/updateAlbum/{albumId}")
+    @PatchMapping("/{albumId}")
     ResponseEntity<AlbumResponseDto> updateAlbumWithSongsAndArtists
             (@PathVariable Long albumId, @RequestBody UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
         UpdateAlbumWithSongsAndArtistsResponseDto savedAlbum = songifyCrudFacade.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
-        AlbumResponseDto responseDto = new AlbumResponseDto(HttpStatus.OK, "Successfully updated album", savedAlbum);
+        AlbumResponseDto responseDto = new AlbumResponseDto(HttpStatus.OK, "Successfully updated album.", savedAlbum);
         return ResponseEntity.ok(responseDto);
     }
-
 }

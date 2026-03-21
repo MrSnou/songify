@@ -63,6 +63,7 @@ class AlbumRetriever {
     }
 
     UpdateAlbumWithSongsAndArtistsResponseDto getUpdateAlbumByIdWithSongsAndArtistsResponse(final Long id) {
+        // TODO - Fix sleep (Debug code)
         Album album = albumRepository.findById(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
 

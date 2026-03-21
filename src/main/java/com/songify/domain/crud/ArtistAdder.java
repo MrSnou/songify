@@ -25,28 +25,6 @@ class ArtistAdder {
         return new ArtistDto(save.getId(), save.getName());
     }
 
-    ArtistDto addArtistWithDefaultAlbumAndSong(final ArtistRequestDto requestDto) {
-        Artist save = saveArtistWithDefaultAlbumAndSong(requestDto.name());
-        return new ArtistDto(save.getId(), save.getName());
-    }
-    private Artist saveArtistWithDefaultAlbumAndSong(final String name) {
-        Album album = albumAdder.addAlbum(
-                "default-album_" + UUID.randomUUID(),
-                LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC));
-        Song song = songAdder.addSong(new SongRequestDto(
-                "default-song_" + UUID.randomUUID(),
-                100L,
-                LocalDateTime.now().toInstant(ZoneOffset.UTC),
-                SongLanguageDto.OTHER
-        ));
-        Artist artist = new Artist(name);
-
-        album.addSongToAlbum(song);
-        artist.addAlbum(album);
-
-        return artistRepository.save(artist);
-    }
-
     private Artist saveArtist(final String name) {
         Artist artist = new Artist(name);
         Artist save = artistRepository.save(artist);

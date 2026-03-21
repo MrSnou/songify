@@ -8,6 +8,10 @@ import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
+import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
+import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
+import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
+import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
@@ -27,7 +31,6 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-//@Transactional
 public class SongifyCrudFacade {
 
     private final SongAdder songAdder;
@@ -83,16 +86,20 @@ public class SongifyCrudFacade {
         return songRetriever.findSongGenreDtoById(id);
     }
 
+    public SongWithGenreResponseDto findSongDtoWithGenreDtoById(Long songId) {
+        return songRetriever.findSongDtoWithGenreDtoById(songId);
+    }
+
     public AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long albumId) {
         return albumRetriever.findAlbumByIdWithArtistsAndSongs(albumId);
     }
 
-    public SongDto updatesSongPartiallyById(Long id, UpdateSongRequestDto songFromRequest) {
+    public UpdateSongResponseDto updatesSongPartiallyById(Long id, UpdateSongRequestDto songFromRequest) {
         return songUpdater.updateById(id, songFromRequest);
     }
 
-    public void deleteSongById(Long id) {
-        songDeleter.deleteSongById(id);
+    public DeleteSongResponseDto deleteSongById(Long id) {
+        return songDeleter.deleteSongById(id);
     }
 
     public void deleteAlbumById(final Long requestAlbumId) {
@@ -121,10 +128,6 @@ public class SongifyCrudFacade {
         return new ArtistDto(artistId, artist.getName());
     }
 
-    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto requestDto) {
-        return artistAdder.addArtistWithDefaultAlbumAndSong(requestDto);
-    }
-
 
     public GenreDto updateGenreNameById(final Long genreId, String newName) {
         return genreUpdater.updateGenreNameById(genreId, newName);
@@ -142,8 +145,8 @@ public class SongifyCrudFacade {
         return responseDto;
     }
 
-    public void updateSongGenreById(final Long songId, final Long genreId) {
-        songUpdater.updateSongGenreById(songId, genreId);
+    public UpdateSongResponseDto updateSongGenreById(final Long songId, final UpdateGenreDto requestDto) {
+        return songUpdater.updateSongGenreById(songId, requestDto);
     }
 
     public GenreDto findGenreDtoById(final Long genreId) {

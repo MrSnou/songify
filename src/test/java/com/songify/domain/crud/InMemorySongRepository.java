@@ -40,8 +40,11 @@ class InMemorySongRepository implements SongRepository {
     @Override
     public void updateById(final Long id, final Song newSong) {
         Song oldSong = db.remove(id);
-        Song updatedSong = new Song(newSong.getName(), newSong.getReleaseDate(), newSong.getDuration(), newSong.getLanguage());
-        save(updatedSong);
+        oldSong.setName(newSong.getName());
+        oldSong.setReleaseDate(newSong.getReleaseDate());
+        oldSong.setDuration(newSong.getDuration());
+        oldSong.setLanguage(newSong.getLanguage());
+        db.put(id, oldSong);
     }
 
     @Override
@@ -65,8 +68,7 @@ class InMemorySongRepository implements SongRepository {
     @Override
     public void updateSongGenreById(final Long id, final Genre genre) {
         Song oldSong = db.remove(id);
-        Song newSong = new Song(oldSong.getName(), oldSong.getReleaseDate(), oldSong.getDuration(), oldSong.getLanguage());
-        newSong.setGenre(genre);
-        save(newSong);
+        oldSong.setGenre(genre);
+        db.put(id, oldSong);
     }
 }
