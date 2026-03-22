@@ -17,8 +17,6 @@ class ArtistDeleter {
     private final AlbumDeleter albumDeleter;
     private final SongDeleter songDeleter;
 
-    private final AlbumRetriever albumRetriever;
-
     void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
         Artist artist = artistRetriever.findArtistById(artistId);
 
@@ -48,37 +46,4 @@ class ArtistDeleter {
         }
         artistRepository.deleteArtistById(artist.getId());
     }
-
-// TODO - Fix hermetic error (Domain Driven Design) / Refactor code to entities to not broke Service-Doman connection
-
-//    void CC_DDD_Correct_Approach(final Long artistId) {
-//        Artist artist = artistRetriever.findArtistById(artistId);
-//        Set<Album> artistAlbums = albumRetriever.findAlbumsByArtistId(artist.getId());
-//        if (artistAlbums.isEmpty()) {
-//            artistRepository.deleteById(artistId);
-//            return;
-//        }
-//
-//        artistAlbums.stream()
-//                .filter(album -> album.getArtists().size() >= 2)
-//                .forEach(album -> album.removeArtist(artist));
-//
-//        Set<Album> albumWithOnlyOneArtist = artistAlbums.stream()
-//                .filter(album -> album.getArtists().size() == 1)
-//                .collect(Collectors.toSet());
-//
-//        Set<Long> allSongsFromAllAlbumsWhereWasOnlyThisArtist =
-//                albumWithOnlyOneArtist.stream()
-//                        .flatMap(album -> album.getSongs().stream())
-//                        .map(Song::getId)
-//                        .collect(Collectors.toSet());
-//
-//        Set<Long> albumsToDelete = albumWithOnlyOneArtist.stream()
-//                .map(album -> album.getId())
-//                .collect(Collectors.toSet());
-//
-//        songDeleter.deleteAllSongsById(allSongsFromAllAlbumsWhereWasOnlyThisArtist);
-//        albumDeleter.deleteAllAlbumsByIds(albumsToDelete);
-//        artistRepository.deleteArtistById(artistId);
-//    }
 }

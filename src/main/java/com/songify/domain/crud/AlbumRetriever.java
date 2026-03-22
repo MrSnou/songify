@@ -3,7 +3,6 @@ package com.songify.domain.crud;
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
 import com.songify.infrastructure.crud.artist.ArtistDto;
-import com.songify.infrastructure.crud.artist.error.ArtistNotFoundException;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.util.SongInfoDto;
@@ -63,7 +62,6 @@ class AlbumRetriever {
     }
 
     UpdateAlbumWithSongsAndArtistsResponseDto getUpdateAlbumByIdWithSongsAndArtistsResponse(final Long id) {
-        // TODO - Fix sleep (Debug code)
         Album album = albumRepository.findById(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
 
@@ -71,7 +69,6 @@ class AlbumRetriever {
         Set<SongDto> songs = null;
 
         try {
-            sleep(1000L);
             artists = album.getArtists()
                     .stream()
                     .map(artist ->
@@ -86,8 +83,6 @@ class AlbumRetriever {
 
         } catch (NullPointerException e) {
             throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            new RuntimeException(e.getMessage());
         }
 
 

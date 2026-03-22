@@ -1,6 +1,5 @@
 package com.songify.domain.crud;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,11 +31,4 @@ interface AlbumRepository extends JpaRepository<Album, Long> {
 
     List<Album> findBySongsId(Long songId);
 
-
-/**
- * Tried to use Interface with projection, but it didn't work, returned to old fashion DTO way.
- * Later to experiment with, but still managed to fetch it in one go. :)
- */
-//    @Query("select a from Album a where a.id = :id")
-//    Optional<AlbumInfo> findAlbumByIdWithSongsAndArtists(@Param("id") Long id);
 }
