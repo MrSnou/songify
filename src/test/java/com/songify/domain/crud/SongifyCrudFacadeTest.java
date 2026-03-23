@@ -282,8 +282,8 @@ class SongifyCrudFacadeTest {
             Set<SongDto> allSongs = new HashSet<>(songifyCrudFacade.findAllSongs(Pageable.unpaged()));
             // Then
             assertThat(allSongs.size()).isEqualTo(2);
-            assertThat(allSongs.contains(addedSong_1)).isTrue();
-            assertThat(allSongs.contains(addedSong_2)).isTrue();
+            assertThat(allSongs.stream()
+                    .allMatch(song -> song.equals(addedSong_1) && song.equals(addedSong_2)));
         }
     }
 
@@ -794,14 +794,15 @@ class SongifyCrudFacadeTest {
         @DisplayName("Should update name of default genre with id 1L")
         void should_update_name_of_default_genre_with_id_1() {
             // Given
+            songifyCrudFacade.addGenre(TestEntityFactory.aGenre("TestGenre"));
             /// Checking if default is correctly added
-            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findGenreDtoById(1L).name()).isEqualTo("Default");
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
+            assertThat(songifyCrudFacade.findGenreDtoById(2L).name()).isEqualTo("TestGenre");
             // When
-            songifyCrudFacade.updateGenreNameById(1L, "Updated_Default");
+            songifyCrudFacade.updateGenreNameById(2L, "Updated_Default");
             // Then
-            assertThat(songifyCrudFacade.findGenreDtoById(1L).name()).isEqualTo("Updated_Default");
-            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(1);
+            assertThat(songifyCrudFacade.findGenreDtoById(2L).name()).isEqualTo("Updated_Default");
+            assertThat(songifyCrudFacade.findAllGenreDto(Pageable.unpaged()).size()).isEqualTo(2);
         }
     }
 
@@ -838,7 +839,7 @@ class SongifyCrudFacadeTest {
             assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).name())
                     .isEqualTo("TestAlbum");
             List<SongDto> listOfSongs = songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).songs().stream()
-                    .map(songInfoDto -> new SongDto(songInfoDto.id(), songInfoDto.name(), songInfoDto.duration()))
+                    .map(songInfoDto -> new SongDto(songInfoDto.id(), songInfoDto.name(), songInfoDto.duration(), new GenreDto(songInfoDto.genreDto().id(), songInfoDto.genreDto().name())))
                     .toList();
             assertThat(listOfSongs.contains(addedSong_1)).isTrue();
             assertThat(listOfSongs.size()).isEqualTo(1);

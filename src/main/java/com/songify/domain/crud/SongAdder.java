@@ -1,5 +1,7 @@
 package com.songify.domain.crud;
 
+import com.songify.domain.crud.model.DomainConstants;
+import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.util.SongLanguageDto;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
@@ -16,23 +18,14 @@ class SongAdder {
     private final SongRepository songRepository;
     private final GenreRetriever genreRetriever;
 
-    Song addSong(final SongRequestDto requestDto) {
+    SongDto addSong(final SongRequestDto requestDto) {
         SongLanguageDto language = requestDto.language();
         SongLanguage songLanguage = SongLanguage.valueOf(language.name());
-        Genre defaultGenre = genreRetriever.findGenreById(1L);
-
-        Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage, defaultGenre);
-        return songRepository.save(save);
-    }
-
-    SongDto addSongFromSongDto(final SongRequestDto requestDto) {
-        SongLanguageDto language = requestDto.language();
-        SongLanguage songLanguage = SongLanguage.valueOf(language.name());
-        Genre defaultGenre = genreRetriever.findGenreById(1L);
+        Genre defaultGenre = genreRetriever.findGenreById(DomainConstants.DEFAULT_GENRE_ID);
 
         Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage, defaultGenre);
         Song saved = songRepository.save(save);
-        return new SongDto(saved.getId(), saved.getName(), saved.getDuration());
+        return new SongDto(saved.getId(), saved.getName(), saved.getDuration(), new GenreDto(saved.getGenre().getId(), saved.getGenre().getName()));
     }
 
 

@@ -19,7 +19,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,25 +53,57 @@ class HappyPathIntegrationTest {
         @Test
         @DisplayName("First Positive HappyPath Test")
         void firstPositiveHappyPathTest() throws Exception {
-            /// 1. When I go to LH:8082/api/v1/songs/(Http_GetMethod),
-            ///      then I can see no songs
-            ResultActions getSongsResult = mockMvc.perform(get("/api/v1/songs")
+            /// 1. When I go to /songs, then I can see no songs.
+            ResultActions getSongsResult = mockMvc.perform(get("/songs")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.songs", empty()));
-            /// 2. When I post to LH:8082/api/v1/songs/(Http_PostMethod with body) with song "Till I collapse",
-            ///      then I can see that posted song is returned with id 1.
+            /// 2. When I post to /songs/ with song "Till I collapse",
+            ///    then I can see that posted song is returned with id 1.
+            mockMvc.perform(post("/songs")
+                    .content("""
+                            {
+                                "name": "Till I Collapse",
+                                "duration": 123,
+                                "releaseDate": "2026-03-23T17:36:06.322Z",
+                                "language": "ENGLISH"
+                            }
+                            """)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            ).andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.song.id", is(1)))
+                    .andExpect(jsonPath("$.song.name", is("Till I Collapse")))
+                    .andExpect(jsonPath("$.song.duration", is(123)))
+                    .andExpect(jsonPath("$.song.genre.id", is(1)))
+                    .andExpect(jsonPath("$.song.genre.name", is("Default")));
+            /// 3. When I post to /songs with song "Lose Yourself",
+            ///    then I can see that posted song is returned with id 2.
+            mockMvc.perform(post("/songs")
+                            .content("""
+                            {
+                                "name": "Lose Yourself",
+                                "duration": 321,
+                                "releaseDate": "2026-03-23T17:36:06.322Z",
+                                "language": "ENGLISH"
+                            }
+                            """)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    ).andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.song.id", is(2)))
+                    .andExpect(jsonPath("$.song.name", is("Lose Yourself")))
+                    .andExpect(jsonPath("$.song.duration", is(321)))
+                    .andExpect(jsonPath("$.song.genre.id", is(1)))
+                    .andExpect(jsonPath("$.song.genre.name", is("Default")));
+            /// 4. When I go to /genres,
+            ///    then I can see only "Default" Genre with id 1.
 
         }
-
     }
 }
 
 
-// 3. When I post to LH:8082/api/v1/songs/(Http_PostMethod with body) with song "Lose Yourself",
-//      then I can see that posted song is returned with id 2.
-// 4. When I go to LH:8082/api/v1/genres/(Http_GetMethod),
-//      then I can see only "Default" Genre with id 1.
+
+
 // 5. When I post to LH:8082/api/v1/genres/(Http_PostMethod with body) with Genre "Rap",
 //      then I can see added Genre with id 2.
 // 6. When I go to LH:8082/api/v1/genre/1,

@@ -28,5 +28,5 @@ interface GenreRepository extends CrudRepository<Genre, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Genre g set g.name = :newName where g.id = :genreId")
-    void updateGenreById(final Long genreId, String newName);
+    Genre updateGenreById(final Long genreId, String newName);
 }

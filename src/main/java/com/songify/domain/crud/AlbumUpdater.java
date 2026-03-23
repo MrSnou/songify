@@ -4,6 +4,7 @@ import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAnd
 import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
 import com.songify.infrastructure.crud.album.error.AlbumNotFoundException;
 import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import lombok.AllArgsConstructor;
@@ -64,7 +65,7 @@ class AlbumUpdater {
                         .map(artist -> new ArtistDto(artist.getId(), artist.getName()))
                         .collect(Collectors.toSet()),
                 savedAlbum.getSongs().stream()
-                        .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration()))
+                        .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                         .collect(Collectors.toSet())
         ));
     }

@@ -1,5 +1,6 @@
 package com.songify.domain.crud;
 
+import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -48,7 +49,7 @@ class SongUpdater {
                 "Successfully updated song with id: " + songId +
                         " song name from " + oldSong.getName() + " to " + songFromRequest.songName() +
                         " and duration from " + oldSong.getDuration() + " to " + songFromRequest.duration() + "."
-                , new SongDto(oldSong.getId(), songFromRequest.songName(), songFromRequest.duration())
+                , new SongDto(oldSong.getId(), songFromRequest.songName(), songFromRequest.duration(), new GenreDto(oldSong.getGenre().getId(), oldSong.getGenre().getName()))
         );
 
         return response;

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 @Log4j2
 public class GenreErrorHandler {
@@ -29,5 +31,14 @@ public class GenreErrorHandler {
         log.error("Error while trying to delete Genre from db.");
         ErrorGenreResponseDto responseDto = new ErrorGenreResponseDto(HttpStatus.FORBIDDEN, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(GenreDefaultIsLockedException.class)
+    @ResponseBody
+    @ResponseStatus
+    public ResponseEntity<ErrorGenreResponseDto> handleGenreDefaultIsLockedException(GenreDefaultIsLockedException ex) {
+        log.error("Attempt to edit Default Genre was blocked. " + "[" + LocalDateTime.now() + "]");
+        ErrorGenreResponseDto responseDto = new ErrorGenreResponseDto(HttpStatus.CONFLICT, ex.getMessage());
+        return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
     }
 }

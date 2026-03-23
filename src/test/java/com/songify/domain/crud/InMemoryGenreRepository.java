@@ -97,9 +97,10 @@ class InMemoryGenreRepository implements GenreRepository {
     }
 
     @Override
-    public void updateGenreById(final Long genreId, final String newName) {
+    public Genre updateGenreById(final Long genreId, final String newName) {
         Genre oldGenre = db.remove(genreId);
         oldGenre.setName(newName);
         db.put(oldGenre.getId(), oldGenre);
+        return db.get(genreId);
     }
 }

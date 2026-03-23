@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.lang.Thread.sleep;
 
 @Service
 @AllArgsConstructor
@@ -78,7 +77,7 @@ class AlbumRetriever {
 
             songs = album.getSongs().
                     stream().
-                    map(song -> new SongDto(song.getId(), song.getName(), song.getDuration()))
+                    map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), new  GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                     .collect(Collectors.toSet());
 
         } catch (NullPointerException e) {
