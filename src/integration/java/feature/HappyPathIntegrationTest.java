@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,7 +70,7 @@ class HappyPathIntegrationTest {
                                 "language": "ENGLISH"
                             }
                             """)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
                     .andExpect(jsonPath("$.song.id", is(1)))
                     .andExpect(jsonPath("$.song.name", is("Till I Collapse")))
@@ -87,7 +88,7 @@ class HappyPathIntegrationTest {
                                 "language": "ENGLISH"
                             }
                             """)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON)
                     ).andExpect(status().isCreated())
                     .andExpect(jsonPath("$.song.id", is(2)))
                     .andExpect(jsonPath("$.song.name", is("Lose Yourself")))
@@ -96,7 +97,45 @@ class HappyPathIntegrationTest {
                     .andExpect(jsonPath("$.song.genre.name", is("Default")));
             /// 4. When I go to /genres,
             ///    then I can see only "Default" Genre with id 1.
-
+            mockMvc.perform(get("/genres"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.genres[0].id", is(1)))
+                    .andExpect(jsonPath("$.genres[0].name", is("Default")));
+            /// 5. When I post to /genres with Genre "Rap",
+            ///    then I can see added Genre with id 2.
+            mockMvc.perform(post("/genres")
+                            .content("""
+                                    {
+                                        "name": "Rap"
+                                    }
+                                    """)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.id", is(2)))
+                    .andExpect(jsonPath("$.name", is("Rap")));
+            /// 6. When I go to /songs/1,
+            ///    then I can see song with Default genre with id 1.
+            mockMvc.perform(get("/songs/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.genre.id", is(1)))
+                    .andExpect(jsonPath("$.genre.name", is("Default")));
+            /// 7. When I put to /songs/1/genres,
+            ///    then I can see that song with id 1 is with genre id 2.
+            mockMvc.perform(patch("/songs/1/genres")
+                    .content("""
+                            {
+                            "genreId": "2"
+                            }
+                            """)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.updatedSong.id", is(1)))
+                    .andExpect(jsonPath("$.updatedSong.name", is("Till I Collapse")))
+                    .andExpect(jsonPath("$.updatedSong.duration", is(123)))
+                    .andExpect(jsonPath("$.updatedSong.genre.id", is(2)))
+                    .andExpect(jsonPath("$.updatedSong.genre.name", is("Rap")));
+            /// 8. When I go to /songs/1,
+            ///    then I can see song with "Rap" Genre.
         }
     }
 }
@@ -104,14 +143,10 @@ class HappyPathIntegrationTest {
 
 
 
-// 5. When I post to LH:8082/api/v1/genres/(Http_PostMethod with body) with Genre "Rap",
-//      then I can see added Genre with id 2.
-// 6. When I go to LH:8082/api/v1/genre/1,
-//      then I can see Default genre with id 1.
-// 7. When I update to (Http_PostMethod with PathVariable songId and UpdateGenreDto body)
-//      LH:8082/api/v1/updateSongGenre/1 and UpdateGenreBody(genreId - 2), then I can see that Genre was added to song with id 1.
-// 8. When I go to LH:8082/api/v1/songs/1,
-//      then I can see song with "Rap" Genre.
+
+
+
+
 // 9. When I go to LH:8082/api/v1/albums/,
 //      then I can see no albums.
 // 10. When I post to LH:8082/api/v1/albums/(Http_PostMethod with body) with album "Eminem_Album_1" and song id 1,

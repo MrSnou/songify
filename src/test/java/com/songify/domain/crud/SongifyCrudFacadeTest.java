@@ -53,11 +53,14 @@ class SongifyCrudFacadeTest {
             new InMemoryAlbumRepository()
     );
 
+    private final static String DEFAULT_GENRE_NAME = "Default";
+    private final static Long DEFAULT_GENRE_ID = 1L;
+
     @BeforeEach
     void setUp() {
         /// In main program there is always "Default" genre in db with id 1L
         GenreRequestDto defaultGenre = GenreRequestDto.builder()
-                .name("Default")
+                .name(DEFAULT_GENRE_NAME)
                 .build();
         songifyCrudFacade.addGenre(defaultGenre);
     }
@@ -224,6 +227,10 @@ class SongifyCrudFacadeTest {
             assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()))
                     .extracting(SongDto::id, SongDto::name, SongDto::duration)
                     .containsExactly(0L, songRequest.name(), songRequest.duration());
+            GenreDto defaultGenre = songifyCrudFacade.findGenreDtoById(1L);
+            assertThat(songifyCrudFacade.findSongDtoById(addedSong.id()).genre())
+                    .extracting(GenreDto::id, GenreDto::name)
+                    .containsExactly(DEFAULT_GENRE_ID, DEFAULT_GENRE_NAME);
         }
     }
 

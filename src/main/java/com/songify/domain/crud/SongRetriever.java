@@ -46,10 +46,12 @@ class SongRetriever {
 
     SongDto findSongDtoById(Long id) {
         Song songById = findSongById(id);
+        GenreDto genreDtoById = genreRetriever.findGenreDtoById(songById.getGenre().getId());
         return SongDto.builder()
                 .id(songById.getId())
                 .name(songById.getName())
                 .duration(songById.getDuration())
+                .genre(genreDtoById)
                 .build();
     }
 
