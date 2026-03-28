@@ -1,7 +1,6 @@
 package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
@@ -59,10 +58,10 @@ class SongUpdater {
         return albumUpdater.addSongToAlbum(songId, request.albumId());
     }
 
-    UpdateSongResponseDto updateSongGenreById(final Long songId, final UpdateGenreDto requestDto) {
-        songRetriever.existsById(songId);
+    UpdateSongResponseDto updateSongGenreById(final Long songId, final Long genreId) {
+        songRetriever.checkIfExists(songId);
 
-        Genre newGenre = genreRetriever.findGenreById(requestDto.genreId());
+        Genre newGenre = genreRetriever.findGenreById(genreId);
 
         songRepository.updateSongGenreById(songId, newGenre);
         SongDto updatedSongDto = songRetriever.findSongDtoById(songId);

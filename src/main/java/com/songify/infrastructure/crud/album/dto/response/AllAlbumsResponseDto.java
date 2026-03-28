@@ -4,5 +4,5 @@ import com.songify.infrastructure.crud.album.AlbumDto;
 
 import java.util.List;
 
-public record AllAlbumsResponseDto(List<AlbumDto> allAlbums) {
+public record AllAlbumsResponseDto(List<AlbumDto> albums) {
 }

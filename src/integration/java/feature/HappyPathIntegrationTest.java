@@ -18,6 +18,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -121,21 +123,48 @@ class HappyPathIntegrationTest {
                     .andExpect(jsonPath("$.genre.name", is("Default")));
             /// 7. When I put to /songs/1/genres,
             ///    then I can see that song with id 1 is with genre id 2.
-            mockMvc.perform(patch("/songs/1/genres")
+            mockMvc.perform(patch("/songs/1/genres/2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message", is("Successfully updated song genre with id: 1 to Rap.")))
+                    .andExpect(jsonPath("$.updatedSong.id", is(1)))
+                    .andExpect(jsonPath("$.updatedSong.name", is("Till I Collapse")))
+                    .andExpect(jsonPath("$.updatedSong.duration", is(123)));
+            /// 8. When I go to /songs/1,
+            ///    then I can see song with "Rap" Genre.
+            mockMvc.perform(get("/songs/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id", is(1)))
+                    .andExpect(jsonPath("$.name", is("Till I Collapse")))
+                    .andExpect(jsonPath("$.duration", is(123)))
+                    .andExpect(jsonPath("$.genre.id", is(2)))
+                    .andExpect(jsonPath("$.genre.name", is("Rap")));
+            /// 9. When I go to /albums,
+            ///    then I can see no albums.
+            mockMvc.perform(get("/albums"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.albums", empty()));
+            /// 10. When I post to /albums with album "Eminem_Album_1" and song id 1,
+            ///     then album "Eminem_Album_1" is returned with id 1.
+            mockMvc.perform(post("/albums")
                     .content("""
                             {
-                            "genreId": "2"
+                                "title": "Eminem_Album_1",
+                                "releaseDate": "2026-03-28T10:24:29.905Z",
+                                "songIds": [
+                                1
+                                ]
                             }
                             """)
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.updatedSong.id", is(1)))
-                    .andExpect(jsonPath("$.updatedSong.name", is("Till I Collapse")))
-                    .andExpect(jsonPath("$.updatedSong.duration", is(123)))
-                    .andExpect(jsonPath("$.updatedSong.genre.id", is(2)))
-                    .andExpect(jsonPath("$.updatedSong.genre.name", is("Rap")));
-            /// 8. When I go to /songs/1,
-            ///    then I can see song with "Rap" Genre.
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.id", is(1)))
+                    .andExpect(jsonPath("$.title", is("Eminem_Album_1")))
+                    .andExpect(jsonPath("$.songIds", containsInAnyOrder(1)));
+            /// 11. When I go to /albums,
+            ///     then I can see no albums because there is no artists in the system.
+
+
+
         }
     }
 }
@@ -147,12 +176,9 @@ class HappyPathIntegrationTest {
 
 
 
-// 9. When I go to LH:8082/api/v1/albums/,
-//      then I can see no albums.
-// 10. When I post to LH:8082/api/v1/albums/(Http_PostMethod with body) with album "Eminem_Album_1" and song id 1,
-//      then album "Eminem_Album_1" is returned with id 1.
-// 11. When I go to LH:8082/api/v1/albums/1,
-//      then I can see no albums because there is no artists in the system.
+
+
+
 // 12. When I post to LH:8082/api/v1/artists/(Http_PostMethod with body) with Artist "Eminem",
 //      then artist "Eminem" is returned with id 1.
 // 13. When I put to LH:8082/api/v1/artists/addArtistToAlbum/{artistId - 1}/{albumId - 1},

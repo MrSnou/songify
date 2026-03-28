@@ -33,7 +33,7 @@ class SongRetriever {
                 .toList();
     }
 
-    void existsById(Long id) {
+    void checkIfExists(Long id) {
         if (!songRepository.existsById(id)) {
             throw new SongNotFoundException("Song with id " + id + " not found");
         }

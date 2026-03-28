@@ -3,12 +3,12 @@ package com.songify.domain.crud;
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
 import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
+import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
-import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
@@ -63,7 +63,7 @@ public class SongifyCrudFacade {
     }
 
     public AlbumDto addAlbumWithSong(AlbumWithSongRequestDto dto) {
-        return albumAdder.addAlbumWithSong(dto.songId(), dto.title(), dto.releaseDate());
+        return albumAdder.addAlbumWithSong(dto.songIds(), dto.title(), dto.releaseDate());
     }
 
     public SongDto addSong(final SongRequestDto requestDto) {
@@ -145,8 +145,8 @@ public class SongifyCrudFacade {
         return responseDto;
     }
 
-    public UpdateSongResponseDto updateSongGenreById(final Long songId, final UpdateGenreDto requestDto) {
-        return songUpdater.updateSongGenreById(songId, requestDto);
+    public UpdateSongResponseDto updateSongGenreById(final Long songId, final Long genreId) {
+        return songUpdater.updateSongGenreById(songId, genreId);
     }
 
     public GenreDto findGenreDtoById(final Long genreId) {
@@ -157,7 +157,7 @@ public class SongifyCrudFacade {
         return genreRetriever.findAllGenreDto(pageable);
     }
 
-    public List<AlbumDto> findAllAlbumDto(Pageable pageable) {
+    public AllAlbumsResponseDto findAllAlbumDto(Pageable pageable) {
         return albumRetriever.findAllAlbumsDto(pageable);
     }
 

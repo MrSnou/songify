@@ -34,8 +34,8 @@ class AlbumRestController {
 
     @GetMapping()
     ResponseEntity<AllAlbumsResponseDto> getAllAlbums(@PageableDefault(sort = "id") Pageable pageable) {
-        List<AlbumDto> allAlbums = songifyCrudFacade.findAllAlbumDto(pageable);
-        return ResponseEntity.ok(new AllAlbumsResponseDto(allAlbums));
+        AllAlbumsResponseDto allAlbums = songifyCrudFacade.findAllAlbumDto(pageable);
+        return ResponseEntity.ok(allAlbums);
     }
 
     @GetMapping("/{requestAlbumId}")

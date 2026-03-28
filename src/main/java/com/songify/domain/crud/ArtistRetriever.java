@@ -42,7 +42,8 @@ class ArtistRetriever {
         List<AlbumDto> albumDtoList = artist.getAlbums()
                 .stream()
                 .filter(album -> album.getArtists().contains(artist))
-                .map(album -> new AlbumDto(album.getId(), album.getTitle()))
+                .map(album -> new AlbumDto(album.getId(), album.getTitle(),
+                        album.getSongs().stream().map(Song::getId).toList()))
                 .toList();
 
         ArtistWithAlbumsResponseDto responseDto = new ArtistWithAlbumsResponseDto(

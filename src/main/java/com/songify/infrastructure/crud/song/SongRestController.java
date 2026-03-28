@@ -1,8 +1,6 @@
 package com.songify.infrastructure.crud.song;
 
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.infrastructure.crud.genre.dto.request.UpdateGenreDto;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
@@ -10,7 +8,6 @@ import com.songify.infrastructure.crud.song.dto.response.CreateSongResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.GetAllSongsResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -81,9 +78,9 @@ class SongRestController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PatchMapping("/{songId}/genres")
-    ResponseEntity<UpdateSongResponseDto> updateSongGenre(@PathVariable Long songId, @RequestBody UpdateGenreDto requestDto) {
-        UpdateSongResponseDto responseDto = songifyCrudFacade.updateSongGenreById(songId, requestDto);
+    @PatchMapping("/{songId}/genres/{genreId}")
+    ResponseEntity<UpdateSongResponseDto> updateSongGenre(@PathVariable Long songId, @PathVariable Long genreId) {
+        UpdateSongResponseDto responseDto = songifyCrudFacade.updateSongGenreById(songId, genreId);
         return ResponseEntity.ok(responseDto);
     }
 }

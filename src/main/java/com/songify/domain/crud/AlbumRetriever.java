@@ -2,6 +2,7 @@ package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -91,16 +92,13 @@ class AlbumRetriever {
         return responseDto;
     }
 
-    List<AlbumDto> findAllAlbumsDto(Pageable pageable) {
+    AllAlbumsResponseDto findAllAlbumsDto(Pageable pageable) {
         List<Album> all = findAllAlbums(pageable).stream().toList();
         List<AlbumDto> allAlbumsDto = all.stream()
-                .map(album -> new AlbumDto(album.getId(), album.getTitle()))
+                .map(album -> new AlbumDto(album.getId(), album.getTitle(),
+                        album.getSongs().stream().map(Song::getId).toList()))
                 .collect(Collectors.toList());
-        return allAlbumsDto;
-    }
-
-    Set<Album> findAlbumsByArtistId(final Long artistId) {
-        return albumRepository.findByArtistsId(artistId);
+        return new AllAlbumsResponseDto(allAlbumsDto);
     }
 
     Set<AlbumDtoWithArtistsAndSongsResponseDto> findAlbumsDtoByArtistId(final Long artistId) {
