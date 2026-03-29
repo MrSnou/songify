@@ -2,7 +2,6 @@ package com.songify.infrastructure.crud.song;
 
 import com.songify.domain.crud.SongifyCrudFacade;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.CreateSongResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
@@ -72,9 +71,9 @@ class SongRestController {
         return ResponseEntity.ok(updateSongResponseDto);
     }
 
-    @PatchMapping("/{songId}/albums")
-    ResponseEntity<UpdateSongAlbumResponseDto> updateSongAlbum(@PathVariable Long songId, @RequestBody UpdateSongAlbumRequestDto request) {
-        UpdateSongAlbumResponseDto responseDto = songifyCrudFacade.updateSongAlbum(songId, request);
+    @PatchMapping("/{songId}/albums/{albumId}")
+    ResponseEntity<UpdateSongAlbumResponseDto> updateSongAlbum(@PathVariable Long songId, @PathVariable Long albumId) {
+        UpdateSongAlbumResponseDto responseDto = songifyCrudFacade.updateSongAlbum(songId, albumId);
         return ResponseEntity.ok(responseDto);
     }
 

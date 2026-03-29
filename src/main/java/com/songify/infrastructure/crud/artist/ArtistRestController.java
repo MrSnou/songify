@@ -4,6 +4,7 @@ import com.songify.domain.crud.SongifyCrudFacade;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistUpdateRequestDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistResponseDto;
+import com.songify.infrastructure.crud.artist.dto.response.UpdateArtistAlbumResponseDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistUpdateResponseDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
 import jakarta.validation.Valid;
@@ -55,11 +56,9 @@ class ArtistRestController {
     }
 
     @PatchMapping("/{artistId}/albums/{albumId}")
-    ResponseEntity<ArtistResponseDto> updateArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
-        songifyCrudFacade.addArtistToAlbum(artistId, albumId);
-        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK,
-                "Artist with id " + artistId + " was successfully added to the album with id " + albumId + ".");
-        return ResponseEntity.ok(responseDto);
+    ResponseEntity<UpdateArtistAlbumResponseDto> updateArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
+        UpdateArtistAlbumResponseDto updateArtistAlbumResponseDto = songifyCrudFacade.addArtistToAlbum(artistId, albumId);
+        return ResponseEntity.ok(updateArtistAlbumResponseDto);
     }
 
     @PatchMapping("/{artistId}")
@@ -75,7 +74,7 @@ class ArtistRestController {
     @DeleteMapping("/{artistId}")
     ResponseEntity<ArtistResponseDto> deleteArtist(@PathVariable Long artistId) {
         songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistId);
-        ArtistResponseDto responseDto = new ArtistResponseDto(HttpStatus.OK, "Artist with id " + artistId + " successfully deleted.");
+        ArtistResponseDto responseDto = new ArtistResponseDto("Artist with id " + artistId + " successfully deleted.");
         return ResponseEntity.ok(responseDto);
     }
 

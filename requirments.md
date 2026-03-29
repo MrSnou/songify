@@ -54,6 +54,10 @@
 
 TODO - Fix number of query requests by writing custom queries
 
+TODO - Refactor AlbumDto to return SongDto instead of songIds
+
+
+
 CQRS -  Command | Query | Request Separation
 
 

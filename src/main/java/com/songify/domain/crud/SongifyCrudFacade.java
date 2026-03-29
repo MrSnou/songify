@@ -6,6 +6,7 @@ import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto
 import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
 import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
+import com.songify.infrastructure.crud.artist.dto.response.UpdateArtistAlbumResponseDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
@@ -17,7 +18,6 @@ import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
 import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
 import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
@@ -115,8 +115,8 @@ public class SongifyCrudFacade {
         artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
-    public void addArtistToAlbum(Long artistID, Long albumID) {
-        artistAssigner.addArtistToAlbum(artistID, albumID);
+    public UpdateArtistAlbumResponseDto addArtistToAlbum(Long artistID, Long albumID) {
+        return artistAssigner.addArtistToAlbum(artistID, albumID);
     }
 
     public ArtistDto updateArtistNameById(Long artistId, String newName) {
@@ -140,8 +140,8 @@ public class SongifyCrudFacade {
         return responseDto;
     }
 
-    public UpdateSongAlbumResponseDto updateSongAlbum(final Long songId, final UpdateSongAlbumRequestDto request) {
-        UpdateSongAlbumResponseDto responseDto = songUpdater.updateSongAlbumById(songId, request);
+    public UpdateSongAlbumResponseDto updateSongAlbum(final Long songId, final Long albumId) {
+        UpdateSongAlbumResponseDto responseDto = songUpdater.updateSongAlbumById(songId, albumId);
         return responseDto;
     }
 

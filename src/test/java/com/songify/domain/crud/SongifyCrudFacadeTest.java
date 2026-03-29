@@ -18,7 +18,6 @@ import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponse
 import com.songify.infrastructure.crud.genre.error.GenreIsUsedBySongsException;
 import com.songify.infrastructure.crud.genre.error.GenreNotFoundException;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
 import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
@@ -940,12 +939,9 @@ class SongifyCrudFacadeTest {
         @DisplayName("Should return AlbumNotFoundException")
         void should_return_AlbumNotFoundException() {
             // Given
-            UpdateSongAlbumRequestDto updateSongAlbumRequest = UpdateSongAlbumRequestDto.builder()
-                    .albumId(Long.MAX_VALUE)
-                    .build();
             // When
             Throwable songException = catchThrowable(() ->
-                    songifyCrudFacade.updateSongAlbum(Long.MAX_VALUE, updateSongAlbumRequest));
+                    songifyCrudFacade.updateSongAlbum(Long.MAX_VALUE, Long.MAX_VALUE));
             // Then
             assertThat(songException).isInstanceOf(AlbumNotFoundException.class)
                     .hasMessage("Album with id " + Long.MAX_VALUE + " not found.");
@@ -957,13 +953,9 @@ class SongifyCrudFacadeTest {
             // Given
             SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
             AlbumDto addedAlbumWithSong = songifyCrudFacade.addAlbumWithSong(TestEntityFactory.anAlbumWithSong(addedSong));
-
-            UpdateSongAlbumRequestDto updateSongAlbumRequest = UpdateSongAlbumRequestDto.builder()
-                    .albumId(addedAlbumWithSong.id())
-                    .build();
             // When
             Throwable songException = catchThrowable(() ->
-                    songifyCrudFacade.updateSongAlbum(Long.MAX_VALUE, updateSongAlbumRequest));
+                    songifyCrudFacade.updateSongAlbum(Long.MAX_VALUE, addedAlbumWithSong.id()));
             // Then
             assertThat(songException).isInstanceOf(SongNotFoundException.class)
                     .hasMessage("Song with id " + Long.MAX_VALUE + " not found");
@@ -976,17 +968,13 @@ class SongifyCrudFacadeTest {
             SongDto addedSong_1 = songifyCrudFacade.addSong(TestEntityFactory.aSong("TestSong_1"));
             SongDto addedSong_2 = songifyCrudFacade.addSong(TestEntityFactory.aSong("TestSong_2"));
             AlbumDto addedAlbumWithSong = songifyCrudFacade.addAlbumWithSong(TestEntityFactory.anAlbumWithSong(addedSong_1));
-
-            UpdateSongAlbumRequestDto updateSongAlbumRequest = UpdateSongAlbumRequestDto.builder()
-                    .albumId(addedAlbumWithSong.id())
-                    .build();
             /// Check if everything added corretly
             assertThat(addedAlbumWithSong.title()).isEqualTo("TestAlbum");
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(2);
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).albums().size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbumWithSong.id()).songs().size()).isEqualTo(1);
             // When
-            UpdateSongAlbumResponseDto updatedTestAlbum = songifyCrudFacade.updateSongAlbum(addedSong_2.id(), updateSongAlbumRequest);
+            UpdateSongAlbumResponseDto updatedTestAlbum = songifyCrudFacade.updateSongAlbum(addedSong_2.id(), addedAlbumWithSong.id());
             // Then
             assertThat(updatedTestAlbum.message()).isEqualTo(
                     "Successfully added song with id: " + addedSong_2.id()

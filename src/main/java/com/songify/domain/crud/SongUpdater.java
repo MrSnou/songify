@@ -3,7 +3,6 @@ package com.songify.domain.crud;
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongAlbumRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
@@ -54,8 +53,8 @@ class SongUpdater {
         return response;
     }
 
-    UpdateSongAlbumResponseDto updateSongAlbumById(final Long songId, final UpdateSongAlbumRequestDto request) {
-        return albumUpdater.addSongToAlbum(songId, request.albumId());
+    UpdateSongAlbumResponseDto updateSongAlbumById(final Long songId, final Long albumId) {
+        return albumUpdater.addSongToAlbum(songId, albumId);
     }
 
     UpdateSongResponseDto updateSongGenreById(final Long songId, final Long genreId) {
