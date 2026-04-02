@@ -11,7 +11,6 @@ import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsRespo
 import com.songify.infrastructure.crud.genre.GenreDto;
 import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
@@ -84,10 +83,6 @@ public class SongifyCrudFacade {
 
     public SongGenreDto findSongGenreDtoById(Long id) {
         return songRetriever.findSongGenreDtoById(id);
-    }
-
-    public SongWithGenreResponseDto findSongDtoWithGenreDtoById(Long songId) {
-        return songRetriever.findSongDtoWithGenreDtoById(songId);
     }
 
     public AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long albumId) {

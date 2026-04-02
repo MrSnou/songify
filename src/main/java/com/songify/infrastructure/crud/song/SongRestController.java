@@ -6,7 +6,6 @@ import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.CreateSongResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.GetAllSongsResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -37,19 +36,15 @@ class SongRestController {
 
     @GetMapping
     ResponseEntity<GetAllSongsResponseDto> getAllSongs(@PageableDefault(page = 0, size = 20, sort = "id") Pageable pageable) {
-        GetAllSongsResponseDto response = GetAllSongsResponseDto.builder().songs(songifyCrudFacade.findAllSongs(pageable)).build();
+        GetAllSongsResponseDto response = GetAllSongsResponseDto.builder()
+                .songs(songifyCrudFacade.findAllSongs(pageable))
+                .build();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{songId}")
     ResponseEntity<SongDto> getSongById(@PathVariable Long songId) {
         SongDto responseDto = songifyCrudFacade.findSongDtoById(songId);
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @GetMapping("/{songId}/genres")
-    ResponseEntity<SongWithGenreResponseDto> getSongWithGenreById(@PathVariable Long songId) {
-        SongWithGenreResponseDto responseDto = songifyCrudFacade.findSongDtoWithGenreDtoById(songId);
         return ResponseEntity.ok(responseDto);
     }
 

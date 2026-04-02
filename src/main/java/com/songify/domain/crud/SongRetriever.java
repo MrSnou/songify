@@ -2,7 +2,6 @@ package com.songify.domain.crud;
 
 import com.songify.domain.crud.model.DomainConstants;
 import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
 import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import com.songify.infrastructure.crud.song.util.SongDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
@@ -29,6 +28,10 @@ class SongRetriever {
                         .id(song.getId())
                         .name(song.getName())
                         .duration(song.getDuration())
+                        .genre(GenreDto.builder()
+                                .id(song.getGenre().getId())
+                                .name(song.getGenre().getName())
+                                .build())
                         .build())
                 .toList();
     }
@@ -81,15 +84,5 @@ class SongRetriever {
                 .stream()
                 .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                 .toList();
-    }
-
-    SongWithGenreResponseDto findSongDtoWithGenreDtoById(final Long songId) {
-        Song songById = songRepository.findById(songId)
-                .orElseThrow(() -> new SongNotFoundException("Song with id: " + songId + " not found."));
-        GenreDto genreDto = genreRetriever.findGenreDtoById(songById.getGenre().getId());
-        return SongWithGenreResponseDto.builder()
-                .song(findSongDtoById(songId))
-                .genre(genreDto)
-                .build();
     }
 }

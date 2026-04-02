@@ -1,5 +1,7 @@
 ### Songify: Aplikacja do zarządzania albumami, artystami i piosenkami
 
+*Application Implementation*
+
 ~~1. Można dodać artystę (nazwa artysty)~~
 
 ~~2. Można dodać gatunek muzyczny (nazwa gatunku)~~
@@ -52,6 +54,21 @@
 
 ~~25. TODO SQLException Handlers~~
 
+*Security Implementation*
+
+26. Każdy bez uwierzytelnienia (authentication) może przeglądać piosenki, albumy itp. (gość)
+27. Są 2 role: Role_USER i Role_Admin
+28. Używanie bezstanowego tokena JWT (uzyskuje go po zalogowaniu) - własna implementacja authorization i potem oauth google
+29. Tylko Admin może przejrzeć loginy i role użytkowników endpoint /users
+30. Aby zostać użytkownikiem trzeba się zarejestrować login/hasło — własna implementacja i google
+31. Zapisujemy użytkownika i Admina do bazy danych (w przypadku własnej implementacji) - admin tworzony w migracji flyway
+32. Użytkownik (Role_USER) może wyświetlać piosenki, ale nie może zarządzać
+(w przyszłości użytkownik może mieć swój profil, a tam "Ulubione Piosenki").
+33. Tylko Admin może zmieniać stan aplikacji (usuwać, dodawać, edytować piosenki/albumy itp.)
+34. Chcemy mieć szyfrowanie HTTPS, certyfikat wygenerowany ręcznie openssl
+35. Chcemy mieć obsługę CORS - Zapytania z domeny frontend'owej
+36. Chcemy Zabezpieczenie CSRF, bo będzie frontend
+37. Bonus - Potwierdzenie e-mail po rejestracji.
 TODO - Fix number of query requests by writing custom queries
 
 TODO - Refactor AlbumDto to return SongDto instead of songIds
