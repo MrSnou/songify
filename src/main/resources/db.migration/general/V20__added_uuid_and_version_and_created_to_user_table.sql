@@ -1,0 +1,7 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+ALTER TABLE users
+    ADD created_on TIMESTAMP(6) WITHOUT TIME ZONE DEFAULT now(),
+    ADD uuid UUID DEFAULT gen_random_uuid() NOT NULL UNIQUE,
+    ADD version BIGINT DEFAULT 0,
+    ALTER COLUMN version SET NOT NULL;
