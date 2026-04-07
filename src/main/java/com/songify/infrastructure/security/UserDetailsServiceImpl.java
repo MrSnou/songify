@@ -1,20 +1,38 @@
 package com.songify.infrastructure.security;
 
+import com.songify.domain.usercrud.User;
 import com.songify.domain.usercrud.UserRepository;
+import com.songify.infrastructure.usercrud.error.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+import java.util.List;
+
 @AllArgsConstructor
-class UserDetailsServiceImpl implements UserDetailsManager {
+public class UserDetailsServiceImpl implements UserDetailsManager {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void createUser(final UserDetails user) {
-//        userRepository.save()
+        if (userExists(user.getUsername())) {
+            throw new UserAlreadyExistsException("User with email " + user.getUsername() + " already exists.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+
+        User newUser = new User(
+                user.getUsername(),
+                encodedPassword,
+                true,
+                List.of(SecurityConfig.DEFAULT_USER_ROLE)
+        );
+        User savedUser = userRepository.save(newUser);
+
     }
 
     @Override
