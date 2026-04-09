@@ -20,7 +20,7 @@ class RegisterController {
 
     private final UserDetailsManager userDetailsManager;
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserRegisterResponseDto> register(@RequestBody UserRegisterRequestDto request) {
         String email = request.email();
         String password = request.password();

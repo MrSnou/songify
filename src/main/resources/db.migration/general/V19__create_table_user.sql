@@ -12,32 +12,3 @@ CREATE TABLE users
 ALTER TABLE users
     ADD CONSTRAINT uc_users_email UNIQUE (email);
 
-ALTER TABLE song
-    ADD CONSTRAINT uc_song_genre UNIQUE (genre_id);
-
-ALTER TABLE song
-    ALTER COLUMN genre_id SET NOT NULL;
-
-ALTER TABLE album
-    ALTER COLUMN uuid DROP NOT NULL;
-
-ALTER TABLE artist
-    ALTER COLUMN uuid DROP NOT NULL;
-
-ALTER TABLE genre
-    ALTER COLUMN uuid DROP NOT NULL;
-
-ALTER TABLE song
-    ALTER COLUMN uuid DROP NOT NULL;
-
-ALTER TABLE album
-    ALTER COLUMN version DROP NOT NULL;
-
-ALTER TABLE artist
-    ALTER COLUMN version DROP NOT NULL;
-
-ALTER TABLE genre
-    ALTER COLUMN version DROP NOT NULL;
-
-ALTER TABLE song
-    ALTER COLUMN version DROP NOT NULL;

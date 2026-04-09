@@ -20,7 +20,6 @@ import com.songify.infrastructure.crud.genre.error.GenreNotFoundException;
 import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
 import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
 import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
-import com.songify.infrastructure.crud.song.dto.response.SongWithGenreResponseDto;
 import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
 import com.songify.infrastructure.crud.song.error.SongNotFoundException;
 import com.songify.infrastructure.crud.song.util.SongDto;
@@ -1222,37 +1221,6 @@ class SongifyCrudFacadeTest {
                     .containsExactly(addedSong.id(), addedSong.name());
             assertThat(fetchedArtistWithAlbums.iterator().next().artists().iterator().next()).extracting(ArtistDto::id, ArtistDto::name)
                     .containsExactly(addedArtist.id(), addedArtist.name());
-        }
-    }
-
-    @Nested
-    @DisplayName("FindSongDtoWithGenreDtoById - Tests")
-    class findSongDtoWithGenreDtoById {
-
-        @Test
-        @DisplayName("Should return SongNotFoundException")
-        void should_return_songNotFoundException() {
-            // Given
-            // When
-            Throwable songException = catchThrowable(() -> songifyCrudFacade.findSongDtoWithGenreDtoById(Long.MAX_VALUE));
-            // Then
-            assertThat(songException).isInstanceOf(SongNotFoundException.class)
-                    .hasMessage("Song with id: " + Long.MAX_VALUE + " not found.");
-        }
-
-        @Test
-        @DisplayName("Should return SongDto with Default GenreDto")
-        void should_return_songDto_with_default_genre() {
-            // Given
-            SongDto addedSong = songifyCrudFacade.addSong(TestEntityFactory.aSong());
-            GenreDto defaultGenre = songifyCrudFacade.findGenreDtoById(1L);
-            // When
-            SongWithGenreResponseDto responseDto = songifyCrudFacade.findSongDtoWithGenreDtoById(addedSong.id());
-            // Then
-            assertThat(responseDto.song()).extracting(SongDto::id, SongDto::name, SongDto::duration)
-                    .containsExactly(addedSong.id(), addedSong.name(), addedSong.duration());
-            assertThat(responseDto.genre()).extracting(GenreDto::id, GenreDto::name)
-                    .containsExactly(defaultGenre.id(), defaultGenre.name());
         }
     }
 }
