@@ -4,9 +4,13 @@ import com.songify.domain.usercrud.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -49,11 +53,17 @@ class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws AuthenticationException {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(c -> c.disable());
+        http.csrf(cc -> cc.disable());
         http.cors(corsConfigurerCustomizer());
-        http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
+        http.formLogin(flc -> flc.disable());
+        http.httpBasic(hbc -> hbc.disable());
+        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(
                 authorize ->
                         authorize
@@ -65,22 +75,22 @@ class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/artists/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/albums/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/token/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/songs/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/token/**").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/artists/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/albums/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/genres/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/genres/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/genres/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/songs/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/artists/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/albums/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/genres/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/songs/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/artists/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/albums/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/genres/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/songs/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/artists/**" ).hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/albums/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/genres/**" ).hasRole("ADMIN")
                                 .anyRequest().authenticated());
         return http.build();
