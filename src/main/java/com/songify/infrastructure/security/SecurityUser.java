@@ -6,8 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
-class SecurityUser implements UserDetails {
+public class SecurityUser implements UserDetails {
 
     private final User user;
 
@@ -24,6 +25,10 @@ class SecurityUser implements UserDetails {
                         return authority;
                     }
                 }).toList();
+    }
+
+    public List<String> getAuthoritiesAsString() {
+        return user.getAuthorities().stream().toList();
     }
 
     @Override
