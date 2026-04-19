@@ -57,7 +57,6 @@ class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/artists/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/albums/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/token/**").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/songs/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/artists/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/albums/**" ).hasRole("ADMIN")
