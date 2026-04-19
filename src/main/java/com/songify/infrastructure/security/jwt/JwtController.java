@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @RequestMapping
 @AllArgsConstructor
@@ -17,9 +19,8 @@ class JwtController {
     private final JwtTokenGenerator tokenGenerator;
 
     @PostMapping("/token")
-    public ResponseEntity<TokenResponseDto> f(@RequestBody TokenRequestDto requestDto) {
-        String generatedToken = tokenGenerator
-                .authenticateAndGenerateToken(requestDto.username(), requestDto.password());
+    public ResponseEntity<TokenResponseDto> f(@RequestBody TokenRequestDto requestDto) throws NoSuchAlgorithmException {
+        String generatedToken = tokenGenerator.authenticateAndGenerateToken(requestDto.username(), requestDto.password());
 
         return ResponseEntity.ok(TokenResponseDto.builder()
                         .token(generatedToken)

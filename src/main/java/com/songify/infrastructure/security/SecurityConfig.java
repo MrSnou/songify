@@ -1,6 +1,7 @@
 package com.songify.infrastructure.security;
 
 import com.songify.domain.usercrud.UserRepository;
+import com.songify.infrastructure.security.jwt.JwtAuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -24,23 +26,6 @@ import java.util.List;
 class SecurityConfig {
 
     public static final String DEFAULT_USER_ROLE = "ROLE_USER";
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        var manager = new InMemoryUserDetailsManager();
-//
-//        var user1 = User.withUsername("User")
-//                .password("12345")
-//                .roles("USER")
-//                .build();
-//        var admin1 = User.withUsername("Admin")
-//                .password("12345")
-//                .roles("USER", "ADMIN")
-//                .build();
-//        manager.createUser(user1);
-//        manager.createUser(admin1);
-//        return manager;
-//    }
 
     @Bean
     public UserDetailsManager userDetailsService(UserRepository userRepository) {
@@ -58,15 +43,15 @@ class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthTokenFilter jwtAuthTokenFilter) throws Exception {
         http.csrf(cc -> cc.disable());
         http.cors(corsConfigurerCustomizer());
         http.formLogin(flc -> flc.disable());
         http.httpBasic(hbc -> hbc.disable());
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(
-                authorize ->
-                        authorize
+                authorize -> authorize
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/swagger-resources/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
@@ -110,4 +95,21 @@ class SecurityConfig {
             c.configurationSource(source);
         };
     }
+
+    //    @Bean
+//    public UserDetailsService userDetailsService() {
+//        var manager = new InMemoryUserDetailsManager();
+//
+//        var user1 = User.withUsername("User")
+//                .password("12345")
+//                .roles("USER")
+//                .build();
+//        var admin1 = User.withUsername("Admin")
+//                .password("12345")
+//                .roles("USER", "ADMIN")
+//                .build();
+//        manager.createUser(user1);
+//        manager.createUser(admin1);
+//        return manager;
+//    }
 }
