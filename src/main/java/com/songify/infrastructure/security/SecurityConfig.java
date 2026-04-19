@@ -81,6 +81,8 @@ class SecurityConfig {
         return http.build();
     }
 
+
+    // Configuration of CORS for frontend
     public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
         return c -> {
             CorsConfigurationSource source = request -> {
@@ -90,6 +92,7 @@ class SecurityConfig {
                 config.setAllowedMethods(
                         List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                 config.setAllowedHeaders(List.of("*"));
+                config.setAllowCredentials(true);
                 return config;
             };
             c.configurationSource(source);
