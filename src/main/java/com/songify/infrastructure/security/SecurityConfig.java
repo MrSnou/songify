@@ -1,6 +1,9 @@
 package com.songify.infrastructure.security;
 
 import com.songify.domain.usercrud.UserRepository;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,14 +13,17 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -41,13 +47,16 @@ class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, CustomOidcUserService customOidcUserService) throws Exception {
         http.csrf(cc -> cc.disable());
         http.cors(corsConfigurerCustomizer());
         http.formLogin(flc -> flc.disable());
         http.httpBasic(hbc -> hbc.disable());
-        http.oauth2Login(Customizer.withDefaults());
-//        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.oauth2Login(oAuth2 -> oAuth2.successHandler(successHandler)
+                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(
+                        customOidcUserService
+                )));
+//        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); When have exclusive frontend
         http.authorizeHttpRequests(
                 authorize -> authorize
                                 .requestMatchers("/swagger-ui/**").permitAll()
@@ -58,6 +67,7 @@ class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/artists/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/albums/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/message/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/songs/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/artists/**" ).hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/albums/**" ).hasRole("ADMIN")
