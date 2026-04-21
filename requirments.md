@@ -69,9 +69,14 @@
 35. Chcemy mieć obsługę CORS - Zapytania z domeny frontend'owej
 36. Chcemy Zabezpieczenie CSRF, bo będzie frontend
 37. Bonus - Potwierdzenie e-mail po rejestracji.
+38. 
 TODO - Fix number of query requests by writing custom queries
 
 TODO - Refactor AlbumDto to return SongDto instead of songIds
+
+TODO - Add automatic registration when OAuth Google is used for the first time
+
+
 
 
 
@@ -87,18 +92,24 @@ Happy Path :
             artistId = 1,
             artistName = 1
         }
-        [   
-            genreId     = 1
-            genreName   = "Rap"
+        [
             {
                 songId      = 1
                 songName    = "Till i collapse"
+                {
+                    genreId = 1
+                    genreName = "Default"
+                }
             }
             {
                 songId       = 2
                 songName     = "Lose Yourself"
+                {
+                    genreId = 2
+                    genreName = "Rap"
+                }
             }
-          ]
+        ]
       }
 
 Given there is no songs, artists, albums and genres created before

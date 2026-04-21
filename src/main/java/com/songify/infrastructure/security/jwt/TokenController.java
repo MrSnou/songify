@@ -15,7 +15,7 @@ class TokenController {
             String token = oidcUser.getIdToken().getTokenValue();
             return ResponseEntity.ok(new JwtTokenResponseDto(token));
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(new JwtTokenResponseDto("No token available, session controlled connection."));
     }
 
     private record JwtTokenResponseDto(String token) {

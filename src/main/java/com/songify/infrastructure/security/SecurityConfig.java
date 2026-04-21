@@ -1,9 +1,6 @@
 package com.songify.infrastructure.security;
 
 import com.songify.domain.usercrud.UserRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,8 +9,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +18,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -50,7 +44,7 @@ class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, CustomOidcUserService customOidcUserService) throws Exception {
         http.csrf(cc -> cc.disable());
         http.cors(corsConfigurerCustomizer());
-        http.formLogin(flc -> flc.disable());
+        http.formLogin(Customizer.withDefaults());
         http.httpBasic(hbc -> hbc.disable());
         http.oauth2Login(oAuth2 -> oAuth2.successHandler(successHandler)
                 .userInfoEndpoint(userInfo -> userInfo.oidcUserService(
@@ -59,32 +53,33 @@ class SecurityConfig {
 //        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); When have exclusive frontend
         http.authorizeHttpRequests(
                 authorize -> authorize
-                                .requestMatchers("/swagger-ui/**").permitAll()
-                                .requestMatchers("/swagger-resources/**").permitAll()
-                                .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers("/users/register/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/songs/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/artists/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/albums/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/message/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/genres/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/genres/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/genres/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/songs/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/artists/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/albums/**" ).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/genres/**" ).hasRole("ADMIN")
-                                .anyRequest().authenticated());
+                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/users/register/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/songs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/artists/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/albums/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/userDetails/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/songs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/artists/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/albums/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/genres/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/songs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/artists/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/albums/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/genres/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/songs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/artists/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/albums/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/genres/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/songs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/artists/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/albums/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/genres/**").hasRole("ADMIN")
+                        .anyRequest().authenticated());
         return http.build();
     }
 

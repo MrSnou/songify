@@ -100,6 +100,14 @@
         Log out
     </button>
 
+    <button class="btn" onclick="window.location.href='/token'">
+        Token
+    </button>
+
+    <button class="btn secondary" onclick="window.location.href='/userDetails'">
+        User Details
+    </button>
+
     <button class="btn secondary" onclick="window.location.href='/swagger-ui/index.html'">
         Swagger UI
     </button>
@@ -114,7 +122,6 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // 🎵 Latające nutki
     const notes = [];
 
     function createNote() {
@@ -131,7 +138,6 @@
         notes.push(createNote());
     }
 
-    // 🌊 Fala dźwięku po kliknięciu
     const waves = [];
 
     document.addEventListener("click", (e) => {
