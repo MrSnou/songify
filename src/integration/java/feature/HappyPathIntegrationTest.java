@@ -2,7 +2,6 @@ package feature;
 
 
 import com.songify.SongifyApplication;
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
@@ -234,5 +232,21 @@ class HappyPathIntegrationTest {
                     .andExpect(jsonPath("$.artists[0].id", is(1)))
                     .andExpect(jsonPath("$.artists[0].name", is("Eminem")));
         }
+    }
+
+    private JwtAuthenticationToken createJwtTokenWithAdminRole() {
+        Jwt jwt = Jwt.withTokenValue("123")
+                .claim("email", "Admin")
+                .header("alg", "null")
+                .build();
+        return new JwtAuthenticationToken(jwt);
+    }
+
+    private JwtAuthenticationToken createJwtTokenWithUserRole() {
+        Jwt jwt = Jwt.withTokenValue("123")
+                .claim("email", "User")
+                .header("alg", "null")
+                .build();
+        return new JwtAuthenticationToken(jwt);
     }
 }
