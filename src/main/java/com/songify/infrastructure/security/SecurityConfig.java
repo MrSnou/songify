@@ -1,6 +1,10 @@
 package com.songify.infrastructure.security;
 
+import com.songify.domain.crud.model.DomainConstants;
+import com.songify.domain.security.jwt.JwtAuthenticationFilter;
 import com.songify.domain.usercrud.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,21 +13,25 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 class SecurityConfig {
 
     public static final String DEFAULT_USER_ROLE = "ROLE_USER";
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public UserDetailsManager userDetailsService(UserRepository userRepository) {
@@ -43,14 +51,17 @@ class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, CustomOidcUserService customOidcUserService) throws Exception {
         http.csrf(cc -> cc.disable());
-        http.cors(corsConfigurerCustomizer());
-        http.formLogin(Customizer.withDefaults());
+        http.cors(cors -> cors.disable());
+        http.formLogin(fl -> fl.disable());
         http.httpBasic(hbc -> hbc.disable());
+
+
         http.oauth2Login(oAuth2 -> oAuth2.successHandler(successHandler)
                 .userInfoEndpoint(userInfo -> userInfo.oidcUserService(
                         customOidcUserService
                 )));
-//        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); When have exclusive frontend
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(
                 authorize -> authorize
                         .requestMatchers("/login/**").permitAll()
@@ -83,20 +94,20 @@ class SecurityConfig {
         return http.build();
     }
 
-    public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
-        return c -> {
-            CorsConfigurationSource source = request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(
-                        List.of("http://localhost:3000"));
-                config.setAllowedMethods(
-                        List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-                config.setAllowedHeaders(List.of("*"));
-                return config;
-            };
-            c.configurationSource(source);
-        };
-    }
+//    public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
+//        return c -> {
+//            CorsConfigurationSource source = request -> {
+//                CorsConfiguration config = new CorsConfiguration();
+//                config.setAllowedOrigins(
+//                        List.of("http://localhost:3000"));
+//                config.setAllowedMethods(
+//                        List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+//                config.setAllowedHeaders(List.of("*"));
+//                return config;
+//            };
+//            c.configurationSource(source);
+//        };
+//    }
 
     //    @Bean
 //    public UserDetailsService userDetailsService() {

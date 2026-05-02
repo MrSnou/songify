@@ -1,4 +1,4 @@
-package com.songify.infrastructure.security.jwt;
+package com.songify.infrastructure.security;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +18,5 @@ class TokenController {
         return ResponseEntity.ok(new JwtTokenResponseDto("No token available, session controlled connection."));
     }
 
-    private record JwtTokenResponseDto(String token) {
-    }
+    private record JwtTokenResponseDto(String token) {}
 }

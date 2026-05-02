@@ -1,8 +1,7 @@
-package com.songify.infrastructure.security.jwt;
+package com.songify.infrastructure.security;
 
 import com.songify.domain.usercrud.User;
 import com.songify.domain.usercrud.UserRepository;
-import com.songify.infrastructure.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
