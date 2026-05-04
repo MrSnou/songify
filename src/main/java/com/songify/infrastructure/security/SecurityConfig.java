@@ -1,18 +1,15 @@
 package com.songify.infrastructure.security;
 
-import com.songify.domain.crud.model.DomainConstants;
 import com.songify.domain.security.jwt.JwtAuthenticationFilter;
 import com.songify.domain.usercrud.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,10 +18,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -60,20 +54,43 @@ class SecurityConfig {
                 .userInfoEndpoint(userInfo -> userInfo.oidcUserService(
                         customOidcUserService
                 )));
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    if (request.getHeader("Accept").contains("text/html")) {
+                        response.sendRedirect("/login-page");
+                    } else {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                    }
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) ->
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
+        );
+        http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .deleteCookies("AuthorizationToken")
+                .clearAuthentication(true));
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(
                 authorize -> authorize
-                        .requestMatchers("/login/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/swagger-resources/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/users/register/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/songs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/artists/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/albums/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/userDetails/**").permitAll()
+                        // public actions
+                        .requestMatchers(HttpMethod.GET, "/").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/login-page").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/login/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/users/register/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/logout/**").authenticated()
+                        // immutable infrastructure actions
+                        .requestMatchers("/swagger-ui/**").authenticated()
+                        .requestMatchers("/swagger-resources/**").authenticated()
+                        .requestMatchers("/v3/api-docs/**").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/token/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/userDetails/**").authenticated()
+                        // immutable domain actions
+                        .requestMatchers(HttpMethod.GET, "/songs/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/artists/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/albums/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/genres/**").authenticated()
+                        // mutable actions
                         .requestMatchers(HttpMethod.PUT, "/songs/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/artists/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/albums/**").hasRole("ADMIN")

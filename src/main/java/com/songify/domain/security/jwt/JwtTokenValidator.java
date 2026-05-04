@@ -10,7 +10,7 @@ import java.security.interfaces.RSAPublicKey;
 
 @Component
 @RequiredArgsConstructor
-class JwtTokenValidator {
+public class JwtTokenValidator {
 
     private final RSAPublicKey rsaPublicKey;
 
