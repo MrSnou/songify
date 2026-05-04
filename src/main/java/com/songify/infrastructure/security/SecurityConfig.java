@@ -111,20 +111,23 @@ class SecurityConfig {
         return http.build();
     }
 
-//    public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
-//        return c -> {
-//            CorsConfigurationSource source = request -> {
-//                CorsConfiguration config = new CorsConfiguration();
-//                config.setAllowedOrigins(
-//                        List.of("http://localhost:3000"));
-//                config.setAllowedMethods(
-//                        List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-//                config.setAllowedHeaders(List.of("*"));
-//                return config;
-//            };
-//            c.configurationSource(source);
-//        };
-//    }
+
+//     // Configuration of CORS for frontend
+//     public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
+//         return c -> {
+//             CorsConfigurationSource source = request -> {
+//                 CorsConfiguration config = new CorsConfiguration();
+//                 config.setAllowedOrigins(
+//                         List.of("http://localhost:3000"));
+//                 config.setAllowedMethods(
+//                         List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+//                 config.setAllowedHeaders(List.of("*"));
+//                 config.setAllowCredentials(true);
+//                 return config;
+//             };
+//             c.configurationSource(source);
+//         };
+//     }
 
     //    @Bean
 //    public UserDetailsService userDetailsService() {
