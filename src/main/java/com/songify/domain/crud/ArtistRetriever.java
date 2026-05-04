@@ -2,9 +2,11 @@ package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
 import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
+import com.songify.infrastructure.crud.artist.ArtistDto;
 import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
 import com.songify.infrastructure.crud.artist.error.ArtistNotFoundException;
-import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +26,7 @@ class ArtistRetriever {
     Set<ArtistDto> findAllArtists(final Pageable pageable) {
         return artistRepository.findAll(pageable)
                 .stream()
-                .map( artist -> new ArtistDto(
+                .map(artist -> new ArtistDto(
                         artist.getId(), artist.getName()
                 ))
                 .collect(Collectors.toSet());
@@ -43,14 +45,18 @@ class ArtistRetriever {
                 .stream()
                 .filter(album -> album.getArtists().contains(artist))
                 .map(album -> new AlbumDto(album.getId(), album.getTitle(),
-                        album.getSongs().stream().map(Song::getId).toList()))
+                        album.getSongs()
+                                .stream().map(
+                                        song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                                new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
+                                ).toList()))
                 .toList();
 
         ArtistWithAlbumsResponseDto responseDto = new ArtistWithAlbumsResponseDto(
-                "Successfully retrieved: "+ artist.getName() + " with all it's albums.",
+                "Successfully retrieved: " + artist.getName() + " with all it's albums.",
                 new ArtistDto(artist.getId(), artist.getName()),
                 new AllAlbumsResponseDto(albumDtoList)
-                );
+        );
 
         return responseDto;
     }

@@ -96,7 +96,11 @@ class AlbumRetriever {
         List<Album> all = findAllAlbums(pageable).stream().toList();
         List<AlbumDto> allAlbumsDto = all.stream()
                 .map(album -> new AlbumDto(album.getId(), album.getTitle(),
-                        album.getSongs().stream().map(Song::getId).toList()))
+                        album.getSongs()
+                                .stream().map(
+                                        song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                                new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
+                                ).toList()))
                 .collect(Collectors.toList());
         return new AllAlbumsResponseDto(allAlbumsDto);
     }

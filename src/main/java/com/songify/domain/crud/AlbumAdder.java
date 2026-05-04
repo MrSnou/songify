@@ -1,6 +1,8 @@
 package com.songify.domain.crud;
 
 import com.songify.infrastructure.crud.album.AlbumDto;
+import com.songify.infrastructure.crud.genre.GenreDto;
+import com.songify.infrastructure.crud.song.util.SongDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +28,15 @@ class AlbumAdder {
         songs.forEach(album::addSongToAlbum);
         Album savedAlbum = albumRepository.save(album);
         return new AlbumDto(savedAlbum.getId(),  savedAlbum.getTitle(),
-                savedAlbum.getSongs().stream().map(song -> song.getId()).toList());
+                savedAlbum.getSongs()
+                        .stream().map(
+                                song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                        new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
+                        ).toList());
 
     }
+
+
 
     Album addAlbum(final String title, final Instant releaseDate) {
         Album album = new Album();
