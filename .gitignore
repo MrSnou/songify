@@ -2,6 +2,7 @@ HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 db
+oauth2ClientData.yml
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -21,6 +22,8 @@ db
 *.iws
 *.iml
 *.ipr
+oauth2ClientData.yml
+
 
 ### NetBeans ###
 /nbproject/private/
