@@ -1,7 +1,6 @@
 package com.songify.domain.crud;
 
 import com.songify.domain.crud.model.BaseEntity;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

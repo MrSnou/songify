@@ -1,4 +1,4 @@
-package com.songify.infrastructure.crud.song.error;
+package com.songify.domain.crud.exception;
 
 public class SongNotFoundException extends RuntimeException {
 

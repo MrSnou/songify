@@ -1,6 +1,9 @@
 package com.songify.infrastructure.crud.genre.error;
 
 
+import com.songify.domain.crud.exception.GenreDefaultIsLockedException;
+import com.songify.domain.crud.exception.GenreIsUsedBySongsException;
+import com.songify.domain.crud.exception.GenreNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,6 @@
 package com.songify.infrastructure.crud.song.error;
 
+import com.songify.domain.crud.exception.SongNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.songify.infrastructure.crud.genre.error;
+package com.songify.domain.crud.exception;
 
 public class GenreNotDeletedException extends RuntimeException {
 

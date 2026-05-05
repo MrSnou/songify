@@ -32,146 +32,128 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class SongifyCrudFacade {
 
-    private final SongAdder songAdder;
-    private final SongUpdater songUpdater;
-    private final SongDeleter songDeleter;
-    private final SongRetriever songRetriever;
+    private final SongService songService;
+    private final AlbumService albumService;
+    private final GenreService genreService;
+    private final ArtistService artistService;
 
-    private final ArtistAdder artistAdder;
-    private final ArtistUpdater artistUpdater;
-    private final ArtistDeleter artistDeleter;
-    private final ArtistAssigner artistAssigner;
-    private final ArtistRetriever artistRetriever;
-
-    private final GenreAdder genreAdder;
-    private final GenreDeleter genreDeleter;
-    private final GenreUpdater genreUpdater;
-    private final GenreRetriever genreRetriever;
-
-    private final AlbumAdder albumAdder;
-    private final AlbumUpdater albumUpdater;
-    private final AlbumDeleter albumDeleter;
-    private final AlbumRetriever albumRetriever;
 
     public ArtistDto addArtist(ArtistRequestDto dto) {
-        return artistAdder.addArtist(dto.name());
+        return artistService.addArtist(dto.name());
     }
 
     public GenreDto addGenre(GenreRequestDto dto) {
-        return genreAdder.addGenre(dto.name());
+        return genreService.addGenre(dto.name());
     }
 
     public AlbumDto addAlbumWithSong(AlbumWithSongRequestDto dto) {
-        return albumAdder.addAlbumWithSong(dto.songIds(), dto.title(), dto.releaseDate());
+        return albumService.addAlbumWithSong(dto.songIds(), dto.title(), dto.releaseDate());
     }
 
     public SongDto addSong(final SongRequestDto requestDto) {
-        return songAdder.addSong(requestDto);
+        return songService.addSong(requestDto);
     }
 
     public Set<ArtistDto> findAllArtists(final Pageable pageable) {
-        return artistRetriever.findAllArtists(pageable);
+        return artistService.findAllArtists(pageable);
     }
 
     public List<SongDto> findAllSongs(Pageable pageable) {
-        return songRetriever.findAll(pageable);
+        return songService.findAll(pageable);
     }
 
     public SongDto findSongDtoById(Long id) {
-        return songRetriever.findSongDtoById(id);
+        return songService.findSongDtoById(id);
     }
 
     public SongGenreDto findSongGenreDtoById(Long id) {
-        return songRetriever.findSongGenreDtoById(id);
+        return songService.findSongGenreDtoById(id);
     }
 
     public AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long albumId) {
-        return albumRetriever.findAlbumByIdWithArtistsAndSongs(albumId);
+        return albumService.findAlbumByIdWithArtistsAndSongs(albumId);
     }
 
     public UpdateSongResponseDto updatesSongPartiallyById(Long id, UpdateSongRequestDto songFromRequest) {
-        return songUpdater.updateById(id, songFromRequest);
+        return songService.updateById(id, songFromRequest);
     }
 
     public DeleteSongResponseDto deleteSongById(Long id) {
-        return songDeleter.deleteSongById(id);
+        return songService.deleteSongById(id);
     }
 
     public void deleteAlbumById(final Long requestAlbumId) {
-        albumDeleter.deleteById(albumRetriever.findAlbumById(requestAlbumId));
+        albumService.deleteById(albumService.findAlbumById(requestAlbumId));
 
     }
 
     public void deleteGenreById(final Long genreId) {
-        genreDeleter.deleteGenreById(genreRetriever.findGenreById(genreId));
+        genreService.deleteGenreById(genreService.findGenreById(genreId));
     }
 
     public void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
-        artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
+        artistService.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
     public UpdateArtistAlbumResponseDto addArtistToAlbum(Long artistID, Long albumID) {
-        return artistAssigner.addArtistToAlbum(artistID, albumID);
+        return artistService.addArtistToAlbum(artistID, albumID);
     }
 
     public ArtistDto updateArtistNameById(Long artistId, String newName) {
-        return artistUpdater.updateArtistNameById(artistId, newName);
+        return artistService.updateArtistNameById(artistId, newName);
     }
 
     public ArtistDto findArtistById(final Long artistId) {
-        Artist artist = artistRetriever.findArtistById(artistId);
+        Artist artist = artistService.findArtistById(artistId);
         return new ArtistDto(artistId, artist.getName());
     }
 
 
     public GenreDto updateGenreNameById(final Long genreId, String newName) {
-        return genreUpdater.updateGenreNameById(genreId, newName);
+        return genreService.updateGenreNameById(genreId, newName);
 
     }
 
     public UpdateAlbumWithSongsAndArtistsResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
-        albumUpdater.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
-        UpdateAlbumWithSongsAndArtistsResponseDto responseDto = albumRetriever.getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId);
-        return responseDto;
+        albumService.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
+        return albumService.getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId);
     }
 
     public UpdateSongAlbumResponseDto updateSongAlbum(final Long songId, final Long albumId) {
-        UpdateSongAlbumResponseDto responseDto = songUpdater.updateSongAlbumById(songId, albumId);
-        return responseDto;
+        return songService.updateSongAlbumById(songId, albumId);
     }
 
     public UpdateSongResponseDto updateSongGenreById(final Long songId, final Long genreId) {
-        return songUpdater.updateSongGenreById(songId, genreId);
+        return songService.updateSongGenreById(songId, genreId);
     }
 
     public GenreDto findGenreDtoById(final Long genreId) {
-        return genreRetriever.findGenreDtoById(genreId);
+        return genreService.findGenreDtoById(genreId);
     }
 
     public List<GenreDto> findAllGenreDto(Pageable pageable) {
-        return genreRetriever.findAllGenreDto(pageable);
+        return genreService.findAllGenreDto(pageable);
     }
 
     public AllAlbumsResponseDto findAllAlbumDto(Pageable pageable) {
-        return albumRetriever.findAllAlbumsDto(pageable);
+        return albumService.findAllAlbumsDto(pageable);
     }
 
     public GenreWithSongsResponseDto findGenreDtoWithSongsDto(final Long genreId) {
-        GenreDto genreDto = genreRetriever.findGenreDtoById(genreId);
-        List<SongDto> songsDto = songRetriever.findSongsDtoByGenreId(genreRetriever.findGenreById(genreId));
+        GenreDto genreDto = genreService.findGenreDtoById(genreId);
+        List<SongDto> songsDto = songService.findSongsDtoByGenreId(genreService.findGenreById(genreId));
 
         return new GenreWithSongsResponseDto(
-                "Successfully retrieved all songs with genre: " + genreRetriever.findGenreDtoById(genreId).name(),
+                "Successfully retrieved all songs with genre: " + genreService.findGenreDtoById(genreId).name(),
                 genreDto,  songsDto
                 );
     }
 
     public ArtistWithAlbumsResponseDto findArtistDtoWithAlbumsDto(final Long artistId) {
-        ArtistWithAlbumsResponseDto responseDto = artistRetriever.findArtistWithAlbumsById(artistId);
-        return responseDto;
+        return artistService.findArtistWithAlbumsById(artistId);
     }
 
     public Set<AlbumDtoWithArtistsAndSongsResponseDto> findAlbumsByArtistId(final Long artistId) {
-        return albumRetriever.findAlbumsDtoByArtistId(artistId);
+        return albumService.findAlbumsDtoByArtistId(artistId);
     }
 }

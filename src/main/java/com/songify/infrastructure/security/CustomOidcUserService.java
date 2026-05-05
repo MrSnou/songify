@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 class CustomOidcUserService extends OidcUserService {
 
-    private final UserDetailsManager userDetailsService;
     private final UserDetailsManager userDetailsManager;
 
     @Override
@@ -32,9 +31,7 @@ class CustomOidcUserService extends OidcUserService {
         OidcUser oidcUser = super.loadUser(userRequest);
         SecurityUser user;
         try {
-            if (userDetailsService.userExists(oidcUser.getEmail())) {
-                user = (SecurityUser) userDetailsService.loadUserByUsername(oidcUser.getEmail());
-            } else {
+            if (!userDetailsManager.userExists(oidcUser.getEmail())) {
                 SecurityUser newUser = new SecurityUser(new User(
                         oidcUser.getEmail(),
                         UUID.randomUUID().toString(),
@@ -42,8 +39,9 @@ class CustomOidcUserService extends OidcUserService {
                         List.of(SecurityConfig.DEFAULT_USER_ROLE)
                 ));
                 userDetailsManager.createUser(newUser);
-                user = (SecurityUser) userDetailsService.loadUserByUsername(oidcUser.getEmail());
+
             }
+            user = (SecurityUser) userDetailsManager.loadUserByUsername(oidcUser.getEmail());
 
         } catch (UsernameNotFoundException e) {
             OAuth2Error oauthError = new OAuth2Error("invalid_token", "Username not found.", e.getMessage());

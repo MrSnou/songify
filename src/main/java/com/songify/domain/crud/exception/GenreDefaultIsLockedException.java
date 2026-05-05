@@ -1,4 +1,4 @@
-package com.songify.infrastructure.crud.genre.error;
+package com.songify.domain.crud.exception;
 
 public class GenreDefaultIsLockedException extends RuntimeException {
     public GenreDefaultIsLockedException(final String message) {
