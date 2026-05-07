@@ -1,10 +1,11 @@
 package com.songify.infrastructure.crud.genre;
 
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
-import com.songify.infrastructure.crud.genre.dto.response.AllGenresResponseDto;
-import com.songify.infrastructure.crud.genre.dto.response.GenreResponseDto;
-import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
+import com.songify.domain.crud.dto.genre.GenreDto;
+import com.songify.infrastructure.crud.genre.dto.GenreRequestDto;
+import com.songify.domain.crud.dto.genre.AllGenresDto;
+import com.songify.domain.crud.dto.genre.GenreResponseDto;
+import com.songify.domain.crud.dto.genre.GenreWithSongsResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/genres")
@@ -30,15 +29,12 @@ class GenreRestController {
 
     @GetMapping("/{genreId}")
     ResponseEntity<GenreDto> getGenreById(@PathVariable Long genreId) {
-        GenreDto genreDtoById = songifyCrudFacade.findGenreDtoById(genreId);
-        return ResponseEntity.ok(genreDtoById);
+        return ResponseEntity.ok(songifyCrudFacade.findGenreDtoById(genreId));
     }
 
     @GetMapping
-    ResponseEntity<AllGenresResponseDto> getAllGenres(@PageableDefault(sort = "id") Pageable pageable) {
-        List<GenreDto> all = songifyCrudFacade.findAllGenreDto(pageable);
-        AllGenresResponseDto responseDto = new AllGenresResponseDto("Successfully retrieved all genres", all);
-        return ResponseEntity.ok(responseDto);
+    ResponseEntity<AllGenresDto> getAllGenres(@PageableDefault(sort = "id") Pageable pageable) {
+        return ResponseEntity.ok(songifyCrudFacade.findAllGenreDto(pageable));
     }
 
     @GetMapping("/{genreId}/songs")
@@ -55,15 +51,13 @@ class GenreRestController {
 
     @DeleteMapping("/{genreId}")
     ResponseEntity<GenreResponseDto> deleteGenre(@PathVariable Long genreId) {
-        songifyCrudFacade.deleteGenreById(genreId);
-        GenreResponseDto responseDto = new GenreResponseDto(HttpStatus.OK, "Successfully Deleted Genre with id " + genreId + ".");
-        return ResponseEntity.ok(responseDto);
+        GenreResponseDto genreResponseDto = songifyCrudFacade.deleteGenreById(genreId);
+        return ResponseEntity.ok(genreResponseDto);
     }
 
     @PutMapping("/{genreId}")
     ResponseEntity<GenreResponseDto> updateNameOfGenreById(@PathVariable Long genreId, @RequestBody GenreRequestDto requestDto) {
-        songifyCrudFacade.updateGenreNameById(genreId, requestDto.name());
-        GenreResponseDto responseDto = new GenreResponseDto(HttpStatus.OK, "Successfully changed Genre with id " + genreId + " to " + requestDto.name() + ".");
-        return ResponseEntity.ok(responseDto);
+        GenreResponseDto genreResponseDto = songifyCrudFacade.updateGenreNameById(genreId, requestDto.name());
+        return ResponseEntity.ok(genreResponseDto);
     }
 }

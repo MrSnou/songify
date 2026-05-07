@@ -10,8 +10,8 @@ class SongifyCrudFacadeConfiguration {
 
         GenreService genreService = new GenreService(genreRepository, songRepository);
         ArtistService artistService = new ArtistService(artistRepository, songRepository, albumRepository);
-        AlbumService albumService = new AlbumService(albumRepository, songRepository, artistRepository, artistService);
-        SongService songService = new SongService(songRepository, genreRepository, albumService);
+        AlbumService albumService = new AlbumService(albumRepository, artistRepository, songRepository, artistService);
+        SongService songService = new SongService(songRepository, albumService,  genreService);
 
 
 

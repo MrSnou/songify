@@ -1,19 +1,19 @@
 package com.songify.domain.crud;
 
-import com.songify.infrastructure.crud.album.AlbumDto;
-import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
-import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
-import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
-import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
+import com.songify.domain.crud.dto.album.AlbumDto;
+import com.songify.domain.crud.dto.album.AlbumResponseDto;
+import com.songify.domain.crud.dto.album.DeleteAlbumResponseDto;
+import com.songify.infrastructure.crud.album.dto.UpdateAlbumWithSongsAndArtistsRequestDto;
+import com.songify.domain.crud.dto.album.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.domain.crud.dto.album.AllAlbumsResponseDto;
 import com.songify.domain.crud.exception.AlbumNotEmptyException;
 import com.songify.domain.crud.exception.AlbumNotFoundException;
-import com.songify.infrastructure.crud.artist.ArtistDto;
+import com.songify.domain.crud.dto.artist.ArtistDto;
 import com.songify.domain.crud.exception.ArtistNotFoundException;
-import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
+import com.songify.domain.crud.dto.genre.GenreDto;
+import com.songify.domain.crud.dto.song.UpdateSongAlbumResponseDto;
 import com.songify.domain.crud.exception.SongNotFoundException;
-import com.songify.infrastructure.crud.song.util.SongDto;
-import com.songify.infrastructure.crud.song.util.SongInfoDto;
+import com.songify.domain.crud.dto.song.SongDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,14 +29,15 @@ import java.util.stream.Collectors;
 class AlbumService {
 
     private final AlbumRepository albumRepository;
-    private final SongRepository songRepository;
     private final ArtistRepository artistRepository;
+    private final SongRepository songRepository;
 
     private final ArtistService artistService;
 
+
     AlbumDto addAlbumWithSong(final List<Long> songIds, final String title, final Instant releaseDate) {
         List<Song> songs = songIds.stream()
-                .map(this::getSongFromDB)
+                .map(this::getSongFromDb)
                 .toList();
 
 
@@ -48,15 +49,18 @@ class AlbumService {
         return new AlbumDto(savedAlbum.getId(), savedAlbum.getTitle(),
                 savedAlbum.getSongs()
                         .stream().map(
-                                song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(),
                                         new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
                         ).toList());
 
     }
 
-    void deleteById(Album album) {
+    DeleteAlbumResponseDto deleteById(Album album) {
         if (album.getSongs().isEmpty() && album.getArtists().isEmpty()) {
             albumRepository.deleteById(album.getId().longValue());
+            return DeleteAlbumResponseDto.builder()
+                    .message("Album with id " + album.getId() + " successfully was deleted.")
+                    .build();
         } else {
             throw new AlbumNotEmptyException("Album is not empty, cannot delete");
         }
@@ -75,12 +79,12 @@ class AlbumService {
         Set<Artist> artists = albumByIdFromDb.getArtists();
         Set<Song> songs = albumByIdFromDb.getSongs();
 
-        Set<ArtistDto> ArtistDtos = artists.stream()
+        Set<ArtistDto> artistDtoSet = artists.stream()
                 .map(artist -> new ArtistDto(artist.getId(), artist.getName()))
                 .collect(Collectors.toSet());
 
-        Set<SongInfoDto> SongDtos = songs.stream()
-                .map(song -> new SongInfoDto(song.getId(), song.getName(), song.getDuration(),
+        Set<SongDto> songDtoSet = songs.stream()
+                .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
                         song.getReleaseDate(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                 .collect(Collectors.toSet());
 
@@ -88,8 +92,8 @@ class AlbumService {
                 albumByIdFromDb.getId(),
                 albumByIdFromDb.getTitle(),
                 albumByIdFromDb.getReleaseDate(),
-                ArtistDtos,
-                SongDtos
+                artistDtoSet,
+                songDtoSet
         );
     }
 
@@ -98,7 +102,7 @@ class AlbumService {
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id " + id + " not found"));
     }
 
-    UpdateAlbumWithSongsAndArtistsResponseDto getUpdateAlbumByIdWithSongsAndArtistsResponse(final Long id) {
+    AlbumDtoWithArtistsAndSongsResponseDto getUpdateAlbumByIdWithSongsAndArtistsResponse(final Long id) {
         Album album = albumRepository.findById(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
 
@@ -115,12 +119,17 @@ class AlbumService {
 
         songs = album.getSongs().
                 stream().
-                map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
+                map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                 .collect(Collectors.toSet());
 
 
-        UpdateAlbumWithSongsAndArtistsResponseDto responseDto = new UpdateAlbumWithSongsAndArtistsResponseDto(
-                album.getTitle(), artists, songs);
+        AlbumDtoWithArtistsAndSongsResponseDto responseDto = AlbumDtoWithArtistsAndSongsResponseDto.builder()
+                .id(album.getId())
+                .name(album.getTitle())
+                .releaseDate(album.getReleaseDate())
+                .songs(songs)
+                .artists(artists)
+                .build();
 
         return responseDto;
     }
@@ -131,7 +140,7 @@ class AlbumService {
                 .map(album -> new AlbumDto(album.getId(), album.getTitle(),
                         album.getSongs()
                                 .stream().map(
-                                        song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                        song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(),
                                                 new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
                                 ).toList()))
                 .collect(Collectors.toList());
@@ -148,14 +157,14 @@ class AlbumService {
                                         artist -> new ArtistDto(artist.getId(), artist.getName()))
                                 .collect(Collectors.toSet()),
                         album.getSongs().stream().map(
-                                        song -> new SongInfoDto(song.getId(), song.getName(),
+                                        song -> new SongDto(song.getId(), song.getName(),
                                                 song.getDuration(), song.getReleaseDate(),
                                                 new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                                 .collect(Collectors.toSet())
                 )).collect(Collectors.toSet());
     }
 
-    void updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
+    AlbumResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
 
         Album oldAlbum = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumId + " not found"));
@@ -170,7 +179,7 @@ class AlbumService {
 
         if (requestDto.songIds() != null && !requestDto.songIds().isEmpty()) {
             requestDto.songIds().forEach(songId -> {
-                Song song = getSongFromDB(songId);
+                Song song = getSongFromDb(songId);
                 oldAlbum.addSong(song);
             });
         }
@@ -181,23 +190,34 @@ class AlbumService {
 
 
         albumRepository.save(oldAlbum);
+
+        return AlbumResponseDto.builder()
+                .message("Album with id " + albumId + " successfully updated.")
+                .album(getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId))
+                .build();
     }
 
     UpdateSongAlbumResponseDto addSongToAlbum(final Long songId, final Long albumId) {
         Album fetchedAlbum = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumId + " not found."));
-        fetchedAlbum.addSongToAlbum(getSongFromDB(songId));
+        fetchedAlbum.addSongToAlbum(getSongFromDb(songId));
         Album savedAlbum = albumRepository.save(fetchedAlbum);
 
-        return new UpdateSongAlbumResponseDto("Successfully added song with id: " + songId + " to album with id: " + albumId + "."
-                , new UpdateAlbumWithSongsAndArtistsResponseDto(savedAlbum.getTitle(),
-                savedAlbum.getArtists().stream()
+        AlbumDtoWithArtistsAndSongsResponseDto responseDto = AlbumDtoWithArtistsAndSongsResponseDto.builder()
+                .id(savedAlbum.getId())
+                .name(savedAlbum.getTitle())
+                .releaseDate(savedAlbum.getReleaseDate())
+                .songs(savedAlbum.getSongs().stream()
+                        .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
+                        .collect(Collectors.toSet()))
+                .artists(savedAlbum.getArtists().stream()
                         .map(artist -> new ArtistDto(artist.getId(), artist.getName()))
-                        .collect(Collectors.toSet()),
-                savedAlbum.getSongs().stream()
-                        .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
-                        .collect(Collectors.toSet())
-        ));
+                        .collect(Collectors.toSet()))
+                .build();
+
+        return new UpdateSongAlbumResponseDto(
+                "Successfully added song with id: " + songId + " to album with id: " + albumId + ".",
+                responseDto);
     }
 
     void deleteSongFromAlbums(Song song) {
@@ -209,8 +229,10 @@ class AlbumService {
         }
     }
 
-    private Song getSongFromDB(final Long songId) {
+
+    // Important method, direct fetch from repo because SongService needs AlbumService and vice versa.
+    private Song getSongFromDb(Long songId) {
         return songRepository.findById(songId)
-                .orElseThrow(() -> new SongNotFoundException("Song with id " + songId + " not found."));
+                .orElseThrow(() -> new SongNotFoundException("Song with id " + songId + " not found"));
     }
 }

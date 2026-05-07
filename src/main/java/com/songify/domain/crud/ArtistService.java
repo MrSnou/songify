@@ -1,13 +1,16 @@
 package com.songify.domain.crud;
 
-import com.songify.infrastructure.crud.album.AlbumDto;
-import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
-import com.songify.infrastructure.crud.artist.ArtistDto;
-import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
-import com.songify.infrastructure.crud.artist.dto.response.UpdateArtistAlbumResponseDto;
+import com.songify.domain.crud.dto.album.AlbumDto;
+import com.songify.domain.crud.dto.album.AllAlbumsResponseDto;
+import com.songify.domain.crud.dto.artist.AllArtistDto;
+import com.songify.domain.crud.dto.artist.ArtistDto;
+import com.songify.domain.crud.dto.artist.ArtistResponseDto;
+import com.songify.domain.crud.dto.artist.ArtistUpdateResponseDto;
+import com.songify.domain.crud.dto.artist.ArtistWithAlbumsResponseDto;
+import com.songify.domain.crud.dto.artist.UpdateArtistAlbumResponseDto;
 import com.songify.domain.crud.exception.ArtistNotFoundException;
-import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.domain.crud.dto.genre.GenreDto;
+import com.songify.domain.crud.dto.song.SongDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,13 +45,13 @@ class ArtistService {
                 .artist(new ArtistDto(artist.getId(), artist.getName()))
                 .album(new AlbumDto(album.getId(), album.getTitle(), album.getSongs()
                         .stream().map(
-                                song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(),
                                         new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
                         ).toList()
                 ))
                 .build();
     }
-    void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
+    ArtistResponseDto deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
         Artist artist = findArtistById(artistId);
 
         Set<Album> albums = new HashSet<>(artist.getAlbums());
@@ -76,14 +79,21 @@ class ArtistService {
             }
         }
         artistRepository.deleteArtistById(artist.getId());
+        return ArtistResponseDto.builder()
+                .message("Successfully deleted artist with id: " + artistId + " and all it's albums and songs if they were explicit to the artist.")
+                .build();
     }
-    Set<ArtistDto> findAllArtists(final Pageable pageable) {
-        return artistRepository.findAll(pageable)
+    AllArtistDto findAllArtists(final Pageable pageable) {
+        Set<ArtistDto> allArtistsSet = artistRepository.findAll(pageable)
                 .stream()
                 .map(artist -> new ArtistDto(
                         artist.getId(), artist.getName()
                 ))
                 .collect(Collectors.toSet());
+
+        return AllArtistDto.builder()
+                .allArtists(allArtistsSet)
+                .build();
     }
 
     Artist findArtistById(final Long artistId) {
@@ -101,7 +111,7 @@ class ArtistService {
                 .map(album -> new AlbumDto(album.getId(), album.getTitle(),
                         album.getSongs()
                                 .stream().map(
-                                        song -> new SongDto(song.getId(), song.getName(), song.getDuration(),
+                                        song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(),
                                                 new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
                                 ).toList()))
                 .toList();
@@ -115,9 +125,13 @@ class ArtistService {
         return responseDto;
     }
 
-    ArtistDto updateArtistNameById(final Long artistId, final String newName) {
+    ArtistUpdateResponseDto updateArtistNameById(final Long artistId, final String newName) {
         Artist artist = findArtistById(artistId);
+        String oldName = artist.getName();
         artist.setName(newName);
-        return new ArtistDto(artistId, artist.getName());
+        Artist updatedArtist = artistRepository.save(artist);
+        return ArtistUpdateResponseDto.builder()
+                .message("Successfully updated artist with id: " + artistId + " name from: " + oldName + " to " + updatedArtist.getName() + ".")
+                .build();
     }
 }

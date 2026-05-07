@@ -1,25 +1,33 @@
 package com.songify.domain.crud;
 
-import com.songify.infrastructure.crud.album.AlbumDto;
-import com.songify.infrastructure.crud.album.dto.response.AlbumDtoWithArtistsAndSongsResponseDto;
-import com.songify.infrastructure.crud.album.dto.request.AlbumWithSongRequestDto;
-import com.songify.infrastructure.crud.album.dto.response.AllAlbumsResponseDto;
-import com.songify.infrastructure.crud.artist.ArtistDto;
-import com.songify.infrastructure.crud.artist.dto.request.ArtistRequestDto;
-import com.songify.infrastructure.crud.artist.dto.response.UpdateArtistAlbumResponseDto;
-import com.songify.infrastructure.crud.artist.dto.response.ArtistWithAlbumsResponseDto;
-import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.infrastructure.crud.genre.dto.request.GenreRequestDto;
-import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
-import com.songify.infrastructure.crud.song.util.SongDto;
-import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
-import com.songify.infrastructure.crud.album.dto.request.UpdateAlbumWithSongsAndArtistsRequestDto;
-import com.songify.infrastructure.crud.album.dto.response.UpdateAlbumWithSongsAndArtistsResponseDto;
-import com.songify.infrastructure.crud.genre.dto.response.GenreWithSongsResponseDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
-import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
+import com.songify.domain.crud.dto.album.AlbumDto;
+import com.songify.domain.crud.dto.album.AlbumDtoWithArtistsAndSongsResponseDto;
+import com.songify.domain.crud.dto.album.AlbumResponseDto;
+import com.songify.domain.crud.dto.album.DeleteAlbumResponseDto;
+import com.songify.domain.crud.dto.artist.AllArtistDto;
+import com.songify.domain.crud.dto.artist.ArtistResponseDto;
+import com.songify.domain.crud.dto.artist.ArtistUpdateResponseDto;
+import com.songify.domain.crud.dto.genre.AllGenresDto;
+import com.songify.domain.crud.dto.genre.GenreResponseDto;
+import com.songify.domain.crud.dto.song.AllSongsDto;
+import com.songify.domain.crud.dto.song.CreateSongDto;
+import com.songify.infrastructure.crud.album.dto.AlbumWithSongRequestDto;
+import com.songify.domain.crud.dto.album.AllAlbumsResponseDto;
+import com.songify.domain.crud.dto.artist.ArtistDto;
+import com.songify.infrastructure.crud.artist.dto.ArtistRequestDto;
+import com.songify.domain.crud.dto.artist.UpdateArtistAlbumResponseDto;
+import com.songify.domain.crud.dto.artist.ArtistWithAlbumsResponseDto;
+import com.songify.domain.crud.dto.genre.GenreDto;
+import com.songify.infrastructure.crud.genre.dto.GenreRequestDto;
+import com.songify.domain.crud.dto.song.DeleteSongResponseDto;
+import com.songify.domain.crud.dto.song.UpdateSongResponseDto;
+import com.songify.domain.crud.dto.song.SongDto;
+import com.songify.infrastructure.crud.song.dto.SongRequestDto;
+import com.songify.infrastructure.crud.album.dto.UpdateAlbumWithSongsAndArtistsRequestDto;
+import com.songify.domain.crud.dto.genre.GenreWithSongsResponseDto;
+import com.songify.infrastructure.crud.song.dto.UpdateSongRequestDto;
+import com.songify.domain.crud.dto.song.SongGenreDto;
+import com.songify.domain.crud.dto.song.UpdateSongAlbumResponseDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -50,16 +58,25 @@ public class SongifyCrudFacade {
         return albumService.addAlbumWithSong(dto.songIds(), dto.title(), dto.releaseDate());
     }
 
-    public SongDto addSong(final SongRequestDto requestDto) {
-        return songService.addSong(requestDto);
+    public CreateSongDto addSong(final SongRequestDto requestDto) {
+        return CreateSongDto.builder()
+                .song(songService.addSong(requestDto))
+                .build();
     }
 
-    public Set<ArtistDto> findAllArtists(final Pageable pageable) {
+    public AllArtistDto findAllArtists(final Pageable pageable) {
         return artistService.findAllArtists(pageable);
     }
 
     public List<SongDto> findAllSongs(Pageable pageable) {
         return songService.findAll(pageable);
+    }
+
+    public AllSongsDto getAllSongsDto(Pageable pageable) {
+        List<SongDto> allSongs = findAllSongs(pageable);
+        return AllSongsDto.builder()
+                .songs(allSongs)
+                .build();
     }
 
     public SongDto findSongDtoById(Long id) {
@@ -82,24 +99,24 @@ public class SongifyCrudFacade {
         return songService.deleteSongById(id);
     }
 
-    public void deleteAlbumById(final Long requestAlbumId) {
-        albumService.deleteById(albumService.findAlbumById(requestAlbumId));
+    public DeleteAlbumResponseDto deleteAlbumById(final Long requestAlbumId) {
+        return albumService.deleteById(albumService.findAlbumById(requestAlbumId));
 
     }
 
-    public void deleteGenreById(final Long genreId) {
-        genreService.deleteGenreById(genreService.findGenreById(genreId));
+    public GenreResponseDto deleteGenreById(final Long genreId) {
+        return genreService.deleteGenreById(genreService.findGenreById(genreId));
     }
 
-    public void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
-        artistService.deleteArtistByIdWithAlbumsAndSongs(artistId);
+    public ArtistResponseDto deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
+        return artistService.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
     public UpdateArtistAlbumResponseDto addArtistToAlbum(Long artistID, Long albumID) {
         return artistService.addArtistToAlbum(artistID, albumID);
     }
 
-    public ArtistDto updateArtistNameById(Long artistId, String newName) {
+    public ArtistUpdateResponseDto updateArtistNameById(Long artistId, String newName) {
         return artistService.updateArtistNameById(artistId, newName);
     }
 
@@ -109,14 +126,13 @@ public class SongifyCrudFacade {
     }
 
 
-    public GenreDto updateGenreNameById(final Long genreId, String newName) {
+    public GenreResponseDto updateGenreNameById(final Long genreId, String newName) {
         return genreService.updateGenreNameById(genreId, newName);
 
     }
 
-    public UpdateAlbumWithSongsAndArtistsResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
-        albumService.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
-        return albumService.getUpdateAlbumByIdWithSongsAndArtistsResponse(albumId);
+    public AlbumResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
+        return albumService.updateAlbumByIdWithSongsAndArtists(albumId, requestDto);
     }
 
     public UpdateSongAlbumResponseDto updateSongAlbum(final Long songId, final Long albumId) {
@@ -131,7 +147,7 @@ public class SongifyCrudFacade {
         return genreService.findGenreDtoById(genreId);
     }
 
-    public List<GenreDto> findAllGenreDto(Pageable pageable) {
+    public AllGenresDto findAllGenreDto(Pageable pageable) {
         return genreService.findAllGenreDto(pageable);
     }
 
@@ -140,15 +156,15 @@ public class SongifyCrudFacade {
     }
 
     public GenreWithSongsResponseDto findGenreDtoWithSongsDto(final Long genreId) {
-        GenreDto genreDto = genreService.findGenreDtoById(genreId);
-        List<SongDto> songsDto = songService.findSongsDtoByGenreId(genreService.findGenreById(genreId));
+        Genre genreById = genreService.findGenreById(genreId);
+        List<SongDto> songsDto = songService.findSongsDtoByGenreId(genreById);
+        return GenreWithSongsResponseDto.builder()
+                .genreDto(new GenreDto(genreById.getId(), genreById.getName()))
+                .songs(songsDto)
+                .build();
 
-        return new GenreWithSongsResponseDto(
-                "Successfully retrieved all songs with genre: " + genreService.findGenreDtoById(genreId).name(),
-                genreDto,  songsDto
-                );
+
     }
-
     public ArtistWithAlbumsResponseDto findArtistDtoWithAlbumsDto(final Long artistId) {
         return artistService.findArtistWithAlbumsById(artistId);
     }

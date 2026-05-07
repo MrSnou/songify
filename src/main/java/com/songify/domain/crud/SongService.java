@@ -2,21 +2,19 @@ package com.songify.domain.crud;
 
 
 import com.songify.domain.crud.model.DomainConstants;
-import com.songify.infrastructure.crud.genre.GenreDto;
-import com.songify.domain.crud.exception.GenreNotFoundException;
-import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
-import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.SongGenreDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
+import com.songify.domain.crud.dto.genre.GenreDto;
+import com.songify.infrastructure.crud.song.dto.SongRequestDto;
+import com.songify.infrastructure.crud.song.dto.UpdateSongRequestDto;
+import com.songify.domain.crud.dto.song.DeleteSongResponseDto;
+import com.songify.domain.crud.dto.song.SongGenreDto;
+import com.songify.domain.crud.dto.song.UpdateSongAlbumResponseDto;
+import com.songify.domain.crud.dto.song.UpdateSongResponseDto;
 import com.songify.domain.crud.exception.SongNotFoundException;
-import com.songify.infrastructure.crud.song.util.SongDto;
-import com.songify.infrastructure.crud.song.util.SongLanguageDto;
+import com.songify.domain.crud.dto.song.SongDto;
+import com.songify.domain.crud.dto.song.SongLanguageDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +26,18 @@ import java.util.List;
 class SongService {
 
     private final SongRepository songRepository;
-    private final GenreRepository genreRepository;
     private final AlbumService albumService;
+    private final GenreService genreService;
 
     SongDto addSong(final SongRequestDto requestDto) {
         SongLanguageDto language = requestDto.language();
         SongLanguage songLanguage = SongLanguage.valueOf(language.name());
-        Genre defaultGenre = getGenreFromDb(DomainConstants.DEFAULT_GENRE_ID);
+        Genre defaultGenre = genreService.findGenreById(DomainConstants.DEFAULT_GENRE_ID);
 
         Song save = new Song(requestDto.name(), requestDto.releaseDate(), requestDto.duration(),  songLanguage, defaultGenre);
         Song saved = songRepository.save(save);
-        return new SongDto(saved.getId(), saved.getName(), saved.getDuration(), new GenreDto(saved.getGenre().getId(), saved.getGenre().getName()));
+        return new SongDto(saved.getId(), saved.getName(), saved.getDuration(), saved.getReleaseDate(),
+                new GenreDto(saved.getGenre().getId(), saved.getGenre().getName()));
     }
 
     DeleteSongResponseDto deleteSongById(Long id) {
@@ -50,7 +49,6 @@ class SongService {
 
         DeleteSongResponseDto responseDto = DeleteSongResponseDto.builder()
                 .message("Song with id " + song.getId() + " was deleted.")
-                .status(HttpStatus.OK)
                 .build();
 
         return responseDto;
@@ -62,6 +60,7 @@ class SongService {
                         .id(song.getId())
                         .name(song.getName())
                         .duration(song.getDuration())
+                        .releaseDate(song.getReleaseDate())
                         .genre(GenreDto.builder()
                                 .id(song.getGenre().getId())
                                 .name(song.getGenre().getName())
@@ -83,7 +82,7 @@ class SongService {
 
     SongDto findSongDtoById(Long id) {
         Song songById = findSongById(id);
-        Genre genreFromDb = getGenreFromDb(songById.getGenre().getId());
+        Genre genreFromDb = genreService.findGenreById(songById.getGenre().getId());
         GenreDto genreDtoById = new GenreDto(genreFromDb.getId(), genreFromDb.getName());
         return SongDto.builder()
                 .id(songById.getId())
@@ -97,7 +96,7 @@ class SongService {
         Song fetchedSong = findSongById(id);
 
         if (fetchedSong.getGenre() == null) {
-            Genre defaultGenre = getGenreFromDb(DomainConstants.DEFAULT_GENRE_ID);
+            Genre defaultGenre = genreService.findGenreById(DomainConstants.DEFAULT_GENRE_ID);
             fetchedSong.setGenre(defaultGenre);
         }
 
@@ -108,9 +107,10 @@ class SongService {
     }
 
     List<SongDto> findSongsDtoByGenreId(final Genre genre) {
+        genreService.findGenreById(genre.getId());
         return songRepository.findAllByGenre(genre)
                 .stream()
-                .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
+                .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))
                 .toList();
     }
 
@@ -128,14 +128,12 @@ class SongService {
                 oldSong.getGenre());
         songRepository.updateById(songId, updatedSong);
 
-        UpdateSongResponseDto response = new UpdateSongResponseDto(
+        return new UpdateSongResponseDto(
                 "Successfully updated song with id: " + songId +
                         " song name from " + oldSong.getName() + " to " + songFromRequest.songName() +
                         " and duration from " + oldSong.getDuration() + " to " + songFromRequest.duration() + "."
-                , new SongDto(oldSong.getId(), songFromRequest.songName(), songFromRequest.duration(), new GenreDto(oldSong.getGenre().getId(), oldSong.getGenre().getName()))
+                , new SongDto(oldSong.getId(), songFromRequest.songName(), songFromRequest.duration(), oldSong.getReleaseDate(), new GenreDto(oldSong.getGenre().getId(), oldSong.getGenre().getName()))
         );
-
-        return response;
     }
 
     UpdateSongAlbumResponseDto updateSongAlbumById(final Long songId, final Long albumId) {
@@ -145,7 +143,7 @@ class SongService {
     UpdateSongResponseDto updateSongGenreById(final Long songId, final Long genreId) {
         checkIfExists(songId);
 
-        Genre newGenre = getGenreFromDb(genreId);
+        Genre newGenre = genreService.findGenreById(genreId);
 
         songRepository.updateSongGenreById(songId, newGenre);
         SongDto updatedSongDto = findSongDtoById(songId);
@@ -156,10 +154,5 @@ class SongService {
                 .build();
 
         return response;
-    }
-
-    private Genre getGenreFromDb(Long genreId) {
-        return genreRepository.findById(genreId)
-                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreId + " not found."));
     }
 }

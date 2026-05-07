@@ -1,14 +1,14 @@
 package com.songify.infrastructure.crud.song;
 
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.infrastructure.crud.song.dto.request.SongRequestDto;
-import com.songify.infrastructure.crud.song.dto.request.UpdateSongRequestDto;
-import com.songify.infrastructure.crud.song.dto.response.CreateSongResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.DeleteSongResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.GetAllSongsResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongAlbumResponseDto;
-import com.songify.infrastructure.crud.song.dto.response.UpdateSongResponseDto;
-import com.songify.infrastructure.crud.song.util.SongDto;
+import com.songify.infrastructure.crud.song.dto.SongRequestDto;
+import com.songify.infrastructure.crud.song.dto.UpdateSongRequestDto;
+import com.songify.domain.crud.dto.song.CreateSongDto;
+import com.songify.domain.crud.dto.song.DeleteSongResponseDto;
+import com.songify.domain.crud.dto.song.AllSongsDto;
+import com.songify.domain.crud.dto.song.UpdateSongAlbumResponseDto;
+import com.songify.domain.crud.dto.song.UpdateSongResponseDto;
+import com.songify.domain.crud.dto.song.SongDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,11 +35,8 @@ class SongRestController {
     private final SongifyCrudFacade songifyCrudFacade;
 
     @GetMapping
-    ResponseEntity<GetAllSongsResponseDto> getAllSongs(@PageableDefault(page = 0, size = 20, sort = "id") Pageable pageable) {
-        GetAllSongsResponseDto response = GetAllSongsResponseDto.builder()
-                .songs(songifyCrudFacade.findAllSongs(pageable))
-                .build();
-        return ResponseEntity.ok(response);
+    ResponseEntity<AllSongsDto> getAllSongs(@PageableDefault(page = 0, size = 20, sort = "id") Pageable pageable) {
+        return ResponseEntity.ok(songifyCrudFacade.getAllSongsDto(pageable));
     }
 
     @GetMapping("/{songId}")
@@ -49,15 +46,13 @@ class SongRestController {
     }
 
     @PostMapping
-    ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid SongRequestDto requestDto) {
-        CreateSongResponseDto responseDto = new CreateSongResponseDto(songifyCrudFacade.addSong(requestDto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    ResponseEntity<CreateSongDto> postSong(@RequestBody @Valid SongRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(songifyCrudFacade.addSong(requestDto));
     }
 
     @DeleteMapping("/{songId}")
     ResponseEntity<DeleteSongResponseDto> deleteSongById(@PathVariable Long songId) {
-        DeleteSongResponseDto responseDto = songifyCrudFacade.deleteSongById(songId);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.ok(songifyCrudFacade.deleteSongById(songId));
     }
 
     @PatchMapping("/{songId}")
