@@ -45,7 +45,7 @@ class AdminCheckController {
             }
 
             User fetchedUser = userRepository.findFirstByEmailIgnoreCase(email)
-                    .orElseThrow(() -> new RuntimeException("User with email " + email + " not found."));
+                    .orElseThrow(() -> new RuntimeException("User with email: " + email + " not found."));
 
             fetchedUser.getAuthorities().add("ROLE_ADMIN");
             userRepository.save(fetchedUser);

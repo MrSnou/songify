@@ -30,61 +30,9 @@ class InMemoryGenreRepository implements GenreRepository {
     }
 
     @Override
-    public List<Genre> findAll() {
-        return new ArrayList<>(db.values());
-    }
-
-    @Override
-    public <S extends Genre> Iterable<S> saveAll(final Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public boolean existsById(final Long aLong) {
-        return false;
-    }
-
-
-
-    @Override
-    public Iterable<Genre> findAllById(final Iterable<Long> longs) {
-        return null;
-    }
-
-    @Override
-    public long count() {
-        return 0;
-    }
-
-    @Override
-    public void delete(final Genre entity) {
-    }
-
-
-
-    @Override
-    public void deleteAllById(final Iterable<? extends Long> longs) {
-
-    }
-
-    @Override
-    public void deleteAll(final Iterable<? extends Genre> entities) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
-
-
-    @Override
     public List<Genre> findAll(final Pageable pageable) {
         return new  ArrayList<>(db.values());
     }
-
-
 
     @Override
     public void deleteById(final Long id) {
@@ -92,15 +40,9 @@ class InMemoryGenreRepository implements GenreRepository {
     }
 
     @Override
-    public boolean existsGenreById(final Long genreId) {
-        return false;
-    }
-
-    @Override
-    public Genre updateGenreById(final Long genreId, final String newName) {
+    public void updateGenreById(final Long genreId, final String newName) {
         Genre oldGenre = db.remove(genreId);
         oldGenre.setName(newName);
         db.put(oldGenre.getId(), oldGenre);
-        return db.get(genreId);
     }
 }

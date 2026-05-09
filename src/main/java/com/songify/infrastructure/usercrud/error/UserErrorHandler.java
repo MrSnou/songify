@@ -7,10 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 @Log4j2
@@ -18,9 +16,8 @@ class UserErrorHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<UserNotFoundResponseDto> handleUserNotFoundException(UserNotFoundException ex) {
-        log.error("UserNotFoundException while accessing user! " + "[" + LocalDateTime.now() + "]");
+        log.error("UserNotFoundException while accessing user!");
         UserNotFoundResponseDto errorSongResponseDto = new UserNotFoundResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -30,9 +27,8 @@ class UserErrorHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<UserAlreadyExistsResponseDto> handleUserNotFoundException(UserAlreadyExistsException ex) {
-        log.error("UserAlreadyExistsException while accessing user! " + "[" + LocalDateTime.now() + "]");
+    public ResponseEntity<UserAlreadyExistsResponseDto> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        log.error("UserAlreadyExistsException while accessing user!");
         UserAlreadyExistsResponseDto errorSongResponseDto = new UserAlreadyExistsResponseDto(ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)

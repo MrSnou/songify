@@ -37,7 +37,7 @@ class ArtistService {
     UpdateArtistAlbumResponseDto addArtistToAlbum(final Long artistID, final Long albumID) {
         Artist artist = findArtistById(artistID);
         Album album = albumRepository.findById(albumID)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumID + " not found."));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + albumID + " not found."));
         artist.addAlbum(album);
         return UpdateArtistAlbumResponseDto.builder()
                 .message("Successfully added artist [" + artist.getId() + "] " + artist.getName() +
@@ -97,7 +97,7 @@ class ArtistService {
 
     Artist findArtistById(final Long artistId) {
         return artistRepository.findArtistById(artistId)
-                .orElseThrow(() -> new ArtistNotFoundException("Artist with id " + artistId + " not found."));
+                .orElseThrow(() -> new ArtistNotFoundException("Artist with id: " + artistId + " not found."));
     }
 
     ArtistDto findArtistDtoById(final Long artistId) {
@@ -112,7 +112,7 @@ class ArtistService {
 
     ArtistWithAlbumsResponseDto findArtistWithAlbumsById(final Long artistId) {
         Artist artist = artistRepository.findArtistById(artistId)
-                .orElseThrow(() -> new ArtistNotFoundException("Artist with id " + artistId + " not found."));
+                .orElseThrow(() -> new ArtistNotFoundException("Artist with id: " + artistId + " not found."));
 
         List<AlbumDto> albumDtoList = artist.getAlbums()
                 .stream()

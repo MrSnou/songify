@@ -35,7 +35,7 @@ class SongRestController {
 
     @GetMapping
     ResponseEntity<AllSongsDto> getAllSongs(@PageableDefault(page = 0, size = 20, sort = "id") Pageable pageable) {
-        return ResponseEntity.ok(songifyCrudFacade.getAllSongsDto(pageable));
+        return ResponseEntity.ok(songifyCrudFacade.findAllSongDto(pageable));
     }
 
     @GetMapping("/{songId}")

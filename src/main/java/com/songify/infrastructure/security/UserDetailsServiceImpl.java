@@ -39,29 +39,31 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     }
 
     @Override
-    public void updateUser(final UserDetails user) {
-
-    }
-
-    @Override
-    public void deleteUser(final String username) {
-
-    }
-
-    @Override
-    public void changePassword(final String oldPassword, final String newPassword) {
-
-    }
-
-    @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository.findFirstByEmailIgnoreCase(username)
                 .map(SecurityUser::new)
-                .orElseThrow(() -> new RuntimeException("User with email " + username + " not found."));
+                .orElseThrow(() -> new UsernameNotFoundException("User with email: " + username + " not found."));
     }
 
     @Override
     public boolean userExists(final String username) {
         return userRepository.existsByEmailIgnoreCase(username);
     }
+
+    @Override
+    public void updateUser(final UserDetails user) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void deleteUser(final String username) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void changePassword(final String oldPassword, final String newPassword) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+
 }

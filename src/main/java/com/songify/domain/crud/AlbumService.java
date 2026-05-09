@@ -62,14 +62,14 @@ class AlbumService {
     }
 
     Set<Album> findAllAlbums(Pageable pageable) {
-        return albumRepository.findAll(pageable).stream().collect(Collectors.toSet());
+        return albumRepository.findAll(pageable);
     }
 
 
     AlbumDtoWithArtistsAndSongsResponseDto findAlbumByIdWithArtistsAndSongs(final Long id) {
 
         Album albumByIdFromDb = albumRepository.findAlbumByIdWithSongsAndArtists(id)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found."));
 
         Set<Artist> artists = albumByIdFromDb.getArtists();
         Set<Song> songs = albumByIdFromDb.getSongs();
@@ -94,7 +94,7 @@ class AlbumService {
 
     Album findAlbumById(final Long id) {
         return albumRepository.findById(id)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + id + " not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + id + " not found."));
     }
 
     AllAlbumsResponseDto findAllAlbumsDto(Pageable pageable) {
@@ -113,12 +113,12 @@ class AlbumService {
     AlbumResponseDto updateAlbumByIdWithSongsAndArtists(final Long albumId, UpdateAlbumWithSongsAndArtistsRequestDto requestDto) {
 
         Album oldAlbum = albumRepository.findById(albumId)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumId + " not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + albumId + " not found."));
 
         if (requestDto.artistIds() != null && !requestDto.artistIds().isEmpty()) {
             requestDto.artistIds().forEach(artistId -> {
                 Artist artist = artistRepository.findArtistById(artistId)
-                        .orElseThrow(() -> new ArtistNotFoundException("Artist with id " + artistId + " not found."));
+                        .orElseThrow(() -> new ArtistNotFoundException("Artist with id: " + artistId + " not found."));
                 artistService.addArtistToAlbum(artist.getId(), albumId);
             });
         }
@@ -145,7 +145,7 @@ class AlbumService {
 
     UpdateSongAlbumResponseDto addSongToAlbum(final Long songId, final Long albumId) {
         Album fetchedAlbum = albumRepository.findById(albumId)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumId + " not found."));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id: " + albumId + " not found."));
         fetchedAlbum.addSongToAlbum(getSongFromDb(songId));
         Album savedAlbum = albumRepository.save(fetchedAlbum);
 
@@ -179,6 +179,6 @@ class AlbumService {
     // Important method, direct fetch from repo because SongService needs AlbumService and vice versa.
     private Song getSongFromDb(Long songId) {
         return songRepository.findById(songId)
-                .orElseThrow(() -> new SongNotFoundException("Song with id " + songId + " not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song with id: " + songId + " not found."));
     }
 }

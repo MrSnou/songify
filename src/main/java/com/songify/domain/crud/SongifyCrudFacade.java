@@ -30,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -64,7 +63,7 @@ public class SongifyCrudFacade {
         return artistService.findAllArtists(pageable);
     }
 
-    public AllSongsDto getAllSongsDto(Pageable pageable) {
+    public AllSongsDto findAllSongDto(Pageable pageable) {
         List<SongDto> allSongs = findAllSongs(pageable);
         return AllSongsDto.builder()
                 .songs(allSongs)

@@ -20,7 +20,7 @@ class ApiValidationErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiValidationErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
-        log.error("MethodArgumentNotValidException while accessing user! " + "[" + LocalDateTime.now() + "]");
+        log.error("MethodArgumentNotValidException while accessing user!");
         List<String> messages = getErrorsFromException(ex);
         ApiValidationErrorResponseDto response = new ApiValidationErrorResponseDto(HttpStatus.BAD_REQUEST, messages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

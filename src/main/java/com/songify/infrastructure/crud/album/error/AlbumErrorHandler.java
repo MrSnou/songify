@@ -8,10 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 @Log4j2
@@ -19,18 +17,16 @@ public class AlbumErrorHandler {
 
     @ExceptionHandler(AlbumNotEmptyException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<ErrorAlbumResponseDto> handleAlbumNotEmptyException(final AlbumNotEmptyException ex) {
-        log.warn("AlbumNotEmptyException while accessing album! " + "[" + LocalDateTime.now() + "]");
+        log.warn("AlbumNotEmptyException while accessing album!");
         ErrorAlbumResponseDto responseDto = new ErrorAlbumResponseDto(HttpStatus.FORBIDDEN, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(AlbumNotFoundException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorAlbumResponseDto> handleAlbumNotFoundException(final AlbumNotFoundException ex) {
-        log.warn("AlbumNotFoundException while accessing album! " + "[" + LocalDateTime.now() + "]");
+        log.warn("AlbumNotFoundException while accessing album!");
         ErrorAlbumResponseDto responseDto = new ErrorAlbumResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }

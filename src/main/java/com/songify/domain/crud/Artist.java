@@ -50,10 +50,6 @@ class Artist extends BaseEntity {
     )
     private Set<Album> albums = new HashSet<>();
 
-    void removeAlbum(final Album album) {
-        albums.remove(album);
-    }
-
     void addAlbum(final Album album) {
         albums.add(album);
         album.addArtistToAlbum(this);

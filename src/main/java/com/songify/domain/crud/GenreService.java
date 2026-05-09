@@ -46,12 +46,12 @@ class GenreService {
 
     Genre findGenreById(final Long genreId) {
         return genreRepository.findById(genreId)
-                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreId + " not found"));
+                .orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));
     }
 
     GenreDto findGenreDtoById(final Long genreId) {
         Genre genre = genreRepository.findById(genreId)
-                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreId + " not found"));
+                .orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));
         return new GenreDto(genre.getId(), genre.getName());
     }
 
@@ -70,14 +70,14 @@ class GenreService {
 
     GenreResponseDto updateGenreNameById(final Long genreId, String newName) {
         Genre genre = genreRepository.findById(genreId)
-                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreId + " not found."));
+                .orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));
 
         if (genre.getId().equals(DomainConstants.DEFAULT_GENRE_ID)) {
             throw new GenreDefaultIsLockedException("Cannot edit Default Genre name!");
         }
 
         genreRepository.updateGenreById(genreId, newName);
-        Genre updatedGenre = genreRepository.findById(genreId).orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreId + " not found."));
+        Genre updatedGenre = genreRepository.findById(genreId).orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));
         return GenreResponseDto.builder()
                 .message("Genre with id " + genre.getId() + " name successfully updated from: " + genre.getName() + " to " + updatedGenre.getName() + ".")
                 .build();
