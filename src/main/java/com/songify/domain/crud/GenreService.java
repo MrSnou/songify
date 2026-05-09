@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ class GenreService {
         return new GenreDto(save.getId(), save.getName());
     }
 
-    GenreResponseDto deleteGenreById(final Genre genre) {
+    void deleteGenreById(final Genre genre) {
 
         if (genre.getId().equals(DomainConstants.DEFAULT_GENRE_ID)) {
             throw new GenreDefaultIsLockedException("Cannot delete Default Genre from db!");
@@ -41,9 +42,6 @@ class GenreService {
         } else {
             throw new GenreIsUsedBySongsException("Cannot delete genre, because it is used by songs.");
         }
-        return GenreResponseDto.builder()
-                .message("Genre with id " + genre.getId() + " successfully was deleted.")
-                .build();
     }
 
     Genre findGenreById(final Long genreId) {
@@ -78,7 +76,8 @@ class GenreService {
             throw new GenreDefaultIsLockedException("Cannot edit Default Genre name!");
         }
 
-        Genre updatedGenre = genreRepository.updateGenreById(genreId, newName);
+        genreRepository.updateGenreById(genreId, newName);
+        Genre updatedGenre = genreRepository.findById(genreId).orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreId + " not found."));
         return GenreResponseDto.builder()
                 .message("Genre with id " + genre.getId() + " name successfully updated from: " + genre.getName() + " to " + updatedGenre.getName() + ".")
                 .build();

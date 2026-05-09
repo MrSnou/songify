@@ -9,15 +9,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 @Log4j2
 public class ArtistErrorHandler {
 
     @ExceptionHandler(ArtistNotFoundException.class)
     @ResponseBody
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ArtistErrorResponseDto> handleGenreNotFoundException(ArtistNotFoundException ex) {
-        log.error("Error while trying to get Genre from db.");
+        log.error("ArtistNotFoundException while accessing artist! " + "[" + LocalDateTime.now() + "]");
         ArtistErrorResponseDto responseDto = new ArtistErrorResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }

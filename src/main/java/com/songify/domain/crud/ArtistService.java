@@ -4,13 +4,13 @@ import com.songify.domain.crud.dto.album.AlbumDto;
 import com.songify.domain.crud.dto.album.AllAlbumsResponseDto;
 import com.songify.domain.crud.dto.artist.AllArtistDto;
 import com.songify.domain.crud.dto.artist.ArtistDto;
-import com.songify.domain.crud.dto.artist.ArtistResponseDto;
 import com.songify.domain.crud.dto.artist.ArtistUpdateResponseDto;
 import com.songify.domain.crud.dto.artist.ArtistWithAlbumsResponseDto;
 import com.songify.domain.crud.dto.artist.UpdateArtistAlbumResponseDto;
-import com.songify.domain.crud.exception.ArtistNotFoundException;
 import com.songify.domain.crud.dto.genre.GenreDto;
 import com.songify.domain.crud.dto.song.SongDto;
+import com.songify.domain.crud.exception.AlbumNotFoundException;
+import com.songify.domain.crud.exception.ArtistNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ class ArtistService {
     UpdateArtistAlbumResponseDto addArtistToAlbum(final Long artistID, final Long albumID) {
         Artist artist = findArtistById(artistID);
         Album album = albumRepository.findById(albumID)
-                .orElseThrow(() -> new ArtistNotFoundException("Album with id " + albumID + " not found."));
+                .orElseThrow(() -> new AlbumNotFoundException("Album with id " + albumID + " not found."));
         artist.addAlbum(album);
         return UpdateArtistAlbumResponseDto.builder()
                 .message("Successfully added artist [" + artist.getId() + "] " + artist.getName() +
@@ -51,7 +51,8 @@ class ArtistService {
                 ))
                 .build();
     }
-    ArtistResponseDto deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
+
+    void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
         Artist artist = findArtistById(artistId);
 
         Set<Album> albums = new HashSet<>(artist.getAlbums());
@@ -79,10 +80,8 @@ class ArtistService {
             }
         }
         artistRepository.deleteArtistById(artist.getId());
-        return ArtistResponseDto.builder()
-                .message("Successfully deleted artist with id: " + artistId + " and all it's albums and songs if they were explicit to the artist.")
-                .build();
     }
+
     AllArtistDto findAllArtists(final Pageable pageable) {
         Set<ArtistDto> allArtistsSet = artistRepository.findAll(pageable)
                 .stream()
@@ -100,6 +99,16 @@ class ArtistService {
         return artistRepository.findArtistById(artistId)
                 .orElseThrow(() -> new ArtistNotFoundException("Artist with id " + artistId + " not found."));
     }
+
+    ArtistDto findArtistDtoById(final Long artistId) {
+        Artist artistById = findArtistById(artistId);
+        ArtistDto artistDtoById = ArtistDto.builder()
+                .id(artistById.getId())
+                .name(artistById.getName())
+                .build();
+        return artistDtoById;
+    }
+
 
     ArtistWithAlbumsResponseDto findArtistWithAlbumsById(final Long artistId) {
         Artist artist = artistRepository.findArtistById(artistId)
@@ -134,4 +143,6 @@ class ArtistService {
                 .message("Successfully updated artist with id: " + artistId + " name from: " + oldName + " to " + updatedArtist.getName() + ".")
                 .build();
     }
+
+
 }

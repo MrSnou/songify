@@ -1,4 +1,4 @@
-package com.songify.infrastructure.security;
+package com.songify.domain.security;
 
 import com.songify.domain.usercrud.User;
 import org.jspecify.annotations.Nullable;

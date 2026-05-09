@@ -20,27 +20,27 @@ public class GenreErrorHandler {
 
     @ExceptionHandler(GenreNotFoundException.class)
     @ResponseBody
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorGenreResponseDto> handleGenreNotFoundException(GenreNotFoundException ex) {
-        log.error("Error while trying to get Genre from db.");
+        log.error("GenreNotFoundException while accessing genre! " + "[" + LocalDateTime.now() + "]");
         ErrorGenreResponseDto responseDto = new ErrorGenreResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(GenreIsUsedBySongsException.class)
     @ResponseBody
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<ErrorGenreResponseDto> handleGenreNotFoundException(GenreIsUsedBySongsException ex) {
-        log.error("Error while trying to delete Genre from db.");
+        log.error("GenreIsUsedBySongsException while accessing genre! " + "[" + LocalDateTime.now() + "]");
         ErrorGenreResponseDto responseDto = new ErrorGenreResponseDto(HttpStatus.FORBIDDEN, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(GenreDefaultIsLockedException.class)
     @ResponseBody
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ErrorGenreResponseDto> handleGenreDefaultIsLockedException(GenreDefaultIsLockedException ex) {
-        log.error("Attempt to edit Default Genre was blocked. " + "[" + LocalDateTime.now() + "]");
+        log.error("GenreDefaultIsLockerException while accessing genre! " + "[" + LocalDateTime.now() + "]");
         ErrorGenreResponseDto responseDto = new ErrorGenreResponseDto(HttpStatus.CONFLICT, ex.getMessage());
         return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
     }

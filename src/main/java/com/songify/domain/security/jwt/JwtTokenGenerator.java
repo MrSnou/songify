@@ -2,7 +2,7 @@ package com.songify.domain.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.songify.infrastructure.security.SecurityUser;
+import com.songify.domain.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;

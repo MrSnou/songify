@@ -1,10 +1,9 @@
 package com.songify.infrastructure.crud.song;
 
 import com.songify.domain.crud.SongifyCrudFacade;
-import com.songify.infrastructure.crud.song.dto.SongRequestDto;
-import com.songify.infrastructure.crud.song.dto.UpdateSongRequestDto;
+import com.songify.domain.crud.dto.song.SongRequestDto;
+import com.songify.domain.crud.dto.song.UpdateSongRequestDto;
 import com.songify.domain.crud.dto.song.CreateSongDto;
-import com.songify.domain.crud.dto.song.DeleteSongResponseDto;
 import com.songify.domain.crud.dto.song.AllSongsDto;
 import com.songify.domain.crud.dto.song.UpdateSongAlbumResponseDto;
 import com.songify.domain.crud.dto.song.UpdateSongResponseDto;
@@ -51,12 +50,13 @@ class SongRestController {
     }
 
     @DeleteMapping("/{songId}")
-    ResponseEntity<DeleteSongResponseDto> deleteSongById(@PathVariable Long songId) {
-        return ResponseEntity.ok(songifyCrudFacade.deleteSongById(songId));
+    ResponseEntity<?> deleteSongById(@PathVariable Long songId) {
+        songifyCrudFacade.deleteSongById(songId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/{songId}")
-    ResponseEntity<UpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long songId, @RequestBody UpdateSongRequestDto request) {
+    ResponseEntity<UpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long songId,@Valid @RequestBody UpdateSongRequestDto request) {
         UpdateSongResponseDto updateSongResponseDto = songifyCrudFacade.updatesSongPartiallyById(songId, request);
         return ResponseEntity.ok(updateSongResponseDto);
     }

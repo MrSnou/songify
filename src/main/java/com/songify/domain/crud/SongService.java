@@ -3,10 +3,8 @@ package com.songify.domain.crud;
 
 import com.songify.domain.crud.model.DomainConstants;
 import com.songify.domain.crud.dto.genre.GenreDto;
-import com.songify.infrastructure.crud.song.dto.SongRequestDto;
-import com.songify.infrastructure.crud.song.dto.UpdateSongRequestDto;
-import com.songify.domain.crud.dto.song.DeleteSongResponseDto;
-import com.songify.domain.crud.dto.song.SongGenreDto;
+import com.songify.domain.crud.dto.song.SongRequestDto;
+import com.songify.domain.crud.dto.song.UpdateSongRequestDto;
 import com.songify.domain.crud.dto.song.UpdateSongAlbumResponseDto;
 import com.songify.domain.crud.dto.song.UpdateSongResponseDto;
 import com.songify.domain.crud.exception.SongNotFoundException;
@@ -40,18 +38,10 @@ class SongService {
                 new GenreDto(saved.getGenre().getId(), saved.getGenre().getName()));
     }
 
-    DeleteSongResponseDto deleteSongById(Long id) {
+    void deleteSongById(Long id) {
         Song song = findSongById(id);
-
         albumService.deleteSongFromAlbums(song);
-
         songRepository.deleteById(song.getId());
-
-        DeleteSongResponseDto responseDto = DeleteSongResponseDto.builder()
-                .message("Song with id " + song.getId() + " was deleted.")
-                .build();
-
-        return responseDto;
     }
 
     List<SongDto> findAll(Pageable pageable) {
@@ -90,20 +80,6 @@ class SongService {
                 .duration(songById.getDuration())
                 .genre(genreDtoById)
                 .build();
-    }
-
-    SongGenreDto findSongGenreDtoById(final Long id) {
-        Song fetchedSong = findSongById(id);
-
-        if (fetchedSong.getGenre() == null) {
-            Genre defaultGenre = genreService.findGenreById(DomainConstants.DEFAULT_GENRE_ID);
-            fetchedSong.setGenre(defaultGenre);
-        }
-
-        GenreDto genreDto = new GenreDto(fetchedSong.getGenre().getId(),  fetchedSong.getGenre().getName());
-
-        return new SongGenreDto(fetchedSong.getId(), genreDto);
-
     }
 
     List<SongDto> findSongsDtoByGenreId(final Genre genre) {

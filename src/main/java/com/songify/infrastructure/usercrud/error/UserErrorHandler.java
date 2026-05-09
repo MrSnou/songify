@@ -2,6 +2,7 @@ package com.songify.infrastructure.usercrud.error;
 
 import com.songify.domain.usercrud.exception.UserAlreadyExistsException;
 import com.songify.domain.usercrud.exception.UserNotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,14 +10,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+import java.time.LocalDateTime;
 
+@RestControllerAdvice
+@Log4j2
 class UserErrorHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<UserNotFoundResponseDto> handleUserNotFoundException(UserNotFoundException ex) {
+        log.error("UserNotFoundException while accessing user! " + "[" + LocalDateTime.now() + "]");
         UserNotFoundResponseDto errorSongResponseDto = new UserNotFoundResponseDto(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -28,6 +32,7 @@ class UserErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<UserAlreadyExistsResponseDto> handleUserNotFoundException(UserAlreadyExistsException ex) {
+        log.error("UserAlreadyExistsException while accessing user! " + "[" + LocalDateTime.now() + "]");
         UserAlreadyExistsResponseDto errorSongResponseDto = new UserAlreadyExistsResponseDto(ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)

@@ -1,8 +1,8 @@
 package com.songify.domain.usercrud;
 
 import com.songify.domain.security.jwt.JwtTokenGenerator;
-import com.songify.infrastructure.security.SecurityUser;
-import com.songify.infrastructure.usercrud.dto.LoginRequestDto;
+import com.songify.domain.security.SecurityUser;
+import com.songify.domain.usercrud.dto.LoginRequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

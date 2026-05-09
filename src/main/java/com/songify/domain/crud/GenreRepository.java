@@ -23,10 +23,8 @@ interface GenreRepository extends CrudRepository<Genre, Long> {
     @Query("DELETE FROM Genre g WHERE g.id = :id")
     void deleteById(Long id);
 
-    boolean existsGenreById(final Long genreId);
-
     @Modifying
     @Transactional
     @Query("UPDATE Genre g set g.name = :newName where g.id = :genreId")
-    Genre updateGenreById(final Long genreId, String newName);
+    void updateGenreById(final Long genreId, String newName);
 }

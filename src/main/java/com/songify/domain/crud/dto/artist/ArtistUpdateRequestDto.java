@@ -1,4 +1,4 @@
-package com.songify.infrastructure.crud.artist.dto;
+package com.songify.domain.crud.dto.artist;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

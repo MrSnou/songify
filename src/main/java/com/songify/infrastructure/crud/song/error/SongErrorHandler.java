@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 @Log4j2
 public class SongErrorHandler {
@@ -17,7 +19,7 @@ public class SongErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorSongResponseDto> handleSongNotFoundException(SongNotFoundException e) {
-        log.warn("SongNotFoundException while accessing song");
+        log.warn("SongNotFoundException while accessing song! " + "[" + LocalDateTime.now() + "]");
         ErrorSongResponseDto errorSongResponseDto = new ErrorSongResponseDto(HttpStatus.NOT_FOUND, e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

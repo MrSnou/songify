@@ -3,9 +3,8 @@ package com.songify.infrastructure.crud.artist;
 import com.songify.domain.crud.SongifyCrudFacade;
 import com.songify.domain.crud.dto.artist.AllArtistDto;
 import com.songify.domain.crud.dto.artist.ArtistDto;
-import com.songify.infrastructure.crud.artist.dto.ArtistRequestDto;
-import com.songify.infrastructure.crud.artist.dto.ArtistUpdateRequestDto;
-import com.songify.domain.crud.dto.artist.ArtistResponseDto;
+import com.songify.domain.crud.dto.artist.ArtistRequestDto;
+import com.songify.domain.crud.dto.artist.ArtistUpdateRequestDto;
 import com.songify.domain.crud.dto.artist.UpdateArtistAlbumResponseDto;
 import com.songify.domain.crud.dto.artist.ArtistUpdateResponseDto;
 import com.songify.domain.crud.dto.artist.ArtistWithAlbumsResponseDto;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -50,7 +47,7 @@ class ArtistRestController {
     }
 
     @PostMapping()
-    ResponseEntity<ArtistDto> postArtist(@RequestBody ArtistRequestDto requestDto) {
+    ResponseEntity<ArtistDto> postArtist(@Valid @RequestBody ArtistRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(songifyCrudFacade.addArtist(requestDto));
     }
 
@@ -68,8 +65,8 @@ class ArtistRestController {
     }
 
     @DeleteMapping("/{artistId}")
-    ResponseEntity<ArtistResponseDto> deleteArtist(@PathVariable Long artistId) {
-        ArtistResponseDto artistResponseDto = songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistId);
-        return ResponseEntity.ok(artistResponseDto);
+    ResponseEntity<?> deleteArtist(@PathVariable Long artistId) {
+        songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -1,4 +1,4 @@
-package com.songify.infrastructure.usercrud.dto;
+package com.songify.domain.usercrud.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;

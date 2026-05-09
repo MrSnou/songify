@@ -1,5 +1,6 @@
 package com.songify.infrastructure.security;
 
+import com.songify.domain.security.SecurityUser;
 import com.songify.domain.usercrud.User;
 import com.songify.domain.usercrud.UserRepository;
 import com.songify.domain.usercrud.exception.UserAlreadyExistsException;
