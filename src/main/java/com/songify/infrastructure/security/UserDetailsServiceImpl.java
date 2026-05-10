@@ -1,8 +1,9 @@
 package com.songify.infrastructure.security;
 
+import com.songify.domain.security.SecurityUser;
 import com.songify.domain.usercrud.User;
 import com.songify.domain.usercrud.UserRepository;
-import com.songify.infrastructure.usercrud.error.UserAlreadyExistsException;
+import com.songify.domain.usercrud.exception.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsManager {
+
+    private static final String DEFAULT_USER_ROLE = "ROLE_USER";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -29,24 +32,9 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
                 user.getUsername(),
                 encodedPassword,
                 true,
-                List.of(SecurityConfig.DEFAULT_USER_ROLE)
+                List.of(DEFAULT_USER_ROLE)
         );
-        User savedUser = userRepository.save(newUser);
-
-    }
-
-    @Override
-    public void updateUser(final UserDetails user) {
-
-    }
-
-    @Override
-    public void deleteUser(final String username) {
-
-    }
-
-    @Override
-    public void changePassword(final String oldPassword, final String newPassword) {
+        userRepository.save(newUser);
 
     }
 
@@ -54,11 +42,28 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository.findFirstByEmailIgnoreCase(username)
                 .map(SecurityUser::new)
-                .orElseThrow(() -> new RuntimeException("User with email " + username + " not found."));
+                .orElseThrow(() -> new UsernameNotFoundException("User with email: " + username + " not found."));
     }
 
     @Override
     public boolean userExists(final String username) {
         return userRepository.existsByEmailIgnoreCase(username);
     }
+
+    @Override
+    public void updateUser(final UserDetails user) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void deleteUser(final String username) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void changePassword(final String oldPassword, final String newPassword) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package com.songify.domain.crud;
 
 import com.songify.domain.crud.model.BaseEntity;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -53,16 +52,12 @@ class Song extends BaseEntity {
 
     private Long duration;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(nullable = false)
     private Genre genre;
 
     @Enumerated(EnumType.STRING)
     private SongLanguage language;
-
-    public Song(String name) {
-        this.name = name;
-    }
 
     public Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage language, final Genre genre) {
         this.name = name;

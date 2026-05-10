@@ -2,7 +2,7 @@ package com.songify.infrastructure.usercrud.controller;
 
 import com.songify.domain.usercrud.UserLoginService;
 import com.songify.infrastructure.security.jwt.TokenCookieService;
-import com.songify.infrastructure.usercrud.dto.LoginRequestDto;
+import com.songify.domain.usercrud.dto.LoginRequestDto;
 import com.songify.infrastructure.usercrud.dto.LoginResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

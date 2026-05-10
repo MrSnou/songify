@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,8 @@ import java.util.HashSet;
 
 @Entity
 @Table(name = "users")
-@Getter@Setter
+@Getter
+@Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor
 public class User extends BaseEntity {
 

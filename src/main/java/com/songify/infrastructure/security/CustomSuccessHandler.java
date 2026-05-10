@@ -1,5 +1,6 @@
 package com.songify.infrastructure.security;
 
+import com.songify.domain.security.SecurityUser;
 import com.songify.domain.security.jwt.JwtTokenGenerator;
 import com.songify.infrastructure.security.jwt.TokenCookieService;
 import jakarta.servlet.ServletException;

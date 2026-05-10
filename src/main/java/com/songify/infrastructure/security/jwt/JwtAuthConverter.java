@@ -1,6 +1,6 @@
 package com.songify.infrastructure.security.jwt;
 
-import com.songify.infrastructure.security.SecurityUser;
+import com.songify.domain.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.convert.converter.Converter;

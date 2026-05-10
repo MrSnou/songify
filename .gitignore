@@ -23,6 +23,7 @@ oauth2ClientData.yml
 *.iml
 *.ipr
 oauth2ClientData.yml
+CLAUDE.md
 
 
 ### NetBeans ###

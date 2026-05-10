@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 class InMemoryArtistRepository implements ArtistRepository {
 
@@ -34,13 +33,5 @@ class InMemoryArtistRepository implements ArtistRepository {
 
     @Override
     public void deleteArtistById(final Long artistId) {
-        artistsDb.remove(artistId);
-
-    }
-
-    @Override
-    public boolean existsById(final Long id) {
-        Optional<Artist> artistById = findArtistById(id);
-        return artistById.isPresent();
-    }
+        artistsDb.remove(artistId);}
 }

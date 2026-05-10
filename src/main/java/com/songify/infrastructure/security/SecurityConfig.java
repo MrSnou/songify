@@ -56,7 +56,8 @@ class SecurityConfig {
                 )));
         http.exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> {
-                    if (request.getHeader("Accept").contains("text/html")) {
+                    String acceptHeader = request.getHeader("Accept");
+                    if (acceptHeader != null && acceptHeader.contains("text/html")) {
                         response.sendRedirect("/login-page");
                     } else {
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
@@ -91,10 +92,6 @@ class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/albums/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/genres/**").authenticated()
                         // mutable actions
-                        .requestMatchers(HttpMethod.PUT, "/songs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/artists/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/albums/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/genres/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/songs/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/artists/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/albums/**").hasRole("ADMIN")
@@ -110,39 +107,4 @@ class SecurityConfig {
                         .anyRequest().authenticated());
         return http.build();
     }
-
-
-//     // Configuration of CORS for frontend
-//     public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
-//         return c -> {
-//             CorsConfigurationSource source = request -> {
-//                 CorsConfiguration config = new CorsConfiguration();
-//                 config.setAllowedOrigins(
-//                         List.of("http://localhost:3000"));
-//                 config.setAllowedMethods(
-//                         List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-//                 config.setAllowedHeaders(List.of("*"));
-//                 config.setAllowCredentials(true);
-//                 return config;
-//             };
-//             c.configurationSource(source);
-//         };
-//     }
-
-    //    @Bean
-//    public UserDetailsService userDetailsService() {
-//        var manager = new InMemoryUserDetailsManager();
-//
-//        var user1 = User.withUsername("User")
-//                .password("12345")
-//                .roles("USER")
-//                .build();
-//        var admin1 = User.withUsername("Admin")
-//                .password("12345")
-//                .roles("USER", "ADMIN")
-//                .build();
-//        manager.createUser(user1);
-//        manager.createUser(admin1);
-//        return manager;
-//    }
 }

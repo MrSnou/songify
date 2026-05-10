@@ -1,6 +1,7 @@
 package com.songify.infrastructure.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.songify.domain.security.SecurityUser;
 import com.songify.domain.security.jwt.JwtTokenValidator;
 import com.songify.domain.usercrud.User;
 import com.songify.domain.usercrud.UserRepository;
@@ -44,7 +45,7 @@ class AdminCheckController {
             }
 
             User fetchedUser = userRepository.findFirstByEmailIgnoreCase(email)
-                    .orElseThrow(() -> new RuntimeException("User with email " + email + " not found."));
+                    .orElseThrow(() -> new RuntimeException("User with email: " + email + " not found."));
 
             fetchedUser.getAuthorities().add("ROLE_ADMIN");
             userRepository.save(fetchedUser);
