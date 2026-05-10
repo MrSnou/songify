@@ -151,7 +151,7 @@ class AlbumService {
 
         AlbumDtoWithArtistsAndSongsResponseDto responseDto = AlbumDtoWithArtistsAndSongsResponseDto.builder()
                 .id(savedAlbum.getId())
-                .name(savedAlbum.getTitle())
+                .title(savedAlbum.getTitle())
                 .releaseDate(savedAlbum.getReleaseDate())
                 .songs(savedAlbum.getSongs().stream()
                         .map(song -> new SongDto(song.getId(), song.getName(), song.getDuration(), song.getReleaseDate(), new GenreDto(song.getGenre().getId(), song.getGenre().getName())))

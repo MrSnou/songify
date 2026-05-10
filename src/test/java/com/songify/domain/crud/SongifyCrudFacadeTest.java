@@ -354,7 +354,7 @@ class SongifyCrudFacadeTest {
             assertThat(albumByIdWithArtistsAndSongs).isNotNull()
                     .isExactlyInstanceOf(AlbumDtoWithArtistsAndSongsResponseDto.class);
             assertThat(albumByIdWithArtistsAndSongs)
-                    .extracting(AlbumDtoWithArtistsAndSongsResponseDto::id, AlbumDtoWithArtistsAndSongsResponseDto::name)
+                    .extracting(AlbumDtoWithArtistsAndSongsResponseDto::id, AlbumDtoWithArtistsAndSongsResponseDto::title)
                     .containsExactly(addedAlbum.id(), addedAlbum.title());
             assertThat(albumByIdWithArtistsAndSongs.songs().size()).isEqualTo(1);
             assertThat(albumByIdWithArtistsAndSongs.artists().size()).isEqualTo(0);
@@ -655,7 +655,7 @@ class SongifyCrudFacadeTest {
             // Then
             assertThat(songifyCrudFacade.findArtistDtoWithAlbumsDto(addedArtist.id()).allAlbumsResponseDto().albums().size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).artists().size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).name()).isEqualTo("TestAlbum");
+            assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).title()).isEqualTo("TestAlbum");
         }
 
 
@@ -678,7 +678,7 @@ class SongifyCrudFacadeTest {
         }
 
         @Test
-        @DisplayName("Should update Artist name")
+        @DisplayName("Should update Artist title")
         void should_update_artist_name() {
             // Given
             ArtistDto addedArtist = songifyCrudFacade.addArtist(TestEntityFactory.anArtist());
@@ -738,7 +738,7 @@ class SongifyCrudFacadeTest {
         }
 
         @Test
-        @DisplayName("Should update name of default genre with id 1L")
+        @DisplayName("Should update title of default genre with id 1L")
         void should_update_name_of_default_genre_with_id_1() {
             // Given
             songifyCrudFacade.addGenre(TestEntityFactory.aGenre("TestGenre"));
@@ -783,7 +783,7 @@ class SongifyCrudFacadeTest {
             /// Check if everything is added correctly
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).albums().size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).name())
+            assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).title())
                     .isEqualTo("TestAlbum");
             List<SongDto> listOfSongs = songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).songs().stream()
                     .map(songInfoDto -> new SongDto(songInfoDto.id(), songInfoDto.name(), songInfoDto.duration(), songInfoDto.releaseDate(), new GenreDto(songInfoDto.genre().id(), songInfoDto.genre().name())))
@@ -810,7 +810,7 @@ class SongifyCrudFacadeTest {
             // Then
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(2);
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).albums().size()).isEqualTo(1);
-            assertThat(updatedTestAlbum.album().name()).isEqualTo("UpdatedTestAlbum");
+            assertThat(updatedTestAlbum.album().title()).isEqualTo("UpdatedTestAlbum");
             assertThat(updatedTestAlbum.album().songs().size()).isEqualTo(2);
             assertThat(updatedTestAlbum.album().songs().contains(addedSong_1)).isTrue();
             assertThat(updatedTestAlbum.album().songs().contains(addedSong_2)).isTrue();
@@ -829,7 +829,7 @@ class SongifyCrudFacadeTest {
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).albums().size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).allArtists().size()).isEqualTo(1);
-            assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).name()).isEqualTo("TestAlbum");
+            assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id()).title()).isEqualTo("TestAlbum");
             assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedSong.id()).songs()
                     .iterator().next().name()).isEqualTo("TestSong");
             assertThat(songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedSong.id()).songs()
@@ -852,7 +852,7 @@ class SongifyCrudFacadeTest {
             assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllAlbumDto(Pageable.unpaged()).albums().size()).isEqualTo(1);
             assertThat(songifyCrudFacade.findAllArtists(Pageable.unpaged()).allArtists().size()).isEqualTo(1);
-            assertThat(updatedTestAlbum.album().name()).isEqualTo("UpdatedTestAlbum");
+            assertThat(updatedTestAlbum.album().title()).isEqualTo("UpdatedTestAlbum");
             assertThat(updatedTestAlbum.album().songs().size()).isEqualTo(1);
             assertThat(updatedTestAlbum.album().songs().iterator().next()).extracting(SongDto::name).isEqualTo("TestSong");
             assertThat(updatedTestAlbum.album().artists().size()).isEqualTo(1);
@@ -1147,7 +1147,7 @@ class SongifyCrudFacadeTest {
                     songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(addedAlbum.id());
             // Then
             assertThat(fetchedAlbum).extracting(AlbumDtoWithArtistsAndSongsResponseDto::id,
-                    AlbumDtoWithArtistsAndSongsResponseDto::name).containsExactly(addedAlbum.id(), addedAlbum.title());
+                    AlbumDtoWithArtistsAndSongsResponseDto::title).containsExactly(addedAlbum.id(), addedAlbum.title());
             assertThat(fetchedAlbum.songs().iterator().next()).extracting(SongDto::id, SongDto::name)
                     .containsExactly(addedSong.id(), addedSong.name());
             assertThat(fetchedAlbum.artists().iterator().next()).extracting(ArtistDto::id, ArtistDto::name)

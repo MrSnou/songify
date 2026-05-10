@@ -11,7 +11,7 @@ import java.util.Set;
 public record AlbumDtoWithArtistsAndSongsResponseDto(
 
         Long id,
-        String name,
+        String title,
         Instant releaseDate,
         Set<ArtistDto> artists,
         Set<SongDto> songs

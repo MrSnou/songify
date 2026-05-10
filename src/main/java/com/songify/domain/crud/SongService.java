@@ -106,7 +106,7 @@ class SongService {
 
         return new UpdateSongResponseDto(
                 "Successfully updated song with id: " + songId +
-                        " song name from " + oldSong.getName() + " to " + songFromRequest.songName() +
+                        " song title from " + oldSong.getName() + " to " + songFromRequest.songName() +
                         " and duration from " + oldSong.getDuration() + " to " + songFromRequest.duration() + "."
                 , new SongDto(oldSong.getId(), songFromRequest.songName(), songFromRequest.duration(), oldSong.getReleaseDate(), new GenreDto(oldSong.getGenre().getId(), oldSong.getGenre().getName()))
         );

@@ -14,6 +14,7 @@ import com.songify.domain.crud.exception.ArtistNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,7 @@ class ArtistService {
         return new ArtistDto(save.getId(), save.getName());
     }
 
+    @Transactional
     UpdateArtistAlbumResponseDto addArtistToAlbum(final Long artistID, final Long albumID) {
         Artist artist = findArtistById(artistID);
         Album album = albumRepository.findById(albumID)
@@ -140,7 +142,7 @@ class ArtistService {
         artist.setName(newName);
         Artist updatedArtist = artistRepository.save(artist);
         return ArtistUpdateResponseDto.builder()
-                .message("Successfully updated artist with id: " + artistId + " name from: " + oldName + " to " + updatedArtist.getName() + ".")
+                .message("Successfully updated artist with id: " + artistId + " title from: " + oldName + " to " + updatedArtist.getName() + ".")
                 .build();
     }
 

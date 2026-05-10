@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record GenreRequestDto(
-        @NotEmpty(message = "Genre name cannot be empty")
-        @NotNull(message = "Genre name cannot be null")
+        @NotEmpty(message = "Genre title cannot be empty")
+        @NotNull(message = "Genre title cannot be null")
         String name) {
 }

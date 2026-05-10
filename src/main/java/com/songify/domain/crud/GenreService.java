@@ -73,13 +73,13 @@ class GenreService {
                 .orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));
 
         if (genre.getId().equals(DomainConstants.DEFAULT_GENRE_ID)) {
-            throw new GenreDefaultIsLockedException("Cannot edit Default Genre name!");
+            throw new GenreDefaultIsLockedException("Cannot edit Default Genre title!");
         }
 
         genreRepository.updateGenreById(genreId, newName);
         Genre updatedGenre = genreRepository.findById(genreId).orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));
         return GenreResponseDto.builder()
-                .message("Genre with id " + genre.getId() + " name successfully updated from: " + genre.getName() + " to " + updatedGenre.getName() + ".")
+                .message("Genre with id " + genre.getId() + " title successfully updated from: " + genre.getName() + " to " + updatedGenre.getName() + ".")
                 .build();
     }
 }
