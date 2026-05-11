@@ -58,22 +58,70 @@ Dostęp do domeny z zewnątrz odbywa się wyłącznie przez `SongifyCrudFacade`.
 
 ## Uruchomienie
 
-**Wymagania:** Docker (do uruchomienia PostgreSQL)
+**Wymagania:** Java 17, Maven, Docker, OpenSSL, Java `keytool`
 
+**Krok 1 — Sklonuj repozytorium**
 ```bash
-# Sklonuj repozytorium
 git clone https://github.com/mrsnou/songify.git
+cd songify
+```
 
-# Uruchom bazę danych
+**Krok 2 — Wygeneruj certyfikat SSL** (umieść w `src/main/resources/`)
+```bash
+keytool -genkeypair -alias songify -keyalg RSA -keysize 2048 \
+  -storetype PKCS12 -keystore src/main/resources/certificate.p12 -validity 365
+```
+
+**Krok 3 — Wygeneruj parę kluczy RSA** (umieść w katalogu głównym projektu)
+```bash
+openssl genrsa -out key.pem 2048
+openssl rsa -in key.pem -pubout -out cert.pem
+```
+
+**Krok 4 — Uruchom bazę danych**
+```bash
 docker run --name songify-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16-alpine
+```
 
-# Uruchom aplikację
+**Krok 5 — Uruchom aplikację**
+```bash
 ./mvnw spring-boot:run
 ```
 
-Swagger UI dostępny pod: `http://localhost:8080/swagger-ui/index.html`
+Swagger UI dostępny pod: `https://localhost:8443/swagger-ui/index.html` (wymagane logowanie — OAuth2 lub login i hasło)
 
 ## Konfiguracja
+
+## HTTPS i wymagane klucze
+
+Aplikacja działa na HTTPS (`https://localhost:8443`). Wymagane są trzy pliki, które są **wykluczone z repozytorium** i należy je wygenerować samodzielnie.
+
+### 1. Certyfikat SSL
+
+Wygeneruj certyfikat PKCS12 i umieść go w `src/main/resources/`:
+
+```bash
+keytool -genkeypair -alias songify -keyalg RSA -keysize 2048 \
+  -storetype PKCS12 -keystore certificate.p12 -validity 365
+```
+
+### 2. Para kluczy RSA (podpisywanie JWT)
+
+Wygeneruj parę kluczy prywatny/publiczny i umieść oba pliki w **głównym katalogu projektu**:
+
+```bash
+# Wygeneruj klucz prywatny
+openssl genrsa -out key.pem 2048
+
+# Wyodrębnij klucz publiczny
+openssl rsa -in key.pem -pubout -out cert.pem
+```
+
+Pliki są wskazane w `application.properties` jako:
+```properties
+jwt.key.public=file:cert.pem
+jwt.key.private=file:key.pem
+```
 
 Domyślni użytkownicy z migracji Flyway:
 
