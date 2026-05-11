@@ -58,22 +58,71 @@ External access to the domain is only possible through `SongifyCrudFacade`.
 
 ## Getting Started
 
-**Requirements:** Docker (to run PostgreSQL)
+**Requirements:** Java 17, Maven, Docker, OpenSSL, Java `keytool`
 
+**Step 1 — Clone the repository**
 ```bash
-# Clone the repository
 git clone https://github.com/mrsnou/songify.git
+cd songify
+```
 
-# Start the database
+**Step 2 — Generate SSL certificate** (place in `src/main/resources/`)
+```bash
+keytool -genkeypair -alias songify -keyalg RSA -keysize 2048 \
+  -storetype PKCS12 -keystore src/main/resources/certificate.p12 -validity 365
+```
+
+**Step 3 — Generate RSA key pair** (place in project root)
+```bash
+openssl genrsa -out key.pem 2048
+openssl rsa -in key.pem -pubout -out cert.pem
+```
+
+**Step 4 — Start the database**
+```bash
 docker run --name songify-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16-alpine
+```
 
-# Run the application
+**Step 5 — Run the application**
+```bash
 ./mvnw spring-boot:run
 ```
 
-Swagger UI available at: `http://localhost:8080/swagger-ui/index.html`
+Swagger UI available at: `https://localhost:8443/swagger-ui/index.html` (login required - OAuth2 or login and password)
+
 
 ## Configuration
+
+### HTTPS & Required Keys
+
+The application runs on HTTPS (`https://localhost:8443`). Three files are required that are **excluded from the repository** and must be generated manually.
+
+#### 1. SSL Certificate
+
+Generate a PKCS12 certificate and place it in `src/main/resources/`:
+
+```bash
+keytool -genkeypair -alias songify -keyalg RSA -keysize 2048 \
+  -storetype PKCS12 -keystore certificate.p12 -validity 365
+```
+
+#### 2. RSA Key Pair (JWT signing)
+
+Generate a private/public key pair and place both files in the **project root directory**:
+
+```bash
+# Generate private key
+openssl genrsa -out key.pem 2048
+
+# Extract public key
+openssl rsa -in key.pem -pubout -out cert.pem
+```
+
+These files are referenced in `application.properties` as:
+```properties
+jwt.key.public=file:cert.pem
+jwt.key.private=file:key.pem
+```
 
 Default users seeded via Flyway migration:
 
