@@ -2,7 +2,7 @@ package com.songify.domain.crud;
 
 import com.songify.domain.crud.dto.genre.AllGenresDto;
 import com.songify.domain.crud.dto.genre.GenreResponseDto;
-import com.songify.domain.crud.model.DomainConstants;
+import com.songify.domain.model.DomainConstants;
 import com.songify.domain.crud.dto.genre.GenreDto;
 import com.songify.domain.crud.exception.GenreDefaultIsLockedException;
 import com.songify.domain.crud.exception.GenreIsUsedBySongsException;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 

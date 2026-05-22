@@ -2,7 +2,7 @@ package com.songify.infrastructure.security;
 
 import com.songify.domain.security.SecurityUser;
 import com.songify.domain.usercrud.User;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 class CustomOidcUserService extends OidcUserService {
 
     private final UserDetailsManager userDetailsManager;

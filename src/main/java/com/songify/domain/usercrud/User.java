@@ -1,6 +1,6 @@
 package com.songify.domain.usercrud;
 
-import com.songify.domain.crud.model.BaseEntity;
+import com.songify.domain.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

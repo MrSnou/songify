@@ -1,7 +1,7 @@
 package com.songify.domain.crud;
 
 
-import com.songify.domain.crud.model.DomainConstants;
+import com.songify.domain.model.DomainConstants;
 import com.songify.domain.crud.dto.genre.GenreDto;
 import com.songify.domain.crud.dto.song.SongRequestDto;
 import com.songify.domain.crud.dto.song.UpdateSongRequestDto;

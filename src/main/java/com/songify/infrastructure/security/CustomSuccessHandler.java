@@ -6,7 +6,7 @@ import com.songify.infrastructure.security.jwt.TokenCookieService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CustomSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final JwtTokenGenerator jwtTokenGenerator;

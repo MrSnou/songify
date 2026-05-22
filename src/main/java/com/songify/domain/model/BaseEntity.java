@@ -1,4 +1,4 @@
-package com.songify.domain.crud.model;
+package com.songify.domain.model;
 
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;

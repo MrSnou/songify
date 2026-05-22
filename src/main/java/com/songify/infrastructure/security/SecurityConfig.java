@@ -3,7 +3,7 @@ package com.songify.infrastructure.security;
 import com.songify.domain.security.jwt.JwtAuthenticationFilter;
 import com.songify.domain.usercrud.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 @Configuration
-@RequiredArgsConstructor
+@AllArgsConstructor
 class SecurityConfig {
 
     public static final String DEFAULT_USER_ROLE = "ROLE_USER";
