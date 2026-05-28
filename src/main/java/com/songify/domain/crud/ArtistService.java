@@ -104,11 +104,11 @@ class ArtistService {
 
     ArtistDto findArtistDtoById(final Long artistId) {
         Artist artistById = findArtistById(artistId);
-        ArtistDto artistDtoById = ArtistDto.builder()
+
+        return ArtistDto.builder()
                 .id(artistById.getId())
                 .name(artistById.getName())
                 .build();
-        return artistDtoById;
     }
 
 
@@ -127,13 +127,11 @@ class ArtistService {
                                 ).toList()))
                 .toList();
 
-        ArtistWithAlbumsResponseDto responseDto = new ArtistWithAlbumsResponseDto(
+        return new ArtistWithAlbumsResponseDto(
                 "Successfully retrieved: " + artist.getName() + " with all it's albums.",
                 new ArtistDto(artist.getId(), artist.getName()),
                 new AllAlbumsResponseDto(albumDtoList)
         );
-
-        return responseDto;
     }
 
     ArtistUpdateResponseDto updateArtistNameById(final Long artistId, final String newName) {

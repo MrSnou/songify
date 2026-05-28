@@ -1,4 +1,4 @@
-package com.songify.domain.security.jwt;
+package com.songify.infrastructure.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

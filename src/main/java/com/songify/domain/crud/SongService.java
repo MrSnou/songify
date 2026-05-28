@@ -124,11 +124,9 @@ class SongService {
         songRepository.updateSongGenreById(songId, newGenre);
         SongDto updatedSongDto = findSongDtoById(songId);
 
-        UpdateSongResponseDto response = UpdateSongResponseDto.builder()
+        return UpdateSongResponseDto.builder()
                 .message("Successfully updated song genre with id: " + songId + " to " +  newGenre.getName() + ".")
                 .updatedSong(updatedSongDto)
                 .build();
-
-        return response;
     }
 }

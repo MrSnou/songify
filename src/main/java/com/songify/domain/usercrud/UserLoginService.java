@@ -1,6 +1,6 @@
 package com.songify.domain.usercrud;
 
-import com.songify.domain.security.jwt.JwtTokenGenerator;
+import com.songify.infrastructure.security.jwt.JwtTokenGenerator;
 import com.songify.domain.security.SecurityUser;
 import com.songify.domain.usercrud.dto.LoginRequestDto;
 import lombok.AllArgsConstructor;

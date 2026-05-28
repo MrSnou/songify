@@ -10,6 +10,7 @@ import com.songify.domain.crud.exception.GenreNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +67,7 @@ class GenreService {
                 .collect(Collectors.toList());
         return AllGenresDto.builder().genres(genreDtoList).build();
     }
-
+    @Transactional
     GenreResponseDto updateGenreNameById(final Long genreId, String newName) {
         Genre genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new GenreNotFoundException("Genre with id: " + genreId + " not found."));

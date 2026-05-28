@@ -1,6 +1,6 @@
 package com.songify.infrastructure.security;
 
-import com.songify.domain.security.jwt.JwtAuthenticationFilter;
+import com.songify.infrastructure.security.jwt.JwtAuthenticationFilter;
 import com.songify.domain.usercrud.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
