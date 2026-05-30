@@ -27,14 +27,13 @@ public class JwtTokenGenerator {
 
         String email = securityUser.getUsername();
         List<@Nullable String> authorities = securityUser.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
+                        .map(GrantedAuthority::getAuthority)
+                        .toList();
 
 
-        return  JWT.create()
-                .withSubject(email)
+        return JWT.create().withSubject(email)
                 .withClaim("roles", authorities)
-                .withExpiresAt(Instant.now().plusSeconds(expiresIn)) // 30 min
+                .withExpiresAt(Instant.now().plusSeconds(expiresIn))
                 .sign(Algorithm.RSA256(null, rsaPrivateKey));
     }
 }
