@@ -1,0 +1,1 @@
+TRUNCATE TABLE song, genre, album, artist, users RESTART IDENTITY CASCADE;
