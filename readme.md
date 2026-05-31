@@ -5,7 +5,7 @@ REST API for a music library application built with **Modular Monolith** + **Hex
 ## About
 
 Songify is a backend application for managing a music library — songs, artists, albums and genres.
-Built as a portfolio project showcasing showcasing a Modular Monolith with hexagonal separation, JWT (RS256) and OAuth2 security, and integration testing on Testcontainers.
+Built as a portfolio project showcasing a Modular Monolith with hexagonal separation, JWT (RS256) and OAuth2 security, and integration testing on Testcontainers.
 
 ## Features
 
