@@ -40,7 +40,7 @@ zabezpieczeniami JWT (RS256) i OAuth2 oraz testami integracyjnymi na kontenerach
 
 ## Architektura
 
-Projekt stosuje **Domain-Driven Design** z podziałem na warstwy `domain` i `infrastructure`.
+Projekt stosuje architekturę Modular Monolith z podziałem heksagonalnym (porty i adaptery) — wyraźny rozdział 'domain' i 'infrastructure', z enkapsulacją pakietowo-prywatną i Fasadą (SongifyCrudFacade) jako jedynym publicznym punktem wejścia.
 
 ```
 src/main/java/com/songify/
