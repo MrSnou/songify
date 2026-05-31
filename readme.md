@@ -1,11 +1,11 @@
 # Songify 🎵
 
-REST API for a music library application built with **Domain-Driven Design** and **Modular Monolith** architecture.
+REST API for a music library application built with **Modular Monolith** + **Hexagonal architecture** (ports & adapters).
 
 ## About
 
 Songify is a backend application for managing a music library — songs, artists, albums and genres.
-Built as a portfolio project showcasing knowledge of architectural patterns, Spring Security, and both unit and integration testing.
+Built as a portfolio project showcasing showcasing a Modular Monolith with hexagonal separation, JWT (RS256) and OAuth2 security, and integration testing on Testcontainers.
 
 ## Features
 
@@ -40,17 +40,17 @@ Built as a portfolio project showcasing knowledge of architectural patterns, Spr
 
 ## Architecture
 
-The project follows **Domain-Driven Design** with a clear separation between `domain` and `infrastructure` layers.
+The project follows a Modular Monolith design with Hexagonal architecture (ports & adapters) — a clear separation between 'domain' and 'infrastructure', with package-private encapsulation and a Facade (SongifyCrudFacade) as the only public entry point.
 
 ```
 src/main/java/com/songify/
 ├── domain/
 │   ├── crud/        # business logic, entities, repositories (package-private)
-│   ├── security/    # JWT, SecurityUser
+│   ├── security/    # SecurityUser and domain-level security model
 │   └── usercrud/    # registration, login
 └── infrastructure/
     ├── crud/        # REST controllers, error handlers
-    ├── security/    # Spring Security configuration
+    ├── security/    # Spring Security config + JWT generator/validator (RSA)
     └── usercrud/    # user controllers
 ```
 
@@ -62,7 +62,7 @@ External access to the domain is only possible through `SongifyCrudFacade`.
 
 **Step 1 — Clone the repository**
 ```bash
-git clone https://github.com/mrsnou/songify.git
+git clone https://github.com/MrSnou/songify.git
 cd songify
 ```
 
