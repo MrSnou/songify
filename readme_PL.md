@@ -1,11 +1,11 @@
 # Songify 🎵
 
-REST API aplikacji muzycznej zbudowane w oparciu o **Domain-Driven Design** i architekturę **Modular Monolith**.
+REST API dla aplikacji biblioteki muzycznej zbudowanej w oparciu o architekturę **Modular Monolith** + **Hexagonal** (porty i adaptery).
 
 ## O projekcie
 
-Songify to backendowa aplikacja umożliwiająca zarządzanie biblioteką muzyczną — piosenkami, artystami, albumami i gatunkami.
-Projekt powstał jako aplikacja portfolio, demonstrująca znajomość wzorców architektonicznych, Spring Security oraz testowania jednostkowego i integracyjnego.
+Songify to aplikacja backendowa do zarządzania biblioteką muzyczną – utworami, artystami, albumami i gatunkami. Stworzona jako projekt portfolio prezentujący modułowy monolit z podziałem heksagonalnym,
+zabezpieczeniami JWT (RS256) i OAuth2 oraz testami integracyjnymi na kontenerach testowych.
 
 ## Funkcjonalności
 
@@ -45,13 +45,13 @@ Projekt stosuje **Domain-Driven Design** z podziałem na warstwy `domain` i `inf
 ```
 src/main/java/com/songify/
 ├── domain/
-│   ├── crud/        # logika biznesowa, encje, repozytoria (package-private)
-│   ├── security/    # JWT, SecurityUser
-│   └── usercrud/    # rejestracja, logowanie
+│   ├── crud/        # Logika biznesowa, encje, repozytoria (pakiet-prywatny)
+│   ├── security/    # Bezpieczeństwo oraz model bezpieczeństwa na poziomie użytkownika i domeny
+│   └── usercrud/    # Rejestracja oraz logowanie
 └── infrastructure/
-    ├── crud/        # kontrolery REST, obsługa błędów
-    ├── security/    # konfiguracja Spring Security
-    └── usercrud/    # kontrolery użytkownika
+    ├── crud/        # REST controllers, error handlers
+    ├── security/    # Spring Security config + JWT generator/validator (RSA)
+    └── usercrud/    # Kontrolery użytkownika
 ```
 
 Dostęp do domeny z zewnątrz odbywa się wyłącznie przez `SongifyCrudFacade`.
@@ -62,7 +62,7 @@ Dostęp do domeny z zewnątrz odbywa się wyłącznie przez `SongifyCrudFacade`.
 
 **Krok 1 — Sklonuj repozytorium**
 ```bash
-git clone https://github.com/mrsnou/songify.git
+git clone https://github.com/MrSnou/songify.git
 cd songify
 ```
 
